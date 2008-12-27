@@ -40,7 +40,7 @@ public class HangeulReaderTest {
 	
 	private void go(String characters){
 		System.out.println("Preparing to scan " + (int) (characters.length()) + " characters.");
-		HangeulClassifier hc = new HangeulClassifier(CharacterRenderer.makeCharacterImage('a', 1, 1));	// dummy to make it create the jamo db.
+		HangeulClassifier hc = new HangeulClassifier();
 		StringBuilder matches = new StringBuilder();
 		StringBuilder misses = new StringBuilder();
 		int count = 0;

@@ -6,11 +6,8 @@ package se.iroiro.md.hangeulreader;
 import java.io.File;
 
 import se.iroiro.md.hangeul.CharacterMeasurement;
-import se.iroiro.md.hangeul.CharacterRenderer;
 import se.iroiro.md.hangeul.Hangeul;
 import se.iroiro.md.hangeul.HangeulClassifier;
-import se.iroiro.md.hangeul.Line;
-import se.iroiro.md.hangeul.LineGroup;
 
 /**
  * Starter class.
@@ -18,26 +15,26 @@ import se.iroiro.md.hangeul.LineGroup;
  */
 public class Go {
 
-	public static boolean assertClassification(String hangeul){
-		char c = UnicodeHangeul.composeHangul(hangeul).charAt(0);
-		ImageRenderer ir = new ImageRenderer(new CharacterMeasurement(CharacterRenderer.makeCharacterImage(c, 200, 200)));
-//		ImageRenderer ir = new ImageRenderer(hc.getCharacterMeasurement());
-		GUI gui = new GUI();
-		gui.setImageRenderer(ir);
-		gui.show();
-		HangeulClassifier hc = new HangeulClassifier(CharacterRenderer.makeCharacterImage(c, 200, 200));
-		Helper.p("Image read: "+c+"\n");
-		Hangeul h = hc.getHangeul();
-		if(h != null){
-			Helper.p("Classified: "+h.toString().charAt(0)+"\n");
-		}
-		for(LineGroup lg : hc.getCharacterMeasurement().getLineGroups()){
-			for(Line l : lg.getMap().keySet()){
-				Helper.p(l.getType()+"\t"+l.getLength()+"\n");
-			}
-		}
-		return (h != null) && (h.toString().charAt(0) == c);
-	}
+//	public static boolean assertClassification(String hangeul){
+//		char c = UnicodeHangeul.composeHangul(hangeul).charAt(0);
+//		ImageRenderer ir = new ImageRenderer(new CharacterMeasurement(CharacterRenderer.makeCharacterImage(c, 200, 200)));
+////		ImageRenderer ir = new ImageRenderer(hc.getCharacterMeasurement());
+//		GUI gui = new GUI();
+//		gui.setImageRenderer(ir);
+//		gui.show();
+//		HangeulClassifier hc = new HangeulClassifier(CharacterRenderer.makeCharacterImage(c, 200, 200));
+//		Helper.p("Image read: "+c+"\n");
+//		Hangeul h = hc.getHangeul();
+//		if(h != null){
+//			Helper.p("Classified: "+h.toString().charAt(0)+"\n");
+//		}
+//		for(LineGroup lg : hc.getCharacterMeasurement().getLineGroups()){
+//			for(Line l : lg.getMap().keySet()){
+//				Helper.p(l.getType()+"\t"+l.getLength()+"\n");
+//			}
+//		}
+//		return (h != null) && (h.toString().charAt(0) == c);
+//	}
 	
 	public static void printResult(HangeulClassifier hc, String fileName){
 		hc.newClassification(fileName);
@@ -93,39 +90,39 @@ public class Go {
 			String hh = "카";	// 푤푠
 //			String h = "ᄈ";
 
-			if(false){
-				Stopwatch s = new Stopwatch();
-				s.start();
-				if(assertClassification(hh)){
-					System.out.println("\t\tCORRECT.\n");
-				}else{
-					System.out.println("\t\tNOT correct.\n");
-				}
-				s.stop();
-				System.out.println("Total time: "+s.totaltime_str());
-			}
+//			if(false){
+//				Stopwatch s = new Stopwatch();
+//				s.start();
+//				if(assertClassification(hh)){
+//					System.out.println("\t\tCORRECT.\n");
+//				}else{
+//					System.out.println("\t\tNOT correct.\n");
+//				}
+//				s.stop();
+//				System.out.println("Total time: "+s.totaltime_str());
+//			}
 
 //			Helper.dump(hc.getCharacterMeasurement().getLineGroups().get(0).getGraph().toString(), "/Users/j/Desktop/h.dot");
 
 
 //			HangeulClassification hc = new HangeulClassification(System.getProperty("user.dir")+"/specials/"+"lb.png");
-			if(true){
-				HangeulClassifier hclf = new HangeulClassifier("/Users/j/Documents/md/misc/img/test_images/test_53.png");
-//				HangeulClassification hclf = new HangeulClassification("/Users/j/Documents/md/misc/testimages/test_138.png");
-//				HangeulClassifier hclf = new HangeulClassifier(System.getProperty("user.dir")+"/specials/"+"m.png");
-//				HangeulClassifier hclf = new HangeulClassifier("/Users/j/Desktop/Picture 1.png");
-				ImageRenderer ir = new ImageRenderer(hclf.getCharacterMeasurement());
-				GUI gui = new GUI();
-				gui.setImageRenderer(ir);
-				gui.show();
-
-				Hangeul hangeul = hclf.getHangeul();
-				if(hangeul != null){
-					Helper.p("Image looks like: "+hangeul+" (HANGEUL SYLLABLE "+hangeul.getName()+")\n");
-				}else{
-					System.out.println("Hangeul not recognized.");
-				}
-			}
+//			if(true){
+//				HangeulClassifier hclf = new HangeulClassifier("/Users/j/Documents/md/misc/img/test_images/test_53.png");
+////				HangeulClassification hclf = new HangeulClassification("/Users/j/Documents/md/misc/testimages/test_138.png");
+////				HangeulClassifier hclf = new HangeulClassifier(System.getProperty("user.dir")+"/specials/"+"m.png");
+////				HangeulClassifier hclf = new HangeulClassifier("/Users/j/Desktop/Picture 1.png");
+//				ImageRenderer ir = new ImageRenderer(hclf.getCharacterMeasurement());
+//				GUI gui = new GUI();
+//				gui.setImageRenderer(ir);
+//				gui.show();
+//
+//				Hangeul hangeul = hclf.getHangeul();
+//				if(hangeul != null){
+//					Helper.p("Image looks like: "+hangeul+" (HANGEUL SYLLABLE "+hangeul.getName()+")\n");
+//				}else{
+//					System.out.println("Hangeul not recognized.");
+//				}
+//			}
 		}else{
 
 //			HangeulReaderTest t1 = new HangeulReaderTest('\uAC00','\uC1D2');

@@ -3,22 +3,18 @@
  */
 package se.iroiro.md.hangeul;
 
-import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import se.iroiro.md.graph.Coordinate;
 import se.iroiro.md.graph.XYNode;
-import se.iroiro.md.hangeulreader.Helper;
 
 /**
  * Reads an image and tells what character it represents.
@@ -34,48 +30,15 @@ public class HangeulClassifier {
 	
 	private Hangeul hangeul = null;
 	private CharacterMeasurement cm;
-	private List<Jamo> jamoDB = null;
-	
-	/**
-	 * A map for quick jamo lookup based on structure.
-	 * A jamo object contains a list of structures,
-	 * this structure map maps all structures of all jamo,
-	 * to each jamo object.
-	 */
-	private Map<List<LineGroup>,Jamo> structureMap = null;
-	
-	/**
-	 * A list to accompany the structureMap, to get correct order.
-	 */
-	private List<List<LineGroup>> structureMapOrdering = null;
+	private JamoReferenceDB jamoRefDB;
 
-	/**
-	 * A list to accompany the structureMap, ordering all line groups by their line count.
-	 */
-	private List<LineGroup> structureLineGroups = null;
-
-	/**
-	 * Creates a new classification from the specified image file.
-	 * @param fileName	the image file to read
-	 */
-	public HangeulClassifier(String fileName) {
-		System.out.println("Analyzing input image...");
-		cm = new CharacterMeasurement(fileName);
-		go();
-	}
-
-	/**
-	 * Creates a new classification from the specified image.
-	 * @param image	the image to read
-	 */
-	public HangeulClassifier(BufferedImage image) {
-//		System.out.println("Analyzing input image...");
-		cm = new CharacterMeasurement(image);
-		go();
+	public HangeulClassifier(JamoReferenceDB jamoRefDB){	// TODO empty constructor to be able to run below method without first loading one char
+		if(jamoRefDB == null) jamoRefDB = new JamoReferenceDB();
+		this.jamoRefDB = jamoRefDB;
 	}
 	
-	public HangeulClassifier(){	// TODO empty constructor to be able to run below method without first loading one char
-		generateJamoDB();
+	public HangeulClassifier(){
+		this(null);
 	}
 	
 	public void newClassification(String imageFile){
@@ -101,12 +64,9 @@ public class HangeulClassifier {
 	 */
 	private void go(){
 		if(cm == null || cm.getLineGroups() == null || cm.getLineGroups().size() == 0) return;
-		generateJamoDB();
-		
 		
 //		splitInputGroups();
 		matchHangeul();
-
 	}
 	
 	/**
@@ -122,7 +82,7 @@ public class HangeulClassifier {
 		nextLineGroup:
 			while(stack.size() > 0){	// while there are still line groups to check
 				LineGroup inputLG = stack.pop();
-				for(List<LineGroup> structure : structureMapOrdering){
+				for(List<LineGroup> structure : jamoRefDB.getStructureMapOrdering()){
 					for(LineGroup structLG : structure){
 						map = GraphTools.getNodeMappings(inputLG,structLG);
 						if(map != null && map.size() > 0){
@@ -135,23 +95,6 @@ public class HangeulClassifier {
 					stack.addAll(parts);
 				}
 			}
-	}
-
-	/**
-	 * Returns a sorted list of the line groups contained in the structure map.
-	 * @return	a sorted list of the line groups found in the structure map
-	 */
-	private List<LineGroup> getSortedStructureLineGroups() {
-		if(structureLineGroups == null){
-			structureLineGroups = new ArrayList<LineGroup>();
-			for(List<LineGroup> structure : structureMapOrdering){
-				for(LineGroup structLG : structure){
-					structureLineGroups.add(structLG);
-				}
-			}
-			Collections.sort(structureLineGroups, new ReverseLineGroupComparator());
-		}
-		return structureLineGroups;
 	}
 	
 	/**
@@ -174,7 +117,7 @@ public class HangeulClassifier {
 		
 		lineGroups.remove(sticky);	// remove group to be split
 
-		for(LineGroup structLG : getSortedStructureLineGroups()){	// break out the first possible structure
+		for(LineGroup structLG : jamoRefDB.getSortedStructureLineGroups()){	// break out the first possible structure
 			map = GraphTools.getBestNodeMapping(structLG,sticky);
 			if(map != null){
 
@@ -210,7 +153,7 @@ public class HangeulClassifier {
 		while(structureMapCandidates == null || structureMapCandidates.size() > 0){
 			int lastStructureSize = -1;
 			structureMapCandidates = new IdentityHashMap<List<LineGroup>,Map<LineGroup,LineGroup>>();
-			for(List<LineGroup> structure : structureMapOrdering){
+			for(List<LineGroup> structure : jamoRefDB.getStructureMapOrdering()){
 				mapping = GraphTools.getBestStructureMapping(structure,inputGroups);
 				if(mapping != null && ((lastStructureSize == -1) || (mapping.size() >= lastStructureSize))){
 					structureMapCandidates.put(structure,mapping);
@@ -231,7 +174,7 @@ public class HangeulClassifier {
 
 			if(bestStructure != null){
 				Map<LineGroup,LineGroup> map = structureMapCandidates.get(bestStructure);
-				Jamo j = new Jamo(structureMap.get(bestStructure));
+				Jamo j = new Jamo(jamoRefDB.getStructureMap().get(bestStructure));
 				j.setMapping(map);
 				jamos.add(j);
 				for(LineGroup mapped : map.values()){
@@ -362,6 +305,28 @@ public class HangeulClassifier {
 		}
 	}
 
+//	/**
+//	 * TODO deprecate?
+//	 * Creates an image of the specified character, scans it and returns the list of line groups found.
+//	 * @param c	the character to scan
+//	 * @return	the list of line groups found in the specified character
+//	 */
+//	private List<LineGroup> getCharacterLineGroups(char c, String fontName, int size){
+//		BufferedImage img = CharacterRenderer.makeCharacterImage(c, size, size, fontName);
+//		CharacterMeasurement cm = new CharacterMeasurement(img);
+//		return cm.getLineGroups();
+//	}
+
+
+	
+	/**
+	 * Returns the character measurement object.
+	 * @return	the character measurement object
+	 */
+	public CharacterMeasurement getCharacterMeasurement(){
+		return cm;
+	}
+	
 	/**
 	 * Comparator class for sorting a list of line groups by number of lines contained,
 	 * in descending order.
@@ -376,180 +341,13 @@ public class HangeulClassifier {
 			return 0;
 		}
 	}
-	
-	private Map<List<LineGroup>, Jamo> makeStructureMap(List<Jamo> jamoDB) {
-		Map<List<LineGroup>, Jamo> map = new IdentityHashMap<List<LineGroup>, Jamo>();
-		for(Jamo j : jamoDB){
-			for(List<LineGroup> s : j.getStructures()){
-				map.put(s,j);
-			}
-		}
-		return map;
-	}
-	
-	/**
-	 * Comparator class for sorting a list of line structures by primarily the line group count,
-	 * secondarily the total number of lines contained, in descending order.
-	 * @author j
-	 */
-	private class StructureComparator implements Comparator<List<LineGroup>>{
-		public int compare(List<LineGroup> one, List<LineGroup> two){
-			if(one == null || two == null) return 0;
-			int c1 = 0;
-			int c2 = 0;
-			for(LineGroup lg : one){
-				c1 += lg.getMap().size();
-			}
-			for(LineGroup lg : two){
-				c2 += lg.getMap().size();
-			}
-			int c = two.size() - one.size();	// primarily compare line group count
-			if(c == 0){
-				c = c2 - c1;	// secondarily compare total line count
-			}
-			return c;
-		}
-	}
 
 	/**
-	 * Initialises the jamo database with information scanned from images of jamo (generated on-the-fly.)
-	 * @return	a list of all possible jamo
+	 * Returns the jamo reference database object used by this classifier.
+	 * @return the jamo reference database object
 	 */
-	private List<Jamo> scanAllJamo(){
-		System.out.println("Building jamo database...");
-		List<Jamo> jamoDB = new ArrayList<Jamo>();
-		
-		StringBuilder jamos = new StringBuilder();
-
-		List<Font> fonts = getFonts();
-		
-		/* Initial jamo */
-		for(char c = '\u1100'; c <= '\u1112'; c++){
-			jamos.append(c);
-		}
-		/* Medial jamo */
-		for(char c = '\u1161'; c <= '\u1175'; c++){
-			jamos.append(c);
-		}
-		/* Final jamo */
-		for(char c = '\u11A8'; c <= '\u11C2'; c++){
-			jamos.append(c);
-		}
-		
-		char c;
-		Jamo j;
-		for(int i = 0; i < jamos.length(); i++){
-//			if(true) break;	// debug tmp.
-			c = jamos.charAt(i);
-			j = new Jamo(c);
-			for(Font font : fonts){
-				j.addStructure(getCharacterLineGroups(c,font,50));
-				j.addStructure(getCharacterLineGroups(c,font,100));
-				j.addStructure(getCharacterLineGroups(c,font,150));
-				j.addStructure(getCharacterLineGroups(c,font,200));
-//				j.addStructure(getCharacterLineGroups(c,font,300));
-				
-				/* Special cases, auto image generation */
-//				if(c == 'ᄀ') j.addStructure(getCharacterLineGroups('コ',font,50));	// ᄀ sometimes looks similar to コ
-				if(c == '\u1100') j.addStructure(getCharacterLineGroups('\u30B3',font,50));	// ᄀ sometimes looks similar to コ
-				/* ************* */
-			}
-
-			/* Special cases, manually drawn image files */
-			final String SPECIALS_DIRECTORY = System.getProperty("user.dir")+"/specials/";
-			String imageFile;
-			for(int n = 0; n < 10; n++){
-				if(n == 0){
-					imageFile = SPECIALS_DIRECTORY+j.getName().toLowerCase()+".png";
-				}else{
-					imageFile = SPECIALS_DIRECTORY+j.getName().toLowerCase()+"_"+n+".png";
-				}
-				if(new File(imageFile).exists()){
-					j.addStructure(new CharacterMeasurement(imageFile).getLineGroups());
-				}
-			}
-			/* ************* */
-			if(j.getStructures().size() > 0) jamoDB.add(j);
-		}
-
-		return jamoDB;
-	}
-	
-	
-	/**
-	 * Returns a list of all fonts that are available.
-	 * @return	a list of all available fonts
-	 */
-	private List<Font> getFonts() {
-		List<Font> result = new ArrayList<Font>();
-		
-		String fontDir = System.getProperty("user.dir")+"/data/fonts/";
-		
-		//TODO make this more independent
-		try {
-			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"AppleGothic.ttf")));
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"AppleMyungjo.ttf")));
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"#Gungseouche.dfont")));	// Useless. Individual jamo not available.
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"#HeadlineA.dfont")));		// "
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"#PCmyoungjo.dfont")));		// "
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"#Pilgiche.dfont")));		// "
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-
-//	/**
-//	 * TODO deprecate?
-//	 * Creates an image of the specified character, scans it and returns the list of line groups found.
-//	 * @param c	the character to scan
-//	 * @return	the list of line groups found in the specified character
-//	 */
-//	private List<LineGroup> getCharacterLineGroups(char c, String fontName, int size){
-//		BufferedImage img = CharacterRenderer.makeCharacterImage(c, size, size, fontName);
-//		CharacterMeasurement cm = new CharacterMeasurement(img);
-//		return cm.getLineGroups();
-//	}
-
-	/**
-	 * TODO fix javadoc
-	 * Creates an image of the specified character, scans it and returns the list of line groups found.
-	 * @param c	the character to scan
-	 * @return	the list of line groups found in the specified character
-	 */
-	private List<LineGroup> getCharacterLineGroups(char c, Font font, int size){
-		BufferedImage img = CharacterRenderer.makeCharacterImage(c, size, size, font);
-		CharacterMeasurement cm = new CharacterMeasurement(img);
-		return cm.getLineGroups();
-	}
-	
-	/**
-	 * Returns the character measurement object.
-	 * @return	the character measurement object
-	 */
-	public CharacterMeasurement getCharacterMeasurement(){
-		return cm;
-	}
-
-	/**
-	 * Generates the jamo database if it is not already created.
-	 */
-	public void generateJamoDB() {
-		if(jamoDB == null || structureMap == null){
-			jamoDB = scanAllJamo();	// if there are no reference jamo, make them.
-			structureMap = makeStructureMap(jamoDB);	// make structure map
-			structureMapOrdering = new ArrayList<List<LineGroup>>();	// structureMap is just a map of all structures found in all jamo,
-			structureMapOrdering.addAll(structureMap.keySet());			// with the jamo as value for each structure
-			Collections.sort(structureMapOrdering, new StructureComparator());	// structureMapOrdering is a sorted list of the structures
-//			for(List<LineGroup> s : structureMapOrdering){
-//				Helper.p(structureMap.get(s)+"\t"+s+"\n");
-//			}
-			for(Jamo j : jamoDB){
-				Helper.p(j.getChar()+"\t");
-				Helper.p(j.getStructures()+"\n");
-			}
-		}
+	public JamoReferenceDB getJamoRefDB() {
+		return jamoRefDB;
 	}
 	
 }
