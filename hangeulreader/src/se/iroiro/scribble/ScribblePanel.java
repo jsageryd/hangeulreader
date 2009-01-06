@@ -9,26 +9,20 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JPanel;
-
-import se.iroiro.md.hangeul.Hangeul;
-import se.iroiro.md.hangeul.HangeulClassifier;
-import se.iroiro.md.hangeulreader.Helper;
-
+	
 /**
  * Simple scribblable panel
  * @author j
  *
  */
+@SuppressWarnings("serial")
 public class ScribblePanel extends JPanel {
 
 	private Graphics2D bufferg2d;
@@ -46,39 +40,50 @@ public class ScribblePanel extends JPanel {
 	}
 	
 	/**
-	 * 
+	 *	Empty class constructor. 
 	 */
 	public ScribblePanel() {
-		this(600,500);
+		this(null);
+	}
+	
+	public ScribblePanel(ScribbleEventNotifier sen){
+		this(sen,600,600);
 	}
 	
 	/**
 	 * @param width
 	 * @param height
 	 */
-	public ScribblePanel(int width, int height){
+	public ScribblePanel(ScribbleEventNotifier sen, int width, int height){
 		buffer = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
 		bufferg2d = buffer.createGraphics();
 		bufferg2d.setColor(Color.WHITE);
 		bufferg2d.fillRect(0,0,width,height);
 		bufferg2d.setColor(Color.BLACK);
+		sen.setImage(buffer);
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		setPreferredSize(new Dimension(width,height));
 		
-		addMouseListener(new MouseAdapter(){
-			private HangeulClassifier hc = new HangeulClassifier();
+		class MA extends MouseAdapter{	// extended in inner class to use custom event notifier
+			ScribbleEventNotifier sen;
+			public MA(ScribbleEventNotifier sen){
+				this.sen = sen;
+			}
+
 			public void mousePressed(MouseEvent e){
 				moveTo(e.getX(),e.getY(),e.getButton());
-			}
-			public void mouseReleased(MouseEvent e){
-				hc.newClassification(buffer);
-				Hangeul h = hc.getHangeul();
-				if(h != null){
-					Helper.p("Looks like "+h+" ("+h.getName()+")\n");
+				if(sen != null){
+					sen.mousePressed(e);
 				}
 			}
-		});
+			public void mouseReleased(MouseEvent e){
+				if(sen != null){
+					sen.mouseReleased(e);
+				}
+			}
+		}
+		addMouseListener(new MA(sen));
 
 		addMouseMotionListener(new MouseMotionAdapter(){
 			public void mouseDragged(MouseEvent e){
@@ -94,6 +99,7 @@ public class ScribblePanel extends JPanel {
 		this.y = y;
 		this.button = button;
 		update(getGraphics());
+		
 	}
 
 	protected void lineTo(int x, int y) {

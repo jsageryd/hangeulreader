@@ -4,11 +4,17 @@
 package se.iroiro.md.hangeulreader;
 
 import java.awt.Insets;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import se.iroiro.scribble.ScribbleEventNotifierAdapter;
 import se.iroiro.scribble.ScribblePanel;
+
+import se.iroiro.md.hangeul.Hangeul;
+import se.iroiro.md.hangeul.HangeulClassifier;
+import se.iroiro.md.hangeulreader.Helper;
 
 /**
  * GUI to display image and graph
@@ -30,18 +36,19 @@ public class GUI2 {
 	public GUI2(){
 		jf = new JFrame();
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		sp = new ScribblePanel();
-//		jp = new JPanel(){
-//			Graphics2D g2d;
-//			public void paintComponent(Graphics g){
-//				g2d = (Graphics2D) g;
-//				if(ir != null && ir.getImage() != null){
-//					g2d.drawImage(ir.getImage(), 0, 0, null);
-//				}
-//			}
-//		};
+		sp = new ScribblePanel(new ScribbleEventNotifierAdapter(){
+			private HangeulClassifier hc = new HangeulClassifier();
+
+			public void mouseReleased(MouseEvent e) {
+				hc.newClassification(getImage());
+				Hangeul h = hc.getHangeul();
+				if(h != null){
+					Helper.p("Looks like "+h+" ("+h.getName()+")\n");
+				}
+			}
+		});
 	}
-	
+
 	/**
 	 * Shows the window and calls {@link GUI2#refresh()} to paint the image.
 	 */
