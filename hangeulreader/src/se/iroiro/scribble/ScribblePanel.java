@@ -16,7 +16,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
-	
+
 /**
  * Simple scribblable panel
  * @author j
@@ -47,7 +47,7 @@ public class ScribblePanel extends JPanel {
 	}
 	
 	public ScribblePanel(ScribbleEventNotifier sen){
-		this(sen,600,600);
+		this(sen,500,500);
 	}
 	
 	/**
@@ -72,14 +72,18 @@ public class ScribblePanel extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e){
-				moveTo(e.getX(),e.getY(),e.getButton());
 				if(sen != null){
 					sen.mousePressed(e);
+					bufferg2d.drawImage(sen.getImage(),0,0,sen.getImage().getWidth(),sen.getImage().getHeight(),null);
+					update(getGraphics());
 				}
+				moveTo(e.getX(),e.getY(),e.getButton());
 			}
 			public void mouseReleased(MouseEvent e){
 				if(sen != null){
 					sen.mouseReleased(e);
+					bufferg2d.drawImage(sen.getImage(),0,0,sen.getImage().getWidth(),sen.getImage().getHeight(),null);
+					update(getGraphics());
 				}
 			}
 		}

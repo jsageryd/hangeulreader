@@ -5,6 +5,7 @@ package se.iroiro.md.hangeulreader;
 
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,6 +13,7 @@ import javax.swing.JPanel;
 import se.iroiro.scribble.ScribbleEventNotifierAdapter;
 import se.iroiro.scribble.ScribblePanel;
 
+import se.iroiro.md.hangeul.CharacterMeasurement;
 import se.iroiro.md.hangeul.Hangeul;
 import se.iroiro.md.hangeul.HangeulClassifier;
 import se.iroiro.md.hangeulreader.Helper;
@@ -36,17 +38,30 @@ public class GUI2 {
 	public GUI2(){
 		jf = new JFrame();
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		final int scribblewidth = 500;
+		final int scribbleheight = 500;
 		sp = new ScribblePanel(new ScribbleEventNotifierAdapter(){
 			private HangeulClassifier hc = new HangeulClassifier();
-
+			BufferedImage tmp = null;
+			public void mousePressed(MouseEvent e){
+				if(tmp != null){
+					getImage().setData(tmp.getRaster());
+				}else{
+					tmp = new BufferedImage(scribblewidth,scribbleheight,BufferedImage.TYPE_INT_RGB);
+				}
+			}
+			
 			public void mouseReleased(MouseEvent e) {
 				hc.newClassification(getImage());
 				Hangeul h = hc.getHangeul();
 				if(h != null){
 					Helper.p("Looks like "+h+" ("+h.getName()+")\n");
+					
 				}
+				tmp.setData(getImage().getRaster());
+				getImage().setData((new ImageRenderer(new CharacterMeasurement(getImage())).getImage().getRaster()));
 			}
-		});
+		},scribblewidth,scribbleheight);
 	}
 
 	/**
@@ -64,7 +79,7 @@ public class GUI2 {
 	 * Resizes the window to the size of the image, and redraws the image.
 	 */
 	public void refresh(){
-		int frameWidth = 600;
+		int frameWidth = 500;
 		int frameHeight = 500;
 		Insets is = jf.getInsets();
 		frameWidth = frameWidth + is.left + is.right;
