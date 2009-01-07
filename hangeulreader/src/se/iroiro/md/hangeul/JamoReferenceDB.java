@@ -6,6 +6,8 @@ package se.iroiro.md.hangeul;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,6 +25,7 @@ import se.iroiro.md.hangeulreader.Helper;
 public class JamoReferenceDB {
 
 	private List<Jamo> jamoDB = null;
+	private List<Font> fonts = null;
 	
 	/**
 	 * A map for quick jamo lookup based on structure.
@@ -110,10 +113,10 @@ public class JamoReferenceDB {
 //			for(List<LineGroup> s : structureMapOrdering){
 //				Helper.p(structureMap.get(s)+"\t"+s+"\n");
 //			}
-			for(Jamo j : jamoDB){
-				Helper.p(j.getChar()+"\t");
-				Helper.p(j.getStructures()+"\n");
-			}
+//			for(Jamo j : jamoDB){
+//				Helper.p(j.getChar()+"\t");
+//				Helper.p(j.getStructures()+"\n");
+//			}
 		}
 	}
 	
@@ -161,8 +164,6 @@ public class JamoReferenceDB {
 		
 		StringBuilder jamos = new StringBuilder();
 
-		List<Font> fonts = getFonts();
-		
 		/* Initial jamo */
 		for(char c = '\u1100'; c <= '\u1112'; c++){
 			jamos.append(c);
@@ -182,7 +183,7 @@ public class JamoReferenceDB {
 //			if(true) break;	// debug tmp.
 			c = jamos.charAt(i);
 			j = new Jamo(c);
-			for(Font font : fonts){
+			for(Font font : getFonts()){
 				j.addStructure(getCharacterLineGroups(c,font,50));
 				j.addStructure(getCharacterLineGroups(c,font,100));
 				j.addStructure(getCharacterLineGroups(c,font,150));
@@ -212,6 +213,7 @@ public class JamoReferenceDB {
 			if(j.getStructures().size() > 0) jamoDB.add(j);
 		}
 
+		System.out.println("Jamo database built.");
 		return jamoDB;
 	}
 	
@@ -220,24 +222,33 @@ public class JamoReferenceDB {
 	 * Returns a list of all fonts that are available.
 	 * @return	a list of all available fonts
 	 */
-	public static List<Font> getFonts() {
-		List<Font> result = new ArrayList<Font>();
+	public List<Font> getFonts() {
+		if(fonts != null) return fonts;
+		fonts = new ArrayList<Font>();
 		
-		String fontDir = System.getProperty("user.dir")+"/data/fonts/";
-		
-		//TODO make this more independent
-		try {
-			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"AppleGothic.ttf")));
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"AppleMyungjo.ttf")));
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"#Gungseouche.dfont")));	// Useless. Individual jamo not available.
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"#HeadlineA.dfont")));		// "
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"#PCmyoungjo.dfont")));		// "
-//			result.add(Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+"#Pilgiche.dfont")));		// "
-		} catch (Exception e) {
-			e.printStackTrace();
+		final String ps = File.separator;
+		String fontDir = System.getProperty("user.dir")+ps+"data"+ps+"fonts"+ps;
+		File file = new File(fontDir);
+		String[] fontfiles = file.list(new FilenameFilter(){
+			public boolean accept(File dir, String name) {
+				if(name.endsWith(".ttf")){
+					return true;
+				}
+				return false;
+			}
+		});
+
+		for(String font : fontfiles){
+			try{
+				Font f = Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+font));
+				fonts.add(f);
+				Helper.p("Loaded font "+font+"\n");
+			} catch (Exception e){
+				Helper.p(e.toString()+"\n");
+			}
 		}
 		
-		return result;
+		return fonts;
 	}
 	
 	/**

@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -49,8 +50,9 @@ public class GUI2 {
 		frame = new JFrame("Draw a hangeul in the leftmost field. Shift-clicking clears the field.");
 		content = new JPanel(new GridLayout(1,3,10,0));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		final JamoReferenceDB jrdb = new JamoReferenceDB();
 		sp = new ScribblePanel(new ScribbleEventNotifierAdapter(){
-			private HangeulClassifier hc = new HangeulClassifier();
+			private HangeulClassifier hc = new HangeulClassifier(jrdb);
 			BufferedImage tmp = null;
 			public void mousePressed(MouseEvent e){
 				if(tmp != null){
@@ -75,16 +77,22 @@ public class GUI2 {
 				getImage().setData((new ImageRenderer(new CharacterMeasurement(getImage())).getImage().getRaster()));
 			}
 		},scribblewidth,scribbleheight);
-		
+
 		tf = new JTextField();
 		tf2 = new JTextField();
 		tf.setEditable(false);
 		tf2.setEditable(false);
 		tf.setBorder(null);
 		tf2.setBorder(null);
-		Font f = JamoReferenceDB.getFonts().get(0);
-		float fs = CharacterRenderer.getFontSize((Graphics2D) new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB).getGraphics(),f,(int) (scribbleheight * 0.75));
-		f = f.deriveFont(fs);
+		List<Font> fl = jrdb.getFonts();
+		Font f = null;
+		if(fl.size() > 0) f = fl.get(0);
+		if(f != null){
+			float fs = CharacterRenderer.getFontSize((Graphics2D) new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB).getGraphics(),f,(int) (scribbleheight * 0.75));
+			f = f.deriveFont(fs);
+		}else{
+			f = new Font("default",0,72);
+		}
 		tf.setFont(f);
 	}
 

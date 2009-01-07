@@ -1200,7 +1200,7 @@ public class GraphTools {
 		mendLines(firstPart);
 		mendLines(secondPart);
 		
-		Helper.p(firstPart+" + "+secondPart+"\n");
+//		Helper.p(firstPart+" + "+secondPart+"\n");
 		
 		parts.add(firstPart);
 		parts.add(secondPart);
