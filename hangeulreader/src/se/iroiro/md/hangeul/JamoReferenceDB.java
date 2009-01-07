@@ -220,7 +220,7 @@ public class JamoReferenceDB {
 	 * Returns a list of all fonts that are available.
 	 * @return	a list of all available fonts
 	 */
-	private List<Font> getFonts() {
+	public static List<Font> getFonts() {
 		List<Font> result = new ArrayList<Font>();
 		
 		String fontDir = System.getProperty("user.dir")+"/data/fonts/";

@@ -27,6 +27,9 @@ public class ScribblePanel extends JPanel {
 
 	private Graphics2D bufferg2d;
 	
+	private int width = 0;
+	private int height = 0;
+	
 	private int x = 0;
 	private int y = 0;
 	private int button = 0;
@@ -55,11 +58,11 @@ public class ScribblePanel extends JPanel {
 	 * @param height
 	 */
 	public ScribblePanel(ScribbleEventNotifier sen, int width, int height){
+		this.width = width;
+		this.height = height;
 		buffer = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
 		bufferg2d = buffer.createGraphics();
-		bufferg2d.setColor(Color.WHITE);
-		bufferg2d.fillRect(0,0,width,height);
-		bufferg2d.setColor(Color.BLACK);
+		clearBuffer();
 		sen.setImage(buffer);
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
@@ -77,7 +80,11 @@ public class ScribblePanel extends JPanel {
 					bufferg2d.drawImage(sen.getImage(),0,0,sen.getImage().getWidth(),sen.getImage().getHeight(),null);
 					update(getGraphics());
 				}
-				moveTo(e.getX(),e.getY(),e.getButton());
+				if(e.isShiftDown()){
+					clearBuffer();
+				}else{
+					moveTo(e.getX(),e.getY(),e.getButton());
+				}
 			}
 			public void mouseReleased(MouseEvent e){
 				if(sen != null){
@@ -91,12 +98,23 @@ public class ScribblePanel extends JPanel {
 
 		addMouseMotionListener(new MouseMotionAdapter(){
 			public void mouseDragged(MouseEvent e){
-				lineTo(e.getX(),e.getY());
+				if(!e.isShiftDown()){
+					lineTo(e.getX(),e.getY());
+				}
 			}
 		});
 		
 	}
 	
+	/**
+	 * Clears the image buffer by filling it with white.
+	 */
+	private void clearBuffer() {
+		bufferg2d.setColor(Color.WHITE);
+		bufferg2d.fillRect(0,0,width,height);
+		bufferg2d.setColor(Color.BLACK);
+	}
+
 	protected void moveTo(int x, int y, int button) {
 		bufferg2d.drawLine(x, y, x, y);
 		this.x = x;

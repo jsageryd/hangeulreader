@@ -138,7 +138,7 @@ public class CharacterRenderer {
 	 * @param maxSide	the side of the bounding square
 	 * @return	the maximum font size that can be used to fit an 'M' in the specified font into a square with side <code>maxSide</code>
 	 */
-	private static int getFontSize(Graphics2D g2d, Font font, int maxSide){
+	public static int getFontSize(Graphics2D g2d, Font font, int maxSide){
 		char c = 'M';
 		int fontSize = 1;
 		Font f = font.deriveFont(1.0f);
