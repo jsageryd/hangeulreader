@@ -42,7 +42,7 @@ public class HangeulReaderTest {
 	public String test(String characters, Font font, JamoReferenceDB jrdb){
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		StringBuilder result = new StringBuilder();
-		result.append("Characters images rendered using font \""+font.getName()+"\" at "+CHARSIZE+"x"+CHARSIZE+" pixels.\n");
+		result.append("Character images rendered using font \""+font.getName()+"\" at "+CHARSIZE+"x"+CHARSIZE+" pixels.\n");
 		result.append("Test started: "+dateFormat.format(new Date())+"\n");
 		System.out.println("Preparing to scan " + (int) (characters.length()) + " characters.");
 		HangeulClassifier hc = new HangeulClassifier(jrdb);
@@ -51,7 +51,7 @@ public class HangeulReaderTest {
 		int count = 0;
 		boolean isMatch;
 		System.out.println("Classifying characters rendered from font \""+font.getName()+"\".");
-		System.out.println("Circle (o) means a character was correctly classified,\na dash (-) means it was incorrectly classified.");
+		System.out.println("Circle (o) means a character was correctly classified,\ndash (-) means it was incorrectly classified.");
 		for(int nn = 0; nn < characters.length(); nn++){
 //			CharacterRenderer.makeCharacterImage(c, CHARSIZE, CHARSIZE);
 			char c = characters.charAt(nn);
