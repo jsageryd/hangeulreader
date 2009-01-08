@@ -15,8 +15,9 @@ public class Go {
 	 */
 	public static void main(String[] args) {
 		
-		GUI2 g = new GUI2();
-		g.show();
+//		HangeulReaderTest t = new HangeulReaderTest();
+//		Helper.p(t.test('가','갈',0));
+		new GUI2().show();
 		
 	}
 

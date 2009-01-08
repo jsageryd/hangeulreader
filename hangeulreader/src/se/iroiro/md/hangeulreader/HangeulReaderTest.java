@@ -3,6 +3,7 @@
  */
 package se.iroiro.md.hangeulreader;
 
+import java.awt.Font;
 import java.text.DecimalFormat;
 
 import se.iroiro.md.hangeul.CharacterRenderer;
@@ -18,18 +19,6 @@ public class HangeulReaderTest {
 	
 	private static final int CHARSIZE = 200;
 	
-//	public void run(){
-//		go(from,to);
-//	}
-	
-	public HangeulReaderTest(char from, char to){
-		go(makeString(from,to));
-	}
-	
-	public HangeulReaderTest(String characters){
-		go(characters);
-	}
-	
 	private String makeString(char from, char to){
 		StringBuilder s = new StringBuilder();
 		for(char c = from; c <= to; c++){
@@ -38,18 +27,33 @@ public class HangeulReaderTest {
 		return s.toString();
 	}
 	
-	private void go(String characters){
+	public String testAll(int fontIndex){
+		return test(makeString('\uAC00','\uD7A3'), fontIndex);
+	}
+	
+	public String test(char from, char to, int fontIndex){
+		return test(makeString(from,to), fontIndex);
+	}
+	
+	public String test(String characters, int fontIndex){
 		System.out.println("Preparing to scan " + (int) (characters.length()) + " characters.");
 		HangeulClassifier hc = new HangeulClassifier();
+		Font font = null;
+		if(hc.getJamoRefDB().getFonts().size() > fontIndex){
+			font = hc.getJamoRefDB().getFonts().get(fontIndex);
+		}
+		if(font == null){
+			return "Font at index "+fontIndex+" not found.";
+		}
 		StringBuilder matches = new StringBuilder();
 		StringBuilder misses = new StringBuilder();
 		int count = 0;
 		boolean isMatch;
-		System.out.println("Reading images...");
+		System.out.println("Analysing characters rendered from font \""+font.getName()+"\"...");
 		for(int nn = 0; nn < characters.length(); nn++){
 //			CharacterRenderer.makeCharacterImage(c, CHARSIZE, CHARSIZE);
 			char c = characters.charAt(nn);
-			hc.newClassification(CharacterRenderer.makeCharacterImage(c, CHARSIZE, CHARSIZE));
+			hc.newClassification(CharacterRenderer.makeCharacterImage(c, CHARSIZE, CHARSIZE, font));
 			Hangeul h = hc.getHangeul();
 			if(h != null && h.toString().charAt(0) == c){
 				isMatch = true;
@@ -108,10 +112,11 @@ public class HangeulReaderTest {
 			}
 //			System.out.println();
 		}
-		Helper.dump(result.toString(), "/Users/j/Desktop/result.txt");
-		Helper.p(result);
-		System.out.println();
-		System.out.println();
+		return result.toString();
+//		Helper.dump(result.toString(), "/Users/j/Desktop/result.txt");
+//		Helper.p(result);
+//		System.out.println();
+//		System.out.println();
 	}
 	
 //	private void writeImage(BufferedImage img, String fileName){

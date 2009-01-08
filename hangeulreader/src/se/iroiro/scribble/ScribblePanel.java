@@ -50,19 +50,22 @@ public class ScribblePanel extends JPanel {
 	}
 	
 	public ScribblePanel(ScribbleEventNotifier sen){
-		this(sen,500,500);
+		this(sen,300,300,null);
 	}
 	
 	/**
 	 * @param width
 	 * @param height
 	 */
-	public ScribblePanel(ScribbleEventNotifier sen, int width, int height){
+	public ScribblePanel(ScribbleEventNotifier sen, int width, int height, BufferedImage backgroundImage){
 		this.width = width;
 		this.height = height;
 		buffer = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
 		bufferg2d = buffer.createGraphics();
 		clearBuffer();
+		if(backgroundImage != null){
+			bufferg2d.drawImage(backgroundImage,0,0,backgroundImage.getWidth(),backgroundImage.getHeight(),null);
+		}
 		sen.setImage(buffer);
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
@@ -83,6 +86,13 @@ public class ScribblePanel extends JPanel {
 				if(e.isShiftDown()){
 					clearBuffer();
 				}else{
+					if(e.getButton() == MouseEvent.BUTTON3 || e.isAltDown()){
+						setPenColour(Color.WHITE);
+						setStrokeWidth(20);
+					}else{
+						setPenColour(Color.BLACK);
+						setStrokeWidth(10);
+					}
 					moveTo(e.getX(),e.getY(),e.getButton());
 				}
 			}
@@ -135,7 +145,7 @@ public class ScribblePanel extends JPanel {
 	 * Sets the stroke width.
 	 * @param strokeWidth the new stroke width
 	 */
-	public void setStrokeWidth(int strokeWidth) {
+	private void setStrokeWidth(int strokeWidth) {
 		if(bufferg2d != null){
 			bufferg2d.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 			bufferg2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -147,10 +157,18 @@ public class ScribblePanel extends JPanel {
 	 * Sets the pen colour.
 	 * @param penColour	the new pen colour
 	 */
-	public void setPenColour(Color penColour){
+	private void setPenColour(Color penColour){
 		if(bufferg2d != null){
 			bufferg2d.setColor(penColour);
 		}
 	}
 	
+	/**
+	 * Returns the image buffer.
+	 * @return	the image buffer
+	 */
+	public BufferedImage getImage(){
+		return buffer;
+	}
+
 }
