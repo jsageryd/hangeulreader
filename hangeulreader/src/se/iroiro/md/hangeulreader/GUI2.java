@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
@@ -144,10 +145,13 @@ public class GUI2 {
 		
 		menubar = new JMenuBar();
 		JMenu filemenu = new JMenu("File");
-		JMenuItem newmenu = new JMenuItem("Create new window");
-		JMenuItem loadmenu = new JMenuItem("Load image...");
+			JMenuItem newmenu = new JMenuItem("Create new window");
+			JMenuItem loadmenu = new JMenuItem("Load image...");
+		JMenu testingmenu = new JMenu("Testing");
+			JMenuItem batchtestmenu = new JMenuItem("Run batch test...");
 		filemenu.add(newmenu);
 		filemenu.add(loadmenu);
+		testingmenu.add(batchtestmenu);
 		newmenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				new GUI2(jamoRef).show();
@@ -155,37 +159,127 @@ public class GUI2 {
 		});
 		loadmenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
-				fc.setMultiSelectionEnabled(false);
-				fc.setFileFilter(new FileFilter(){
-					public boolean accept(File f) {
-						if(f.getName().endsWith(".png") || f.getName().endsWith(".jpg") || f.getName().endsWith(".gif")){
-							return true;
-						}
-						return false;
-					}
-
-					public String getDescription() {
-						return "Image files (.png, .jpg, .gif)";
-					}
-				});
-				int returnVal = fc.showOpenDialog(frame);
-				if(returnVal == JFileChooser.APPROVE_OPTION){
-					File f = fc.getSelectedFile();
-					BufferedImage img = null;
-					try {
-						img = ImageIO.read(f);
-					} catch (IOException error) {
-						throw new IllegalArgumentException("Could not load file.");
-					}
-					if(img != null){
-						new GUI2(img.getWidth(),img.getHeight(),jamoRef,img).show();
-					}
-				}
+				loadImageFile(jamoRef);
+			}
+		});
+		batchtestmenu.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				batchtest(jamoRef);
 			}
 		});
 		menubar.add(filemenu);
+		menubar.add(testingmenu);
 		frame.setJMenuBar(menubar);
+	}
+
+	private void batchtest(JamoReferenceDB jamoRef){
+		if(jamoRef.getFonts().size() < 1) {
+			JOptionPane.showMessageDialog(frame, "No fonts loaded, cannot generate test data.");
+			return;
+		}
+		HangeulReaderTest ht = new HangeulReaderTest();
+		String resultsFile = null;
+		boolean aborted = false;
+		JOptionPane.showMessageDialog(frame, "In the following series of dialogues,\nplease input font, file to save results to, and test data.");
+		Font fontToUse = (Font) JOptionPane.showInputDialog(frame, "Select the font to use for the test images", "Font selection", JOptionPane.PLAIN_MESSAGE, null, jamoRef.getFonts().toArray(), 0);
+		if(fontToUse != null){
+			JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+			fc.setMultiSelectionEnabled(false);
+			fc.setFileFilter(new FileFilter(){
+				public boolean accept(File f) {
+					if(f.getName().endsWith(".txt")){
+						return true;
+					}
+					return false;
+				}
+
+				public String getDescription() {
+					return "Text file file (.txt)";
+				}
+			});
+			int saveDialogReturnVal = fc.showSaveDialog(frame);
+			if(saveDialogReturnVal == JFileChooser.APPROVE_OPTION){
+				File saveFile = fc.getSelectedFile();
+				if(saveFile != null){
+					if(saveFile.exists()){
+						int canReplace = JOptionPane.showConfirmDialog(frame, "The file exists. Overwrite?", "File exists", JOptionPane.YES_NO_OPTION);
+						if(canReplace == JOptionPane.YES_OPTION){
+							saveFile.delete();
+						}else{
+							aborted = true;
+						}
+					}
+					if(!aborted){
+						resultsFile = saveFile.getPath();
+						int genAll = JOptionPane.showConfirmDialog(frame, "Generate and test all 11 172 characters (will take quite some time)?", "Test scope", JOptionPane.YES_NO_CANCEL_OPTION);
+						if(genAll == JOptionPane.YES_OPTION){
+							Helper.dump(ht.testAll(fontToUse,jamoRef),resultsFile);
+						}else if(genAll == JOptionPane.NO_OPTION){
+							String[] scopeOptions = {"Range","String","Cancel"};
+							int useCharRange = JOptionPane.showOptionDialog(frame, "Input character range or string of characters?", "Test scope", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, scopeOptions, scopeOptions[0]);
+							if(useCharRange == JOptionPane.YES_OPTION){
+								// use range
+								char fromChar = ((String) JOptionPane.showInputDialog(frame, "Input the hangeul character to start from.", "Range", JOptionPane.PLAIN_MESSAGE, null, null, "\uAC00")).charAt(0);
+								char toChar = ((String) JOptionPane.showInputDialog(frame, "Input the hangeul character to end at.", "Range", JOptionPane.PLAIN_MESSAGE, null, null, "\uD7A3")).charAt(0);
+								JOptionPane.showMessageDialog(frame, "Test will start, check console for progress details.\nDuring scanning, the GUI will be frozen. Message box will be shown upon completion.");
+								Helper.dump(ht.test(fromChar,toChar,fontToUse,jamoRef),resultsFile);
+								JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
+							}else if(useCharRange == JOptionPane.NO_OPTION){
+								// use string
+								String charString = (String) JOptionPane.showInputDialog(frame, "Input a string of hangeul characters to use for the testing.", "String", JOptionPane.PLAIN_MESSAGE, null, null, "\uAC00\uAC01\uAC02\uAC03\uAC04\uAC05");
+								JOptionPane.showMessageDialog(frame, "Test will start, check console for progress details.\nDuring scanning, the GUI will be frozen. Message box will be shown upon completion.");
+								Helper.dump(ht.test(charString,fontToUse,jamoRef),resultsFile);
+								JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
+							}else{
+								aborted = true;
+							}
+						}else{
+							aborted = true;
+						}
+					}
+				}else{
+					JOptionPane.showMessageDialog(frame, "The file could not be created.\n\nRead-only?\nStrange file name?\n\nAborting.");
+				}
+			}else{
+				aborted = true;
+			}
+		}else{
+			aborted = true;
+		}
+
+		if(aborted){
+			JOptionPane.showMessageDialog(frame, "Batch test aborted.");
+		}
+	}
+	
+	private void loadImageFile(JamoReferenceDB jamoRef){
+		JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+		fc.setMultiSelectionEnabled(false);
+		fc.setFileFilter(new FileFilter(){
+			public boolean accept(File f) {
+				if(f.getName().endsWith(".png") || f.getName().endsWith(".jpg") || f.getName().endsWith(".gif")){
+					return true;
+				}
+				return false;
+			}
+
+			public String getDescription() {
+				return "Image files (.png, .jpg, .gif)";
+			}
+		});
+		int returnVal = fc.showOpenDialog(frame);
+		if(returnVal == JFileChooser.APPROVE_OPTION){
+			File f = fc.getSelectedFile();
+			BufferedImage img = null;
+			try {
+				img = ImageIO.read(f);
+			} catch (IOException error) {
+				throw new IllegalArgumentException("Could not load file.");
+			}
+			if(img != null){
+				new GUI2(img.getWidth(),img.getHeight(),jamoRef,img).show();
+			}
+		}
 	}
 
 	/**
