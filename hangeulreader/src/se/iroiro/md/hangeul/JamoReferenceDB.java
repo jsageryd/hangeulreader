@@ -197,7 +197,7 @@ public class JamoReferenceDB {
 			}
 
 			/* Special cases, manually drawn image files */
-			final String SPECIALS_DIRECTORY = System.getProperty("user.dir")+"/specials/";
+			final String SPECIALS_DIRECTORY = System.getProperty("user.dir")+File.separator+"data"+File.separator+"additional_structures/";
 			String imageFile;
 			for(int n = 0; n < 10; n++){
 				if(n == 0){
@@ -238,16 +238,20 @@ public class JamoReferenceDB {
 			}
 		});
 
-		for(String font : fontfiles){
-			try{
-				Font f = Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+font));
-				fonts.add(f);
-				Helper.p("Loaded font "+font+"\n");
-			} catch (Exception e){
-				Helper.p(e.toString()+"\n");
+		if(fontfiles != null){
+			for(String font : fontfiles){
+				try{
+					Font f = Font.createFont(Font.TRUETYPE_FONT, new File(fontDir+font));
+					fonts.add(f);
+					Helper.p("Loaded font "+font+"\n");
+				} catch (Exception e){
+					Helper.p(e.toString()+"\n");
+				}
 			}
+		}else{
+			Helper.p("No fonts found, jamo reference database incomplete.\n");
 		}
-		
+
 		return fonts;
 	}
 	
