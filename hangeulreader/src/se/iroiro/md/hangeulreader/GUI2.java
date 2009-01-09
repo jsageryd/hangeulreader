@@ -169,7 +169,7 @@ public class GUI2 {
 				char genChar = ((String) JOptionPane.showInputDialog(frame, "Input the character for which to generate an image.", "Character", JOptionPane.PLAIN_MESSAGE, null, null, "\uAC00")).charAt(0);
 				Font genFont = (Font) JOptionPane.showInputDialog(frame, "Select the font to use for the image.", "Font selection", JOptionPane.PLAIN_MESSAGE, null, jamoRef.getFonts().toArray(), 0);
 				if(genFont != null){
-					BufferedImage genImg = CharacterRenderer.makeCharacterImage(genChar, 300, 300, genFont);
+					BufferedImage genImg = CharacterRenderer.makeCharacterImage(genChar, HangeulReaderTest.CHARSIZE, HangeulReaderTest.CHARSIZE, genFont);
 					new GUI2(genImg.getWidth(), genImg.getHeight(), jamoRef, genImg).show();
 				}
 			}

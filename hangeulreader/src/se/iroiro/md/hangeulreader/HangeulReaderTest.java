@@ -21,7 +21,7 @@ import se.iroiro.md.hangeul.JamoReferenceDB;
  */
 public class HangeulReaderTest {
 	
-	private static final int CHARSIZE = 200;
+	public static final int CHARSIZE = 200;
 	
 	private String makeString(char from, char to){
 		StringBuilder s = new StringBuilder();
