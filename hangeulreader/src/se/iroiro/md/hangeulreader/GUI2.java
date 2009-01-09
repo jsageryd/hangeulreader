@@ -116,10 +116,10 @@ public class GUI2 {
 				Hangeul h = hc.getHangeul();
 				if(h != null){
 					tf.setText(h.toString());
-					tf2.setText("HANGEUL CHARACTER "+h.getName());
+					tf2.setText("Hangeul syllable "+h.getName());
 				}else{
 					tf.setText("?");
-					tf2.setText("Unknown");
+					tf2.setText("Unknown character");
 				}
 				tmp.setData(getImage().getRaster());
 				getImage().setData((new ImageRenderer(new CharacterMeasurement(getImage())).getImage().getRaster()));
