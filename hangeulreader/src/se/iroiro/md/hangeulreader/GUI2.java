@@ -225,7 +225,9 @@ public class GUI2 {
 						resultsFile = saveFile.getPath();
 						int genAll = JOptionPane.showConfirmDialog(frame, "Generate and test all 11 172 characters (will take quite some time)?", "Test scope", JOptionPane.YES_NO_CANCEL_OPTION);
 						if(genAll == JOptionPane.YES_OPTION){
+							JOptionPane.showMessageDialog(frame, "Test will start, check console for progress details.\nDuring scanning, the GUI will be frozen. Message box will be shown upon completion.");
 							Helper.dump(ht.testAll(fontToUse,jamoRef),resultsFile);
+							JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
 						}else if(genAll == JOptionPane.NO_OPTION){
 							String[] scopeOptions = {"Range","String","Cancel"};
 							int useCharRange = JOptionPane.showOptionDialog(frame, "Input character range or string of characters?", "Test scope", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, scopeOptions, scopeOptions[0]);

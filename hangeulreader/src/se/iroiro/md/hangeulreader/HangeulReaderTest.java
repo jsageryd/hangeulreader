@@ -40,7 +40,7 @@ public class HangeulReaderTest {
 	}
 	
 	public String test(String characters, Font font, JamoReferenceDB jrdb){
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:ss");
 		StringBuilder result = new StringBuilder();
 		result.append("Character images rendered using font \""+font.getName()+"\" at "+CHARSIZE+"x"+CHARSIZE+" pixels.\n");
 		result.append("Test started: "+dateFormat.format(new Date())+"\n");
