@@ -183,30 +183,38 @@ public class JamoReferenceDB {
 //			if(true) break;	// debug tmp.
 			c = jamos.charAt(i);
 			j = new Jamo(c);
-			for(Font font : getFonts()){
-				j.addStructure(getCharacterLineGroups(c,font,50));
-				j.addStructure(getCharacterLineGroups(c,font,100));
-				j.addStructure(getCharacterLineGroups(c,font,150));
-				j.addStructure(getCharacterLineGroups(c,font,200));
-//				j.addStructure(getCharacterLineGroups(c,font,300));
-				
-				/* Special cases, auto image generation */
-//				if(c == 'ᄀ') j.addStructure(getCharacterLineGroups('コ',font,50));	// ᄀ sometimes looks similar to コ
-				if(c == '\u1100') j.addStructure(getCharacterLineGroups('\u30B3',font,50));	// ᄀ sometimes looks similar to コ
-				/* ************* */
-			}
+			/* Structures from font(s) */
+//			for(Font font : getFonts()){
+//				j.addStructure(getCharacterLineGroups(c,font,50));
+//				j.addStructure(getCharacterLineGroups(c,font,100));
+//				j.addStructure(getCharacterLineGroups(c,font,150));
+//				j.addStructure(getCharacterLineGroups(c,font,200));
+////				j.addStructure(getCharacterLineGroups(c,font,300));
+//				
+//				/* Special cases, auto image generation */
+////				if(c == 'ᄀ') j.addStructure(getCharacterLineGroups('コ',font,50));	// ᄀ sometimes looks similar to コ
+//				if(c == '\u1100') j.addStructure(getCharacterLineGroups('\u30B3',font,50));	// ᄀ sometimes looks similar to コ
+//				/* ************* */
+//			}
 
-			/* Special cases, manually drawn image files */
-			final String SPECIALS_DIRECTORY = System.getProperty("user.dir")+File.separator+"data"+File.separator+"additional_structures/";
+			/* Structure image files */
+			/* format example: structure_g.png; structure_g2.png; structure_g3.png */
+			final String structureDir = System.getProperty("user.dir")+File.separator+"data"+File.separator+"structures/";
+			final String structureImagePrefix = "structure_";
 			String imageFile;
-			for(int n = 0; n < 10; n++){
-				if(n == 0){
-					imageFile = SPECIALS_DIRECTORY+j.getName().toLowerCase()+".png";
+			boolean done = false;
+			int n = 1;
+			while(!done){
+				if(n == 1){
+					imageFile = structureDir+structureImagePrefix+j.getName().toLowerCase()+".png";
 				}else{
-					imageFile = SPECIALS_DIRECTORY+j.getName().toLowerCase()+"_"+n+".png";
+					imageFile = structureDir+structureImagePrefix+j.getName().toLowerCase()+n+".png";
 				}
+				n++;
 				if(new File(imageFile).exists()){
 					j.addStructure(new CharacterMeasurement(imageFile).getLineGroups());
+				}else{
+					done = true;
 				}
 			}
 			/* ************* */
