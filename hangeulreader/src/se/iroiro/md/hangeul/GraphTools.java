@@ -962,7 +962,7 @@ public class GraphTools {
 	 */
 	public static Map<LineGroup,LineGroup> getBestStructureMapping(List<LineGroup> structure, List<LineGroup> inputGroups){
 
-		final double MAX_ANGLE_DIFFERENCE = Math.PI / 4;	// if the difference in angle between two groups are greater than this, match is invalid
+		final double MAX_ANGLE_DIFFERENCE = Math.PI / 6;	// if the difference in angle between two groups are greater than this, match is invalid
 		//TODO measure and alter this number until good result
 
 		if(structure == null || structure.size() == 0) return null;		// if no structure, return null
