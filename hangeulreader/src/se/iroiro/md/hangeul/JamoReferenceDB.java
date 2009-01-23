@@ -159,7 +159,7 @@ public class JamoReferenceDB {
 	 * @return	a list of all possible jamo
 	 */
 	private List<Jamo> scanAllJamo(){
-		System.out.println("Building jamo database...");
+		System.out.print("Building jamo database...");
 		List<Jamo> jamoDB = new ArrayList<Jamo>();
 		
 		StringBuilder jamos = new StringBuilder();
@@ -221,7 +221,7 @@ public class JamoReferenceDB {
 			if(j.getStructures().size() > 0) jamoDB.add(j);
 		}
 
-		System.out.println("Jamo database built.");
+		System.out.println("done.");
 		return jamoDB;
 	}
 	
@@ -257,7 +257,8 @@ public class JamoReferenceDB {
 				}
 			}
 		}else{
-			Helper.p("No fonts found, jamo reference database incomplete.\n");
+			fonts.add(new Font("default",0,1));
+			Helper.p("No fonts found, using system default font.\n");
 		}
 
 		return fonts;
