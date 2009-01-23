@@ -135,12 +135,11 @@ public class GUI2 {
 		List<Font> fl = jamoRef.getFonts();
 		Font f = null;
 		if(fl.size() > 0) f = fl.get(0);
-		if(f != null){
-			float fs = CharacterRenderer.getFontSize((Graphics2D) new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB).getGraphics(),f,(int) (scribbleheight * 0.75));
-			f = f.deriveFont(fs);
-		}else{
-			f = new Font("default",0,72);
+		if(f == null){
+			f = new Font("default",0,1);
 		}
+		float fs = CharacterRenderer.getFontSize((Graphics2D) new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB).getGraphics(),f,(int) (scribbleheight * 0.75));
+		f = f.deriveFont(fs);
 		tf.setFont(f);
 		
 		menubar = new JMenuBar();
