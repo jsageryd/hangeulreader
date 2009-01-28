@@ -23,12 +23,12 @@ public class GraphThinner {
 		int dir=0;
 		boolean direction = false;
 		int deleted = 1;
-		int cycle = 4;
+//		int cycle = 4;
 		int counter = 0;
 		ArrayList<Integer> rem_x, rem_y;
-		while((deleted > 0 || cycle > 0) && counter < 4){
+		while((deleted > 0/* || cycle > 0*/) && counter < 4){
 //			counter++;
-			cycle -= deleted == 0 ? 1 : 0;
+//			cycle -= deleted == 0 ? 1 : 0;
 			deleted = 0;
 			dir = ++dir % 4;
 			rem_x = new ArrayList<Integer>();

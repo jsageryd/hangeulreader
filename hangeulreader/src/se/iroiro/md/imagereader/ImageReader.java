@@ -168,8 +168,8 @@ public class ImageReader {
 //		return red < 220 || green < 220 || blue < 220;
 //		return red < 120 && green < 120 && blue < 120;
 //		return red < 80 || green < 80 || blue < 80;
-//		return (red+green+blue) <= 15;	// average colour value must be less than 5, = fairly black
-		return (red+green+blue) == 0;
+		return (red+green+blue) <= 15;	// average colour value must be less than 5, = fairly black
+//		return (red+green+blue) == 0;
 	}
 
 	/**
