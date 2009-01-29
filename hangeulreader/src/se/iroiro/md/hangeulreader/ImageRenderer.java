@@ -191,10 +191,10 @@ public class ImageRenderer {
 		for(int y = 0; y < gm.getY_size(); y++){
 			for(int x = 0; x < gm.getX_size(); x++){
 				Coordinate pos = new SimpleCoordinate(x,-y).scale(scale);
-				int cn = GraphThinner.getConnectivityNumber(gm,x,y);
-				if(gm.getCell(x,y)){
+//				int cn = GraphThinner.getConnectivityNumber_binary(gm,x,y);
+//				if(gm.getCell(x,y)){
 //					drawText(String.valueOf(cn),(int) pos.getJavaX(),(int) pos.getJavaY(),Color.WHITE,Color.BLACK);
-				}
+//				}
 			}
 		}
 	}

@@ -39,7 +39,7 @@ public class GraphThinner {
 					case 2: direction = !matrix.getEdge(x,y,7); break;	// below
 					case 3: direction = !matrix.getEdge(x,y,1); break;	// right
 					}
-					if(direction && edgeCount(matrix,x,y) != 1 && getConnectivityNumber(matrix,x,y) == 1){
+					if(direction && edgeCount(matrix,x,y) != 1 && getConnectivityNumber_binary(matrix,x,y) == 1){
 						rem_x.add(x);
 						rem_y.add(y);
 						deleted++;
@@ -125,10 +125,13 @@ public class GraphThinner {
 	/**
 	 * Returns the connectivity number for the node.
 	 * This number is based on the locations of the neighbouring nodes.
+	 * This function uses numeric calculation and yields the same result as <code>getConnectivityNumber_binary(GraphMatrix, int, int)</code>.
+	 * 
+	 * @see GraphThinner#getConnectivityNumber_binary(GraphMatrix, int, int)
 	 * 
 	 * @return	the connectivity number for a node
 	 */
-	public static int getConnectivityNumber(GraphMatrix matrix, int x, int y){
+	public static int getConnectivityNumber_numeric(GraphMatrix matrix, int x, int y){
 		boolean[] e = new boolean[9];
 		int[] n = new int[9];	// numeric
 		int result = 0;	// start with result of 0.
@@ -138,19 +141,47 @@ public class GraphThinner {
 		e[8] = e[0];
 		for(int i = 0; i < 9; i++) n[i] = e[i] ? 1 : 0;		// if edge N exists, set n[N] to one, otherwise set it to 0.	// numeric
 		for(int k = 0; k <= 7; k++){	//	for each edge		// \sum_{k=0}^7 n_{k}(1-n_{k+1})
-//			if(e[k] && !e[k+1]) result++;	// binary
 			result += n[k]*(1-n[k+1]);	// numeric
 		}
 		int result2 = 0;	// numeric
 		for(int k = 0; k <= 3; k++){	// \sum_{k=0}^3 n_{2k}n_{2k+2}(1-n_{2k+1})
 			// if right edge and above edge,
 			// remove 1 from result if there is no above-right edge
-			if(e[2*k] && e[2*k+2] && !e[2*k+1]){
-//				result--;	// binary
-			}
 			result2 += n[2*k] * n[2*k+2] * (1-n[2*k+1]);	// numeric
 		}
 		result = result - result2;	// numeric
+		for(int k = 0; k <= 7; k++){
+			if(e[k] && e[(k+2) % 8] && e[(k+4) % 8] && matrix.edgeCount(x, y) == 3) result = 0;	// prevent deletion of triangles, remove them later.
+		}
+		return result;
+	}
+
+	/**
+	 * Returns the connectivity number for the node.
+	 * This number is based on the locations of the neighbouring nodes.
+	 * This function uses binary calculation and yields the same result as <code>getConnectivityNumber_numeric(GraphMatrix, int, int)</code>.
+	 * 
+	 * @see GraphThinner#getConnectivityNumber_numeric(GraphMatrix, int, int)
+	 * 
+	 * @return	the connectivity number for a node
+	 */
+	public static int getConnectivityNumber_binary(GraphMatrix matrix, int x, int y){
+		boolean[] e = new boolean[9];
+		int result = 0;	// start with result of 0.
+		for(int i = 0; i <= 7; i++){
+			e[i] = matrix.getEdge(x,y,i+1);	// populate the array
+		}
+		e[8] = e[0];
+		for(int k = 0; k <= 7; k++){	//	for each edge		// \sum_{k=0}^7 n_{k}(1-n_{k+1})
+			if(e[k] && !e[k+1]) result++;	// binary
+		}
+		for(int k = 0; k <= 3; k++){	// \sum_{k=0}^3 n_{2k}n_{2k+2}(1-n_{2k+1})
+			// if right edge and above edge,
+			// remove 1 from result if there is no above-right edge
+			if(e[2*k] && e[2*k+2] && !e[2*k+1]){
+				result--;	// binary
+			}
+		}
 		for(int k = 0; k <= 7; k++){
 			if(e[k] && e[(k+2) % 8] && e[(k+4) % 8] && matrix.edgeCount(x, y) == 3) result = 0;	// prevent deletion of triangles, remove them later.
 		}
