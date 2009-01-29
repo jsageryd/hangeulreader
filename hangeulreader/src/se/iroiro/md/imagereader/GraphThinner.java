@@ -149,8 +149,12 @@ public class GraphThinner {
 			result2 += n[2*k] * n[2*k+2] * (1-n[2*k+1]);	// numeric
 		}
 		result = result - result2;	// numeric
-		for(int k = 0; k <= 7; k++){
-			if(e[k] && e[(k+2) % 8] && e[(k+4) % 8] && matrix.edgeCount(x, y) == 3) result = 0;	// prevent deletion of triangles, remove them later.
+		if(matrix.edgeCount(x, y) == 3){
+			int sum = 0;
+			for(int k = 0; k <= 7; k++){	// prevent deletion of triangles, remove them later.
+				sum += n[k] * n[(k+2) % 8] * n[(k+4) % 8];
+			}
+			if(sum > 0) result = 0;
 		}
 		return result;
 	}
