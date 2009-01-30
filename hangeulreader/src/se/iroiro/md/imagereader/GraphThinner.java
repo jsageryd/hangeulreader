@@ -93,7 +93,6 @@ public class GraphThinner {
 								matrix.setEdge(e2x,e2y,nte2,false);
 							}else{
 								matrix.setCell(x,y,false);
-								for(int i = 1; i <= 8; i++) matrix.setEdge(x,y,i,false);
 							}
 					}
 				}
