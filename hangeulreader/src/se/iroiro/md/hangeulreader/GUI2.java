@@ -165,11 +165,14 @@ public class GUI2 {
 		});
 		rendercharmenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				char genChar = ((String) JOptionPane.showInputDialog(frame, "Input the character for which to generate an image.", "Character", JOptionPane.PLAIN_MESSAGE, null, null, "\uAC00")).charAt(0);
-				Font genFont = (Font) JOptionPane.showInputDialog(frame, "Select the font to use for the image.", "Font selection", JOptionPane.PLAIN_MESSAGE, null, jamoRef.getFonts().toArray(), 0);
-				if(genFont != null){
-					BufferedImage genImg = CharacterRenderer.makeCharacterImage(genChar, HangeulReaderTest.CHARSIZE, HangeulReaderTest.CHARSIZE, genFont);
-					new GUI2(genImg.getWidth(), genImg.getHeight(), jamoRef, genImg).show();
+				String genCharStr = ((String) JOptionPane.showInputDialog(frame, "Input the character for which to generate an image.", "Character", JOptionPane.PLAIN_MESSAGE, null, null, "\uAC00"));
+				if(genCharStr != null && genCharStr.length() > 0){
+					char genChar = genCharStr.charAt(0);
+					Font genFont = (Font) JOptionPane.showInputDialog(frame, "Select the font to use for the image.", "Font selection", JOptionPane.PLAIN_MESSAGE, null, jamoRef.getFonts().toArray(), 0);
+					if(genFont != null){
+						BufferedImage genImg = CharacterRenderer.makeCharacterImage(genChar, HangeulReaderTest.CHARSIZE, HangeulReaderTest.CHARSIZE, genFont);
+						new GUI2(genImg.getWidth(), genImg.getHeight(), jamoRef, genImg).show();
+					}
 				}
 			}
 		});
