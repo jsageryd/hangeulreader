@@ -1,0 +1,2 @@
+This directory contains classification results created using the current jar.
+The file names of the result files are for clarity prefixed with the abbreviated git SHA1 of the commit containing the jar used.
