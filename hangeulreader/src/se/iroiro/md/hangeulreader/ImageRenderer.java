@@ -20,12 +20,7 @@ import se.iroiro.md.hangeul.CharacterMeasurement;
 import se.iroiro.md.hangeul.Line;
 import se.iroiro.md.hangeul.LineGroup;
 import se.iroiro.md.imagereader.GraphMatrix;
-import se.iroiro.md.imagereader.GraphThinner;
 
-/**
- * @author j
- *
- */
 /**
  * @author j
  *

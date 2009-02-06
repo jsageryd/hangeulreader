@@ -1,6 +1,13 @@
+/**
+ * 
+ */
 package se.iroiro.md.graph.simple;
 
-
+/**
+ * Class for testing the <code>SimpleLineEquation</code> class.
+ * @author j
+ *
+ */
 public class TestLineEquation {
 	public TestLineEquation(){
 		go();

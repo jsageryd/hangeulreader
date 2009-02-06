@@ -18,7 +18,6 @@ import se.iroiro.md.graph.simple.SimpleCoordinate;
 import se.iroiro.md.graph.simple.SimpleGraph;
 import se.iroiro.md.graph.simple.SimpleXYEdge;
 import se.iroiro.md.graph.simple.SimpleXYNode;
-import se.iroiro.md.hangeulreader.Helper;
 
 /**
  * This class represents a group of connected lines.

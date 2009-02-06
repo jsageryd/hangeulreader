@@ -7,6 +7,14 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -52,8 +60,9 @@ public class GUI2 {
 	
 	private final HangeulClassifier hc;
 
-	int scribblewidth;
-	int scribbleheight;
+	private int scribblewidth;
+	private int scribbleheight;
+	private final int colsep = 10;
 	
 	/**
 	 * Class constructor. Initialises a GUI of default size with the specified jamo reference DB.
@@ -85,14 +94,13 @@ public class GUI2 {
 	 * If the reference DB is null, it is created.
 	 * @see GUI2#show()
 	 */
-	@SuppressWarnings("serial")
 	public GUI2(int scribblewidth, int scribbleheight, JamoReferenceDB jrdb, BufferedImage backgroundImage){
 		this.scribblewidth = scribblewidth;
 		this.scribbleheight = scribbleheight;
 		final int swidth = scribblewidth;
 		final int sheight = scribbleheight;
 		frame = new JFrame("Draw a hangeul in the leftmost field. Shift-clicking clears the field. Hold down the alt-key for eraser.");
-		content = new JPanel(new GridLayout(1,3,10,0));
+		content = new JPanel(new GridLayout(1,3,colsep,0));
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		final JamoReferenceDB jamoRef;
 		if(jrdb != null){
@@ -184,6 +192,73 @@ public class GUI2 {
 		menubar.add(filemenu);
 		menubar.add(testingmenu);
 		frame.setJMenuBar(menubar);
+		
+		/* Drag-and-drop support */
+		FileDropTargetListener dtl = new FileDropTargetListener(jamoRef);
+		new DropTarget(frame,dtl);
+		new DropTarget(content,dtl);
+		new DropTarget(sp,dtl);
+		new DropTarget(tf,dtl);
+		new DropTarget(tf2,dtl);
+		/* --------------------- */
+	}
+	
+	
+	/**
+	 * Drag-and-drop listener class
+	 * @author j
+	 *
+	 */
+	class FileDropTargetListener implements DropTargetListener{
+		
+		JamoReferenceDB jamoRef;
+		
+		public FileDropTargetListener(JamoReferenceDB jamoRef){
+			this.jamoRef = jamoRef;
+		}
+	
+		public void dragEnter(DropTargetDragEvent dtde) {
+		}
+	
+		public void dragExit(DropTargetEvent dte) {
+		}
+	
+		public void dragOver(DropTargetDragEvent dtde) {
+		}
+	
+		@SuppressWarnings("unchecked")
+		public void drop(DropTargetDropEvent dtde) {
+			Transferable tr = dtde.getTransferable();
+			try {
+				if(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)){
+					dtde.acceptDrop(dtde.getDropAction());
+					List transferData = (List) tr.getTransferData(DataFlavor.javaFileListFlavor);
+					if(transferData != null){
+						File file = (File) transferData.get(0);
+
+						BufferedImage img = null;
+						try {
+							img = ImageIO.read(file);
+						} catch (IOException error) {
+							throw new IllegalArgumentException("Could not load file.");
+						}
+						if(img != null){
+							new GUI2(img.getWidth(),img.getHeight(),jamoRef,img).show();
+						}
+					}
+					dtde.dropComplete(true);
+				}else{
+					dtde.rejectDrop();
+				}
+			} catch (UnsupportedFlavorException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void dropActionChanged(DropTargetDragEvent dtde) {
+		}
 	}
 
 	private void batchtest(JamoReferenceDB jamoRef){
@@ -328,11 +403,13 @@ public class GUI2 {
 	 * Resizes the window to the size of the image, and redraws the image.
 	 */
 	public void refresh(){
-		int frameWidth = scribblewidth*3;
-		int frameHeight = scribbleheight;
+		int frameWidth = scribblewidth*3 + colsep*2;
+		int frameHeight = scribbleheight + menubar.getHeight();
 		Insets is = frame.getInsets();
-		frameWidth = frameWidth + is.left + is.right;
-		frameHeight = frameHeight + is.top + is.bottom + menubar.getHeight();
+		if(is != null){
+			frameWidth = frameWidth + is.left + is.right;
+			frameHeight = frameHeight + is.top + is.bottom;
+		}
 		frame.setSize(frameWidth, frameHeight);
 	}
 

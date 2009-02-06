@@ -6,7 +6,6 @@ package se.iroiro.md.hangeul;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -24,7 +23,6 @@ import se.iroiro.md.graph.XYNode;
 import se.iroiro.md.graph.simple.SimpleGraph;
 import se.iroiro.md.graph.simple.SimpleXYEdge;
 import se.iroiro.md.graph.simple.SimpleXYNode;
-import se.iroiro.md.hangeulreader.Helper;
 import se.iroiro.md.imagereader.GraphMatrix;
 
 /**
