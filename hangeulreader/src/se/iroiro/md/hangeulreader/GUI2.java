@@ -52,8 +52,9 @@ public class GUI2 {
 	
 	private final HangeulClassifier hc;
 
-	int scribblewidth;
-	int scribbleheight;
+	private int scribblewidth;
+	private int scribbleheight;
+	private final int colsep = 10;
 	
 	/**
 	 * Class constructor. Initialises a GUI of default size with the specified jamo reference DB.
@@ -91,7 +92,7 @@ public class GUI2 {
 		final int swidth = scribblewidth;
 		final int sheight = scribbleheight;
 		frame = new JFrame("Draw a hangeul in the leftmost field. Shift-clicking clears the field. Hold down the alt-key for eraser.");
-		content = new JPanel(new GridLayout(1,3,10,0));
+		content = new JPanel(new GridLayout(1,3,colsep,0));
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		final JamoReferenceDB jamoRef;
 		if(jrdb != null){
@@ -327,11 +328,13 @@ public class GUI2 {
 	 * Resizes the window to the size of the image, and redraws the image.
 	 */
 	public void refresh(){
-		int frameWidth = scribblewidth*3;
-		int frameHeight = scribbleheight;
+		int frameWidth = scribblewidth*3 + colsep*2;
+		int frameHeight = scribbleheight + menubar.getHeight();
 		Insets is = frame.getInsets();
-		frameWidth = frameWidth + is.left + is.right;
-		frameHeight = frameHeight + is.top + is.bottom + menubar.getHeight();
+		if(is != null){
+			frameWidth = frameWidth + is.left + is.right;
+			frameHeight = frameHeight + is.top + is.bottom;
+		}
 		frame.setSize(frameWidth, frameHeight);
 	}
 
