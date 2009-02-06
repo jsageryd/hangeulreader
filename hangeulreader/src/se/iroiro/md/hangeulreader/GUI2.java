@@ -7,6 +7,14 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -184,6 +192,73 @@ public class GUI2 {
 		menubar.add(filemenu);
 		menubar.add(testingmenu);
 		frame.setJMenuBar(menubar);
+		
+		/* Drag-and-drop support */
+		FileDropTargetListener dtl = new FileDropTargetListener(jamoRef);
+		new DropTarget(frame,dtl);
+		new DropTarget(content,dtl);
+		new DropTarget(sp,dtl);
+		new DropTarget(tf,dtl);
+		new DropTarget(tf2,dtl);
+		/* --------------------- */
+	}
+	
+	
+	/**
+	 * Drag-and-drop listener class
+	 * @author j
+	 *
+	 */
+	class FileDropTargetListener implements DropTargetListener{
+		
+		JamoReferenceDB jamoRef;
+		
+		public FileDropTargetListener(JamoReferenceDB jamoRef){
+			this.jamoRef = jamoRef;
+		}
+	
+		public void dragEnter(DropTargetDragEvent dtde) {
+		}
+	
+		public void dragExit(DropTargetEvent dte) {
+		}
+	
+		public void dragOver(DropTargetDragEvent dtde) {
+		}
+	
+		@SuppressWarnings("unchecked")
+		public void drop(DropTargetDropEvent dtde) {
+			Transferable tr = dtde.getTransferable();
+			try {
+				if(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)){
+					dtde.acceptDrop(dtde.getDropAction());
+					List transferData = (List) tr.getTransferData(DataFlavor.javaFileListFlavor);
+					if(transferData != null){
+						File file = (File) transferData.get(0);
+
+						BufferedImage img = null;
+						try {
+							img = ImageIO.read(file);
+						} catch (IOException error) {
+							throw new IllegalArgumentException("Could not load file.");
+						}
+						if(img != null){
+							new GUI2(img.getWidth(),img.getHeight(),jamoRef,img).show();
+						}
+					}
+					dtde.dropComplete(true);
+				}else{
+					dtde.rejectDrop();
+				}
+			} catch (UnsupportedFlavorException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void dropActionChanged(DropTargetDragEvent dtde) {
+		}
 	}
 
 	private void batchtest(JamoReferenceDB jamoRef){
