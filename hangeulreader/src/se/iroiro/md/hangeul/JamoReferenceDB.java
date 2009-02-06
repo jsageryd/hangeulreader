@@ -6,7 +6,6 @@ package se.iroiro.md.hangeul;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;

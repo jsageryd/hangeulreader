@@ -85,7 +85,6 @@ public class GUI2 {
 	 * If the reference DB is null, it is created.
 	 * @see GUI2#show()
 	 */
-	@SuppressWarnings("serial")
 	public GUI2(int scribblewidth, int scribbleheight, JamoReferenceDB jrdb, BufferedImage backgroundImage){
 		this.scribblewidth = scribblewidth;
 		this.scribbleheight = scribbleheight;

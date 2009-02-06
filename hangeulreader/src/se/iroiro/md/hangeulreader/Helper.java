@@ -7,11 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import se.iroiro.md.hangeul.Jamo;
-import se.iroiro.md.hangeul.Line;
-import se.iroiro.md.hangeul.LineGroup;
 
 /**
  * Helper class for quicker debugging
