@@ -206,8 +206,9 @@ public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEd
 	 * @see se.iroiro.md.graph.XYEdge#touches(se.iroiro.md.graph.XYEdge)
 	 */
 	public boolean touches(XYEdge<NP,EP> edge) {
-		if(getEquation().sameAs(edge.getEquation())){	// TODO there is a bug here. a.touches(b) != b.touches(a).
-			return withinBounds(edge.getFrom().getPosition()) || withinBounds(edge.getTo().getPosition());
+		if(getEquation().sameAs(edge.getEquation())){
+			return withinBounds(edge.getFrom().getPosition()) || withinBounds(edge.getTo().getPosition()) ||
+			edge.withinBounds(getFrom().getPosition()) || edge.withinBounds(getTo().getPosition());
 		}else{
 			Coordinate is = getEquation().getIntersection(edge.getEquation());
 			return withinBounds(is) && edge.withinBounds(is);

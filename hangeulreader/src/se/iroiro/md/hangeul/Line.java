@@ -3,6 +3,7 @@
  */
 package se.iroiro.md.hangeul;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -717,14 +718,12 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	
 	/**
 	 * Returns <code>true</code> if this line is determined to be a shape similar to "Z" or "S".
-	 * This method simply checks if the line crosses itself once or more, and is equal to:<br />
-	 * <code>countIntersections() > 0</code>
-	 * Ideally, it would be sufficient to check for exactly one crossing and return false if there are more than one,
-	 * however due to decimal errors this is not reliable.
+	 * This method checks if the line crosses itself exactly once, and is equal to:<br />
+	 * <code>countIntersections() == 1</code>
 	 * @return	<code>true</code> if this line is determined to be a shape similar to "Z" or "S"
 	 */
 	private boolean isZShape(){
-		return countIntersections() > 0;
+		return countIntersections() == 1;
 	}
 	
 	/**
@@ -745,10 +744,13 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		if(!isClosedPolygon() && getFrom() != null && getTo() != null){
 			Line middleSection = getFraction(2,3,4);
 			List<XYEdge<Object,Line>> middleEdges = middleSection.getGraph().getEdges();
+			boolean touchesPrevious = false;
 			for(XYEdge<Object,Line> e : middleEdges){
-				if(base.touches(e)){
-					Coordinate is = base.getEquation().getIntersection(e.getEquation());
-					if(e == middleEdges.get(0) || !is.isSamePositionAs(e.getFrom().getPosition())) result++;
+				if(base.touches(e) && !touchesPrevious){
+					touchesPrevious = true;
+					result++;
+				}else{
+					touchesPrevious = false;
 				}
 			}
 		}
