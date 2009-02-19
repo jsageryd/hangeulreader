@@ -74,6 +74,7 @@ public class HangeulClassifier {
 	 * If there is a group that cannot be mapped to a structure, it is split into two.
 	 * Process is repeated until all groups can be matched, or there can be no more splits.
 	 */
+	@SuppressWarnings("unused")
 	private void splitInputGroups(){
 		if(cm.getLineGroups() == null || cm.getLineGroups().size() == 0) return;
 		List<Map<XYNode<Line, LineGroup>, XYNode<Line, LineGroup>>> map;
@@ -139,7 +140,6 @@ public class HangeulClassifier {
 	/**
 	 * Tries to match all line groups in input to jamo.
 	 */
-	@SuppressWarnings("unchecked")
 	private void matchHangeul(){
 		List<LineGroup> inputGroups = cm.getLineGroups();	// get line groups
 		Collections.sort(inputGroups, new ReverseLineGroupComparator());	// sort by line count descending
@@ -193,9 +193,9 @@ public class HangeulClassifier {
 //		}
 //		Helper.p("\n");
 		
-		for(Jamo j : jamos){
+//		for(Jamo j : jamos){
 //			Helper.p(j+""+j.getPosition()+" ");
-		}
+//		}
 //		Helper.p("\n");
 //		Helper.p(jamos+" \t");
 		hangeul = makeHangeul(jamos);	// try to combine the jamo to a hangeul

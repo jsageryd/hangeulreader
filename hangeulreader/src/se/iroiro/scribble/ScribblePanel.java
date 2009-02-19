@@ -32,7 +32,6 @@ public class ScribblePanel extends JPanel {
 	
 	private int x = 0;
 	private int y = 0;
-	private int button = 0;
 	
 	private BufferedImage buffer;
 	
@@ -93,7 +92,7 @@ public class ScribblePanel extends JPanel {
 						setPenColour(Color.BLACK);
 						setStrokeWidth(10);
 					}
-					moveTo(e.getX(),e.getY(),e.getButton());
+					moveTo(e.getX(),e.getY());
 				}
 			}
 			public void mouseReleased(MouseEvent e){
@@ -125,11 +124,10 @@ public class ScribblePanel extends JPanel {
 		bufferg2d.setColor(Color.BLACK);
 	}
 
-	protected void moveTo(int x, int y, int button) {
+	protected void moveTo(int x, int y) {
 		bufferg2d.drawLine(x, y, x, y);
 		this.x = x;
 		this.y = y;
-		this.button = button;
 		update(getGraphics());
 		
 	}

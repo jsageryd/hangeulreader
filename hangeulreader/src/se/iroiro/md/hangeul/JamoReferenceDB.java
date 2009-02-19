@@ -269,6 +269,7 @@ public class JamoReferenceDB {
 	 * @param c	the character to scan
 	 * @return	the list of line groups found in the specified character
 	 */
+	@SuppressWarnings("unused")
 	private List<LineGroup> getCharacterLineGroups(char c, Font font, int size){
 		BufferedImage img = CharacterRenderer.makeCharacterImage(c, size, size, font);
 		CharacterMeasurement cm = new CharacterMeasurement(img);

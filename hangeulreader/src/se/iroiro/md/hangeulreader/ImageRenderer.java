@@ -112,6 +112,7 @@ public class ImageRenderer {
 	/**
 	 * Draws the graphs of all line groups.
 	 */
+	@SuppressWarnings("unused")
 	private void drawLineGroups() {
 		if(cm == null || cm.getLineGroups() == null) return;
 		for(LineGroup lg : cm.getLineGroups()){
@@ -167,6 +168,7 @@ public class ImageRenderer {
 	/**
 	 * Draws the underlying graph matrix
 	 */
+	@SuppressWarnings("unused")
 	private void drawMatrix(){
 		g2d.setColor(Color.WHITE);
 		GraphMatrix gm = cm.getImageReader().getMatrix();
