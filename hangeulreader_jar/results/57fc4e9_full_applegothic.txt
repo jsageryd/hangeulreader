@@ -1,6 +1,6 @@
 Character images rendered using font "AppleGothic" at 200x200 pixels.
-Test started: 2009-02-14 13:43:19
-Test finished: 2009-02-14 14:08:22
+Test started: 2009-03-20 17:07:09
+Test finished: 2009-03-20 17:30:56
 
 8795 correct out of 11172 characters (78 %).
 
