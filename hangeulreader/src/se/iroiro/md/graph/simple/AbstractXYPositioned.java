@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.graph.simple;
 
@@ -25,7 +25,7 @@ public abstract class AbstractXYPositioned implements XYPositioned {
 	public void rotate(double angle) {
 		rotate(angle, getPosition());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYPositioned#setPosition(se.iroiro.md.graph.Coordinate)
 	 */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.graph.simple;
 
@@ -18,7 +18,7 @@ import se.iroiro.md.graph.simple.SimpleCoordinate;
  * @param <EP>	the type of the edge piggyback object
  */
 public class SimpleXYNode<NP,EP> extends AbstractXYGraphable<NP> implements XYNode<NP,EP>, Cloneable {
-	
+
 	/**
 	 * List of connecting edges
 	 */
@@ -50,7 +50,7 @@ public class SimpleXYNode<NP,EP> extends AbstractXYGraphable<NP> implements XYNo
 		this.position = position;
 		reset();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYPositioned#setPosition(double, double)
 	 */
@@ -99,7 +99,7 @@ public class SimpleXYNode<NP,EP> extends AbstractXYGraphable<NP> implements XYNo
 	public void rotate(double angle, Coordinate pivot) {
 		getPosition().rotate(angle, pivot);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -126,7 +126,7 @@ public class SimpleXYNode<NP,EP> extends AbstractXYGraphable<NP> implements XYNo
 		n.setPiggybackObject(getPiggybackObject());
 		return n;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
@@ -141,7 +141,7 @@ public class SimpleXYNode<NP,EP> extends AbstractXYGraphable<NP> implements XYNo
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Resets cached fields. Loops through all connecting edges and calls reset() for each.
 	 */
@@ -150,5 +150,5 @@ public class SimpleXYNode<NP,EP> extends AbstractXYGraphable<NP> implements XYNo
 			e.reset();
 		}
 	}
-	
+
 }

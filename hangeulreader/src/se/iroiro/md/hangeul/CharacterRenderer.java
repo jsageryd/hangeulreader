@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -28,7 +28,7 @@ public class CharacterRenderer {
 	public static BufferedImage makeCharacterImage(char c, int width, int height){
 		return makeCharacterImage(c, width, height, "Verdana");
 	}
-	
+
 	/**
 	 * TODO deprecate?
 	 * Returns an image of the specified character in the specified font.
@@ -66,7 +66,7 @@ public class CharacterRenderer {
 		drawCharacter(g2d, c, width / 2, height / 2, width < height ? width : height, font);
 		return img;
 	}
-	
+
 	/**
 	 * TODO fix javadoc
 	 * Draws the specified character.
@@ -107,7 +107,7 @@ public class CharacterRenderer {
 		int oy = ((fm.getAscent()-fm.getDescent()) / 2);
 		g2d.drawString(Character.toString(c), x-ox, y+oy);
 	}
-	
+
 	/**
 	 * TODO deprecate?
 	 * Fits an 'M' in the specified font inside a square with side </code>maxSide</code>
@@ -149,4 +149,5 @@ public class CharacterRenderer {
 		}while(fm.charWidth(c) < maxSide && fm.getHeight() < maxSide);
 		return fontSize;
 	}
+
 }

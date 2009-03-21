@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.graph.simple;
 
@@ -11,22 +11,22 @@ import se.iroiro.md.graph.XYGraphable;
  * @param <T>	the type of the piggyback object
  */
 public abstract class AbstractXYGraphable<T> extends AbstractXYPositioned implements XYGraphable<T> {
-	
+
 	/**
 	 * Identifying ID
 	 */
 	private int id = -1;
-	
+
 	/**
 	 * Flagged-property
 	 */
 	private boolean flagged = false;
-	
+
 	/**
 	 * Piggyback object
 	 */
 	private T pbo = null;
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.Graphable#getID()
 	 */

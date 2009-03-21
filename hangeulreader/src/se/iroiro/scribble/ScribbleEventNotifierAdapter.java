@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.scribble;
 
@@ -17,7 +17,7 @@ public abstract class ScribbleEventNotifierAdapter implements ScribbleEventNotif
 
 	public void mousePressed(MouseEvent e) {}
 	public void mouseReleased(MouseEvent e) {}
-	
+
 	public BufferedImage getImage(){
 		return buffer;
 	}

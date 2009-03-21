@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -47,27 +47,27 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	 * The minimum ratio of the distance between first/last node and the actual line length, in percent.
 	 */
 	private static final double MINIMUM_STRAIGHTNESS_PERCENTAGE = 85;
-	
+
 	/**
 	 * Maximum variance in polygon radius to be classified as a circle.
 	 */
 	private static final double MAXIMUM_CIRCLE_RADIUS_VARIANCE = 20;
-	
+
 //	private static final int CORNER_SEGMENTS = 5;
 //	private static final int CORNER_QUEUE_SIZE = 10;
 //	private static final double CORNER_MAX_ANGLE = Math.toRadians(135);
-	
-	
+
+
 	/**
 	 * The line type
 	 */
 	private LineType lineType = null;
-	
+
 	private Graph<Object,Line> graph = null;
 	private Coordinate position = null;
 	private LineGroup group = null;
 //	private List<Corner> corners = null;
-	
+
 	/**
 	 * Returns the line group this line belongs to.
 	 * @return	the line group this line belongs to
@@ -75,7 +75,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public LineGroup getGroup(){
 		return group;
 	}
-	
+
 	/**
 	 * Sets the line group that this line is part of.
 	 * @param group	the line group
@@ -83,7 +83,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public void setGroup(LineGroup group){
 		this.group = group;
 	}
-	
+
 	/**
 	 * Returns the average angle of the edges in this line in radians.
 	 * @return	the average angle of the edges in this line
@@ -132,7 +132,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public Coordinate getBottomRight() {
 		return getGraph().getBottomRight();
 	}
-	
+
 	/**
 	 * Resets cached fields.
 	 */
@@ -142,8 +142,8 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		getGraph().clearCache();
 //		corners = null;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYPositioned#rotate(double, se.iroiro.md.graph.Coordinate)
 	 */
@@ -164,7 +164,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		reset();
 	}
-	
+
 	/**
 	 * Adds the specified node to the end of the line.
 	 * @param n	the node to add
@@ -191,7 +191,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		getGraph().addEdge(e);
 		reset();
 	}
-	
+
 	/**
 	 * Adds the edges in the specified list to the end of the line.
 	 * @param e	the list of edges to add
@@ -218,7 +218,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		getGraph().addEdgeFirst(e);
 		reset();
 	}
-	
+
 	/**
 	 * TODO check result
 	 * Reverses all the edges in the line. Node locations are not affected.
@@ -254,7 +254,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if this line is determined to be a circle.
 	 * @return	<code>true</code> if this line is a circle
@@ -266,7 +266,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		return circle;
 	}
-	
+
 	/**
 	 * TODO make private
 	 * Returns <code>true</code> if this line represents a closed polygon, i.e. the first and last node are neighbours.
@@ -275,7 +275,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public boolean isClosedPolygon() {
 		return getFrom() != null && getFrom().isNeighbour(getTo());
 	}
-	
+
 	/**
 	 * Returns a measurement of the circularity of this line.
 	 * This is done by first normalising the line to make it circle-like,
@@ -293,7 +293,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		reset();
 		return circularity;
 	}
-	
+
 	private double getRadiusVariance() {
 		double mean = getRadiusMean();
 		double variance = 0;
@@ -332,7 +332,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		squeeze(100);	// make both X and Y sides of the shape 100 units long (to be able to compare shapes of different size)
 	}
-	
+
 	/**
 	 * Scans the line for the shortest radius line and returns it as an edge.
 	 * The returned edge is not connected to any node in the line itself.
@@ -370,7 +370,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public double getHeight() {
 		return getGraph().getHeight();
 	}
-	
+
 	/**
 	 * Sets both axes (<i>x</i> and <i>y</i>) to the same length.
 	 * The length of the longer axis is set to the length of the shorter axis.
@@ -382,7 +382,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		double side = w < h ? w : h;
 		squeeze(side);
 	}
-	
+
 	/**
 	 * Squeezes the line so that the sides of its bounding box are all <code>side</code> units long.
 	 * @param side	the length of a side
@@ -401,7 +401,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		reset();
 	}
-	
+
 	/**
 	 * Returns the first node in this line.
 	 * @return	the first node
@@ -409,7 +409,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public XYNode<Object,Line> getFrom() {
 		return getGraph().getNodes().get(0);
 	}
-	
+
 	/**
 	 * Returns the last node in this line.
 	 * @return	the last node
@@ -418,7 +418,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		List<XYNode<Object,Line>> nodes = getGraph().getNodes();
 		return nodes.get(nodes.size()-1);
 	}
-	
+
 	/**
 	 * TODO Check the result of this method.
 	 * Returns a fraction of the line as a new <code>Line</code> object,
@@ -441,7 +441,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		int toIndex = (int) ((to * 1.0 / segments) * getGraph().getEdges().size());			// "
 		if(fromIndex >= 0 && toIndex <= getGraph().getEdges().size()){
 			l.addEdges(getGraph().getEdges().subList(fromIndex, toIndex));
-			
+
 			// START [copied from SimpleGraph.java]
 			Iterator<XYEdge<Object,Line>> it = l.getGraph().getEdges().iterator();
 			Graph<Object,Line> linegraph = l.getGraph();
@@ -454,7 +454,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 				linegraph.addNode(e.getTo());
 			}
 			// END
-			
+
 //			for(XYEdge<Object,Line> e : l.getGraph().getEdges()){
 //				l.getGraph().addNode(e.getFrom());
 //			}
@@ -466,7 +466,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		return l;
 	}
-	
+
 	/**
 	 * Returns the fraction of the line close to the specified end point.
 	 * If the specified point is not part of the line, the method returns <code>null</code>.
@@ -484,7 +484,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Equal to <code>getFraction(fraction,fraction,segments)</code>.
 	 * @param fraction	the fraction to extract
@@ -495,7 +495,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public Line getFraction(int fraction, int segments){
 		return getFraction(fraction,fraction,segments);
 	}
-	
+
 	/**
 	 * Returns the line type for the line.
 	 * @return	the line type
@@ -538,7 +538,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		return lineType;
 	}
-	
+
 	/**
 	 * Directly sets the line type - the line will maintain the set line type as long as its graph is not modified.
 	 * This can be used to set a line type to a line without a graph.
@@ -547,7 +547,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public void setLineType(LineType lt){
 		lineType = lt;
 	}
-	
+
 	/**
 	 * TODO Write more here.
 	 * Returns <code>true</code> if the line has a top left corner.
@@ -626,7 +626,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		return first.hasAngle(last.getAngle() + Math.PI, Math.PI / 8) &&
 				first.hasAngleOrOpposite(0, Math.PI / 8);
 	}
-	
+
 	/**
 	 * TODO Write javadoc.
 	 * @return
@@ -637,7 +637,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		return first.hasAngle(last.getAngle() + Math.PI, Math.PI / 8) &&
 				first.hasAngleOrOpposite(Math.PI / 2, Math.PI / 8);
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the line is mainly to the left of its own base line.
 	 * @return	<code>true</code> if the line is mainly to the left of its own base line
@@ -645,7 +645,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	private boolean isLeftBalanced(){
 		return getHorizontalBalance() < 0;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the line is mainly to the right of its own base line.
 	 * @return	<code>true</code> if the line is mainly to the right of its own base line
@@ -653,7 +653,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	private boolean isRightBalanced(){
 		return getHorizontalBalance() > 0;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the line is mainly above its own base line.
 	 * @return	<code>true</code> if the line is mainly above its own base line
@@ -661,7 +661,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	private boolean isTopBalanced(){
 		return getVerticalBalance() > 0;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the line is mainly below its own base line.
 	 * @return	<code>true</code> if the line is mainly below its own base line
@@ -681,7 +681,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		base.getTo().setPosition(getTo().getPosition());
 		return base;
 	}
-	
+
 	/**
 	 * TODO Check the result of this method.
 	 * TODO Write proper javadoc.
@@ -698,7 +698,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		return balance;
 	}
-	
+
 	/**
 	 * TODO Check the result of this method.
 	 * TODO Write javadoc.
@@ -714,7 +714,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		return balance;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if this line is determined to be a shape similar to "Z" or "S".
 	 * This method checks if the line crosses itself exactly once, and is equal to:<br />
@@ -724,7 +724,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	private boolean isZShape(){
 		return countIntersections() == 1;
 	}
-	
+
 	/**
 	 * TODO Check the result of this method.
 	 * Returns how many times the a straight line between the first and last
@@ -732,9 +732,9 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	 * For a line in the shape of an "L", this would return zero.
 	 * For a line in the shape of the an "S" or a "Z", this would return 1.
 	 * This method checks for intersection only in the middle two fourths. See illustration.<br />
-	 * 
+	 *
 	 * <code>|-----|xxxxx|xxxxx|-----|</code>
-	 * 
+	 *
 	 * @return	the number of times a straight line between the first and last nodes of this line crosses the line itself
 	 */
 	public int countIntersections(){
@@ -755,17 +755,17 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * TODO Check the result of this method.
 	 * Checks if this line has an average angle of<code>angle</code> radians.
 	 * This angle may deviate +- <code>allowed_deviation</code> radians.
 	 * However: <code>return angle-allowed_deviation <= a && a < angle+allowed_deviation</code>.
 	 * Observe operands. Includes lowest but not highest, to prevent possible overlapping.
-	 * 
+	 *
 	 * @param angle	angle in radians
 	 * @param allowed_deviation	allowed deviation in radians
-	 * @return	<code>true</code> if the angle of the line is in the specified range 
+	 * @return	<code>true</code> if the angle of the line is in the specified range
 	 */
 	public boolean hasAngle(double angle, double allowed_deviation){
 		double a = getAngle();
@@ -789,7 +789,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 	public boolean hasAngleOrOpposite(double angle, double allowed_deviation){
 		return hasAngle(angle, allowed_deviation) || hasAngle(angle + Math.PI, allowed_deviation);
 	}
-	
+
 	/**
 	 * Returns the length of this line.
 	 * @return	the length of this line
@@ -801,7 +801,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		}
 		return length;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the line is determined to be straight.
 	 * This is calculated through comparing the ratio of the distance between
@@ -814,7 +814,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 		if(getGraph().getNodes().size() == 0) return false;
 		return (getFrom().getPosition().distanceTo(getTo().getPosition())) * 100 / getLength() > MINIMUM_STRAIGHTNESS_PERCENTAGE;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the line is determined to be horizontal.
 	 * @return	<code>true</code> if the line is horizontal
@@ -876,7 +876,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 			}
 		}
 	}
-	
+
 //	/**
 //	 * Returns a list of corners found in the line.
 //	 * @return	a list of corners
@@ -924,7 +924,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 //		}
 //		return corners;
 //	}
-	
+
 //	/**
 //	 * Returns the middlemost node of the line or </code>null</code> if there are no nodes in the line.
 //	 * @return	the middlemost node of the line or <code>null</code>
@@ -944,7 +944,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 //		if(edges.size() == 0) return null;
 //		return edges.get(edges.size() / 2);
 //	}
-//	
+//
 //	/**
 //	 * Returns the first edge in the line. If the line contais no edges, <code>null</code> is returned.
 //	 * @return	the first edge in the line or <code>null</code>
@@ -963,7 +963,7 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 //		if(edges.size() == 0) return null;
 //		return edges.get(edges.size()-1);
 //	}
-//	
+//
 //	/**
 //	 * Removes the first edge from the line, and its associated from-node.
 //	 * If there is only one edge in the graph, the edge along with both its nodes will be removed.
@@ -997,5 +997,5 @@ public class Line extends AbstractXYPositioned implements Cloneable {
 //			nodes.remove(e.getTo());
 //		}
 //	}
-	
+
 }

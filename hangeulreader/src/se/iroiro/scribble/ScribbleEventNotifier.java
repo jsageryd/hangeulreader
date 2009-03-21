@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.scribble;
 
@@ -29,7 +29,7 @@ public interface ScribbleEventNotifier {
 	 * @return	the image buffer
 	 */
 	public BufferedImage getImage();
-	
+
 	/**
 	 * Sets the image buffer of the scribble panel.
 	 * This method is used only by the scribble panel itself and it need not be called elsewhere.

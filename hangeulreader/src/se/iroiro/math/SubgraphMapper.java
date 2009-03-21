@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.math;
 
@@ -42,7 +42,7 @@ public class SubgraphMapper {
 //		}
 		return cand;
 	}
-	
+
 	private static List<IntMatrix> findCandidates(IntMatrix M0, IntMatrix Mprim, int depth, IntMatrix A, IntMatrix B){
 		List<IntMatrix> cand = new ArrayList<IntMatrix>();
 		outer:
@@ -79,11 +79,11 @@ public class SubgraphMapper {
 		}
 		return cand;	// return all candidates found
 	}
-	
-	
+
+
 	// Below, an attempt to implement the algorithm as originally described by Ullmann.
 	// Failed attempt and stroke of genius resulted in the recursive approach above.
-	
+
 //	/**
 //	 * Returns a list of possible node mappings A-B limited by M.
 //	 * The algorithm generates all possible matrices M' such that
@@ -102,45 +102,45 @@ public class SubgraphMapper {
 //		// for any 1-value in M', the value of the corresponding cell in M is also 1.
 //		// For each matrix M', do the permutation/transpose thing and compare to A.
 //		// If all 1-values in A are 1 in B, add M' to the list.
-//		
+//
 //		// Pa is the node count for the subgraph
 //		int Pa = A.rowCount();
-//		
+//
 //		// Pb is the node count for the graph
 //		int Pb = B.rowCount();
-//		
+//
 //		if(M0.rowCount() != Pa || M0.colCount() != Pb){
 //			throw new IllegalArgumentException("Dimensions of M0 must be A.side rows and B.side columns.");
 //		}
-//		
+//
 //		List<IntMatrix> result = new ArrayList<IntMatrix>();
-//		
-//		
+//
+//
 //		// F records which columns have been used at an intermediate state of the computation,
-//		// F[i] = 1 if the i:th column has been used. 
+//		// F[i] = 1 if the i:th column has been used.
 //		int[] F = new int[Pb];
-//		
+//
 //		// H records which column has been selected at which depth.
 //		// H[d] = k if the k:th column has been selected at depth d.
 //		int[] H = new int[Pa];
-//		
+//
 //		// We start at the first row (depth = 0)
 //		int d = 0;
-//		
+//
 //		// Init H[0] to -1
 //		H[0] = -1;
-//		
+//
 //		// Init M to M0
 //		IntMatrix M = (IntMatrix) M0.clone();
-//		
-//		
+//
+//
 //		// Step 2
 //		for(int j = 0; j < Pb; j++){
 //			if(M.get(d,j) == 1 && F[j] == 0){
 //			}
 //		}
-//		
+//
 //		return result;
 //	}
-	
+
 }

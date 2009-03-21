@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeulreader;
 
@@ -57,13 +57,13 @@ public class GUI2 {
 	private JTextField tf;
 	private JTextField tf2;
 	private JMenuBar menubar;
-	
+
 	private final HangeulClassifier hc;
 
 	private int scribblewidth;
 	private int scribbleheight;
 	private final int colsep = 10;
-	
+
 	/**
 	 * Class constructor. Initialises a GUI of default size with the specified jamo reference DB.
 	 * @param jrdb
@@ -71,7 +71,7 @@ public class GUI2 {
 	public GUI2(JamoReferenceDB jrdb){
 		this(300,300,jrdb,null);
 	}
-	
+
 	/**
 	 * Class constructor. Initialises a GUI of default size.
 	 * @see GUI2#GUI2(int, int)
@@ -79,7 +79,7 @@ public class GUI2 {
 	public GUI2(){
 		this(300,300);
 	}
-	
+
 	/**
 	 * Class constructor. Initialises a GUI with the specified scribble size.
 	 * @param scribblewidth	scribble area width
@@ -88,7 +88,7 @@ public class GUI2 {
 	public GUI2(int scribblewidth, int scribbleheight){
 		this(scribblewidth,scribbleheight,null,null);
 	}
-	
+
 	/**
 	 * Class constructor. Initialises a GUI with the specified scribble size, and the specified jamo reference DB.
 	 * If the reference DB is null, it is created.
@@ -149,7 +149,7 @@ public class GUI2 {
 		float fs = CharacterRenderer.getFontSize((Graphics2D) new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB).getGraphics(),f,(int) (scribbleheight * 0.75));
 		f = f.deriveFont(fs);
 		tf.setFont(f);
-		
+
 		menubar = new JMenuBar();
 		JMenu filemenu = new JMenu("File");
 			JMenuItem newmenu = new JMenuItem("Create new window");
@@ -192,7 +192,7 @@ public class GUI2 {
 		menubar.add(filemenu);
 		menubar.add(testingmenu);
 		frame.setJMenuBar(menubar);
-		
+
 		/* Drag-and-drop support */
 		FileDropTargetListener dtl = new FileDropTargetListener(jamoRef);
 		new DropTarget(frame,dtl);
@@ -202,30 +202,30 @@ public class GUI2 {
 		new DropTarget(tf2,dtl);
 		/* --------------------- */
 	}
-	
-	
+
+
 	/**
 	 * Drag-and-drop listener class
 	 * @author j
 	 *
 	 */
 	class FileDropTargetListener implements DropTargetListener{
-		
+
 		JamoReferenceDB jamoRef;
-		
+
 		public FileDropTargetListener(JamoReferenceDB jamoRef){
 			this.jamoRef = jamoRef;
 		}
-	
+
 		public void dragEnter(DropTargetDragEvent dtde) {
 		}
-	
+
 		public void dragExit(DropTargetEvent dte) {
 		}
-	
+
 		public void dragOver(DropTargetDragEvent dtde) {
 		}
-	
+
 		@SuppressWarnings("unchecked")
 		public void drop(DropTargetDropEvent dtde) {
 			Transferable tr = dtde.getTransferable();
@@ -356,7 +356,7 @@ public class GUI2 {
 			JOptionPane.showMessageDialog(frame, "Batch test aborted.");
 		}
 	}
-	
+
 	private void loadImageFile(JamoReferenceDB jamoRef){
 		JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
 		fc.setMultiSelectionEnabled(false);
@@ -398,7 +398,7 @@ public class GUI2 {
 		frame.setVisible(true);
 		refresh();
 	}
-	
+
 	/**
 	 * Resizes the window to the size of the image, and redraws the image.
 	 */
@@ -420,7 +420,7 @@ public class GUI2 {
 	public ImageRenderer getImageRenderer() {
 		return ir;
 	}
-	
+
 	/**
 	 * Sets the image renderer.
 	 * @param ir	the image renderer
@@ -428,5 +428,5 @@ public class GUI2 {
 	public void setImageRenderer(ImageRenderer ir) {
 		this.ir = ir;
 	}
-	
+
 }

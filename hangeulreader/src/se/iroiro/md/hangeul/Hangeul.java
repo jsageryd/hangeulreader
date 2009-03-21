@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -22,12 +22,12 @@ public class Hangeul {
 	LCount = 19, VCount = 21, TCount = 28,
 	NCount = VCount * TCount,   // 588
 	SCount = LCount * NCount;   // 11172
-	
+
 	private char hangeul;
 //	private char initial_jamo;
 //	private char medial_jamo;
 //	private char final_jamo;
-	
+
 	/**
 	 * Class constructor. Creates an instance representing the character specified.
 	 * @param hangeul	the character to represent
@@ -35,7 +35,7 @@ public class Hangeul {
 	public Hangeul(char hangeul){
 		this.hangeul = hangeul;
 	}
-	
+
 	/**
 	 * Class constructor. Creates an instance representing the character specified by the three jamo.
 	 * @param initial_jamo	the initial jamo
@@ -51,7 +51,7 @@ public class Hangeul {
 			hangeul = UnicodeHangeul.composeHangul(String.valueOf(cs)).charAt(0);
 		}
 	}
-	
+
 	/**
 	 * Returns the hangeul character as a string.
 	 * @return	the hangeul character as a string
@@ -59,7 +59,7 @@ public class Hangeul {
 	public String toString(){
 		return String.valueOf(hangeul);
 	}
-	
+
 	/**
 	 * Returns the name of the character.
 	 * This method is a slightly modified copy of the implementation found at:
@@ -83,7 +83,7 @@ public class Hangeul {
 			"LB", "LS", "LT", "LP", "LH", "M", "B", "BS",
 			"S", "SS", "NG", "J", "C", "K", "T", "P", "H"
 		};
-		
+
 		int SIndex = hangeul - SBase;
 		if (0 > SIndex || SIndex >= SCount) {
 			throw new IllegalArgumentException("Not a Hangul Syllable: " + hangeul);
@@ -93,5 +93,5 @@ public class Hangeul {
 		int TIndex = SIndex % TCount;
 		return JAMO_L_TABLE[LIndex] + JAMO_V_TABLE[VIndex] + JAMO_T_TABLE[TIndex];
 	}
-	
+
 }

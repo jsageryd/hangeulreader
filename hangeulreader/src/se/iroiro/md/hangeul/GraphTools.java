@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -31,7 +31,7 @@ import se.iroiro.md.imagereader.GraphMatrix;
  *
  */
 public class GraphTools {
-	
+
 	/**
 	 * Returns a graph created from data in the specified graph matrix.
 	 * @param gm	the matrix to read
@@ -79,7 +79,7 @@ public class GraphTools {
 		}
 		return lines;
 	}
-	
+
 	/**
 	 * Creates the line that <code>startEdge</code> is part of. <code>startEdge</code> can be any edge in the line.
 	 * If the start edge is already part of a line, this method will return null.
@@ -92,7 +92,7 @@ public class GraphTools {
 			line = new Line();	// make a new line
 			line.addEdge(startEdge);	// add the start edge to the line
 			startEdge.setPiggybackObject(line);	// set the line of the edge to the new line
-			
+
 			// search edges to the left of start edge
 			XYEdge<Object,Line> left = nextEdge(startEdge, true);	// find the left connecting edge
 			while(left != null && left != startEdge && left.getPiggybackObject() == null){
@@ -107,7 +107,7 @@ public class GraphTools {
 				right.setPiggybackObject(line);
 				right = nextEdge(right, false);
 			}
-			
+
 			Iterator<XYEdge<Object,Line>> it = line.getGraph().getEdges().iterator();
 			Graph<Object,Line> linegraph = line.getGraph();
 			XYEdge<Object,Line> e = null;	// add the nodes as well
@@ -121,7 +121,7 @@ public class GraphTools {
 		}
 		return line;
 	}
-	
+
 	/**
 	 * Returns the edge connecting with the edge specified. If <code>searchBackwards</code> is <code>true</code>,
 	 * the method will return the edge connecting with this node's from-node,
@@ -151,7 +151,7 @@ public class GraphTools {
 		}
 		return edge;
 	}
-	
+
 	/**
 	 * Returns a list of groups created from data in the specified list of lines.
 	 * A collection of lines that are connected to each other form one group.
@@ -171,8 +171,8 @@ public class GraphTools {
 		}
 		return groups;
 	}
-	
-	
+
+
 	/**
 	 * Creates a line group and adds the specified line and its neighbours (and their neighbours and so on) to it.
 	 * If the specified line is already part of a group, and empty group is returned.
@@ -221,7 +221,7 @@ public class GraphTools {
 		}
 		return connecting;
 	}
-	
+
 	/**
 	 * Returns the end of the specified line which is closest to the top left.
 	 * For horizontal lines, this is always the left end.
@@ -261,7 +261,7 @@ public class GraphTools {
 		}
 		return null;
 	}
-		
+
 	/**
 	 * Returns <code>true</code> if the specified line has the specified node as its start point or end point.
 	 * @param l	the line to check
@@ -271,7 +271,7 @@ public class GraphTools {
 	private static boolean isEndOf(Line l, XYNode<Object,Line> n){
 		return n == l.getFrom() || n == l.getTo();
 	}
-	
+
 	/**
 	 * Sets the edge ports of all the edges in the specified line group.
 	 * @param l	the line group
@@ -284,7 +284,7 @@ public class GraphTools {
 			e.setHeadPort(getPort(to,from));
 		}
 	}
-	
+
 	/**
 	 * Returns which port of line <code>a</code> connects with line <code>b</code>.
 	 * @param a	the line for which to find the port
@@ -354,7 +354,7 @@ public class GraphTools {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * TODO write proper javadoc
 	 * Returns -1 if groups do not share the same structure. Otherwise, similarity index.
@@ -370,7 +370,7 @@ public class GraphTools {
 		if(two.getMap().size() != mapping.size()) return -1;	// return -1 if the whole graph could be matched
 		return similarityIndex(mapping);
 	}
-	
+
 	/**
 	 * TODO write proper javadoc
 	 * Similarity index for entire mapping.
@@ -389,7 +389,7 @@ public class GraphTools {
 		}
 		return simSum;
 	}
-	
+
 	/**
 	 * TODO fix javadoc
 	 * Scans the list of mappings, and returns the one with best similarity ranking.
@@ -411,7 +411,7 @@ public class GraphTools {
 		}
 		return best;
 	}
-	
+
 	/**
 	 * Returns the best mapping found between the two line groups.
 	 * Similarity index is used for ranking of all possible mappings.
@@ -422,7 +422,7 @@ public class GraphTools {
 	public static Map<XYNode<Line,LineGroup>,XYNode<Line,LineGroup>> getBestNodeMapping(LineGroup one, LineGroup two){
 		return getBestMapping(getNodeMappings(one,two));
 	}
-	
+
 	/**
 	 * TODO write proper javadoc
 	 * Compares the entries in map. Return zero means 100% similar.
@@ -448,7 +448,7 @@ public class GraphTools {
 		}
 		return similarity;
 	}
-	
+
 	/**
 	 * Returns all possible node mappings between the two specified line groups
 	 * based on line type and edges. Group one may be a subgraph of group two.
@@ -458,11 +458,11 @@ public class GraphTools {
 	 */
 	public static List<Map<XYNode<Line,LineGroup>,XYNode<Line,LineGroup>>> getNodeMappings(LineGroup one, LineGroup two) {
 		List<Map<XYNode<Line,LineGroup>,XYNode<Line,LineGroup>>> nodeMaps = new ArrayList<Map<XYNode<Line,LineGroup>,XYNode<Line,LineGroup>>>();
-		
+
 		if((one.getGraph().getNodes().size() == 0) || (two.getGraph().getNodes().size() == 0)) return null;
-		
+
 		IntMatrix M0 = new IntMatrix(one.getGraph().getNodes().size(), two.getGraph().getNodes().size());
-		
+
 		for(int i = 0; i < M0.rowCount(); i++){		// find compatible nodes
 			for(int j = 0; j < M0.colCount(); j++){
 				XYNode<Line,LineGroup> n1 = one.getGraph().getNodes().get(i);
@@ -472,7 +472,7 @@ public class GraphTools {
 				}
 			}
 		}
-		
+
 		IntMatrix A = new IntMatrix(M0.rowCount(),M0.rowCount());
 		for(int i = 0; i < M0.rowCount(); i++){		// make adjacency matrix A
 			for(int i2 = 0; i2 < M0.rowCount(); i2++){
@@ -496,9 +496,9 @@ public class GraphTools {
 				}
 			}
 		}
-		
+
 		List<IntMatrix> mappings = SubgraphMapper.getMapping(M0,A,B);
-		
+
 		Map<XYNode<Line,LineGroup>,XYNode<Line,LineGroup>> nodeMap;
 		if(mappings.size() > 0){
 			for(IntMatrix mapping : mappings){
@@ -513,13 +513,13 @@ public class GraphTools {
 				nodeMaps.add(nodeMap);
 			}
 		}
-		
-		
+
+
 		return nodeMaps;
 	}
 
 	// Below, failed attempt to make graph matching algo. Replaced by algo in class SubgraphMatch.
-	
+
 //	/**
 //	 * Returns a mapping of nodes in line group one to the corresponding nodes in line group two.
 //	 * The method looks at graph structure, edge ports, and line type. The direction of edges is ignored.
@@ -554,16 +554,16 @@ public class GraphTools {
 //	private static Map<XYNode<Line, LineGroup>, XYNode<Line, LineGroup>> getNodeMapping(
 //			XYNode<Line, LineGroup> one, XYNode<Line, LineGroup> two,
 //			Map<XYNode<Line, LineGroup>, XYNode<Line, LineGroup>> higherMapping) {
-//		
+//
 //		Map<XYNode<Line, LineGroup>, XYNode<Line, LineGroup>> nodeMap = new HashMap<XYNode<Line,LineGroup>,XYNode<Line,LineGroup>>();	// init nodeMap
 //		if(higherMapping != null){
 //			if(higherMapping.containsKey(one)) return nodeMap;	//	if the specified node (one) is already mapped (to anything), return an empty nodeMap
 //		}
-//		
+//
 //		// otherwise try to map the node ( = map node one to node two)
 //
 //		if(one.getPiggybackObject().getType() == two.getPiggybackObject().getType()){	// if line types match, continue to match (and map) children
-//		
+//
 //			for(XYEdge<Line,LineGroup> edgeOne : one.getEdges()){	// loop through edges of node one
 //				for(XYEdge<Line,LineGroup> edgeTwo : two.getEdges()){	// loop through edges of node two
 //					XYNode<Line,LineGroup> oppositeNodeOne = edgeOne.getOpposite(one);	// get node on other side of edge one
@@ -573,7 +573,7 @@ public class GraphTools {
 //						nodeMap.put(one, two);
 //						// call self with the new nodes found on the opposite sides of the edges
 //						Map<XYNode<Line, LineGroup>, XYNode<Line, LineGroup>> subNodeMap = getNodeMapping(edgeOne.getOpposite(one),edgeTwo.getOpposite(two),nodeMap);
-//						
+//
 //						if(subNodeMap == null){	// if result is null, there was no match - return null.
 //							return null;
 //						}else{
@@ -582,9 +582,9 @@ public class GraphTools {
 //					}
 //				}
 //			}
-//				
+//
 //		}
-//		
+//
 //		return nodeMap;
 //	}
 
@@ -616,7 +616,7 @@ public class GraphTools {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the edges have the same port values,
 	 * regardless of direction.
@@ -653,7 +653,7 @@ public class GraphTools {
 		}
 	}
 
-	
+
 	/**
 	 * TODO verify result
 	 * Searches the specified line group for crossings that have only two connecting lines
@@ -693,7 +693,7 @@ public class GraphTools {
 			}
 		}
 	}
-	
+
 	/**
 	 * TODO verify result
 	 * Merges the two specified lines into one.
@@ -750,15 +750,15 @@ public class GraphTools {
 				shiftSeam(newSeam,l);
 			}
 		}
-		
+
 		return l;
 	}
-	
+
 	/**
 	 * TODO verify edge list
 	 * Shifts the seam of a closed polygon so that its from-node is at <code>newSeam</code>.
 	 * If <code>newSeam</code> or the line is <code>null</code>, or the line is not a closed polygon,
-	 * or if <code>newSeam</code> is not part of the line, the method will silently return. 
+	 * or if <code>newSeam</code> is not part of the line, the method will silently return.
 	 * @param newSeam	the new seam to set
 	 * @param l	the line (closed polygon) to alter
 	 */
@@ -773,7 +773,7 @@ public class GraphTools {
 			edges.subList(0, seamPos-1).clear();
 		}
 	}
-	
+
 	/**
 	 * TODO fix javadoc
 	 * Returns <code>true</code> if the specified line can validly be disconnected from the line or lines it is connected to,
@@ -785,7 +785,7 @@ public class GraphTools {
 	 */
 	public static boolean canDisconnect(Line l, XYNode<Object,Line> end){
 		if((end == l.getFrom() || end == l.getTo()) && end.getDegree() > 1){
-			
+
 			if(l.getType() == Line.LineType.CIRCLE) return true;	// circles can always be disconnected
 			if(l.getType() == Line.LineType.OTHER_CLOSED_POLYGON) return true;	// OCPs can always be disconnected
 
@@ -797,12 +797,12 @@ public class GraphTools {
 					}
 				}
 			}
-			
+
 			return true;
 		}
 		return false;
 	}
-	
+
 //	/**
 //	 * TODO Method incomplete.
 //	 * Tries to map any structure of the specified jamo to groups in the list of line groups.
@@ -813,19 +813,19 @@ public class GraphTools {
 //	 */
 //	public static Map<LineGroup,Jamo> mapJamo(Jamo j, List<LineGroup> groups) {
 //		Map<LineGroup,Jamo> map = new IdentityHashMap<LineGroup,Jamo>();
-//		
+//
 //		for(List<LineGroup> structure : j.getStructures()){	// for each structure in the jamo
 //			// try to find it in the list of groups
-//			
+//
 //			for(LineGroup jamoPart : structure){
-//				
+//
 //			}
-//			
+//
 //		}
-//		
+//
 //		return map;
 //	}
-	
+
 	/**
 	 * Returns <code>true</code> if the specified lines extend each other.
 	 * If either argument is a circle or other closed polygon, the method will return <code>false</code>.
@@ -859,7 +859,7 @@ public class GraphTools {
 		}
 		return false;
 	}
-	
+
 //	/**
 //	 * TODO method incomplete. Method not needed. Remove method.
 //	 * Returns <code>true</code> if the specified lines can be merged into one.
@@ -871,11 +871,11 @@ public class GraphTools {
 //	private static boolean canMerge(Line one, Line two){
 //		boolean result = false;
 //		if(isConnected(one,two)){
-//			
+//
 //		}
 //		return result;
 //	}
-	
+
 	/**
 	 * Returns <code>true</code> if line one and two are connected
 	 * head-head, tail-tail, head-tail or tail-head.
@@ -889,7 +889,7 @@ public class GraphTools {
 		       (one.getFrom() == two.getTo()) ||
 		       (one.getTo()   == two.getFrom());
 	}
-	
+
 	/**
 	 * Searches specified <code>inputGroups</code> for specified <code>structure</code>.
 	 * Returns <code>null</code> if not found. Otherwise list of mappings.
@@ -901,9 +901,9 @@ public class GraphTools {
 	 */
 	public static List<Map<LineGroup,LineGroup>> getStructureMappings(
 			List<LineGroup> structure, List<LineGroup> inputGroups) {
-		
+
 		List<Map<LineGroup,LineGroup>> groupMappings = new ArrayList<Map<LineGroup,LineGroup>>();	// this is the list that will be returned later
-		
+
 		if(structure == null || structure.size() == 0) return null;	// return null if no structure
 		if(inputGroups == null || inputGroups.size() == 0) return null;	// return null if no input groups
 
@@ -918,7 +918,7 @@ public class GraphTools {
 		for(int n = 0; n < B.rowCount(); n++){		// init adjacency map B, set all nodes adjacent except self-self.
 			B.set(n,n,0);
 		}
-		
+
 		for(int i = 0; i < structure.size(); i++){	// init M0
 			for(int j = 0; j < inputGroups.size(); j++){	// for each structure group compared to each input group
 				if(sameStructure(structure.get(i),inputGroups.get(j))){					// if they are equal, set corresponding map matrix field to 1.
@@ -926,7 +926,7 @@ public class GraphTools {
 				}
 			}
 		}
-		
+
 		List<IntMatrix> mappings = SubgraphMapper.getMapping(M0,A,B);	// get all possible mappings
 
 		Map<LineGroup,LineGroup> groupMapping;
@@ -943,12 +943,12 @@ public class GraphTools {
 				groupMappings.add(groupMapping);
 			}
 		}
-		
+
 		if(groupMappings.size() == 0) return null;
-		
+
 		return groupMappings;
 	}
-	
+
 	/**
 	 * Searches specified <code>inputGroups</code> for specified <code>structure</code>.
 	 * Returns <code>null</code> if not found. Otherwise best mapping.
@@ -1000,7 +1000,7 @@ public class GraphTools {
 								continue nextMapping;	// if visibility between lines is blocked, go to next without adding
 							}
 							dist += inputLG.getPosition().distanceTo(inputLGcomp.getPosition());
-						}	
+						}
 					}
 					candDistances.put(cand,dist);	// store calculated distance sum
 				}
@@ -1113,7 +1113,7 @@ public class GraphTools {
 		}
 		return a;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if a line can be drawn from line group one to line group two
 	 * without crossing any lines in <code>groups</code> (excluding the two line groups).
@@ -1160,12 +1160,12 @@ public class GraphTools {
 		LineGroup firstPart = new LineGroup();
 		LineGroup secondPart = new LineGroup();
 		List<LineGroup> parts = new ArrayList<LineGroup>();
-		
+
 		Map<XYNode<Line,LineGroup>,XYNode<Line,LineGroup>> invMap = new IdentityHashMap<XYNode<Line,LineGroup>,XYNode<Line,LineGroup>>();
 		for(XYNode<Line,LineGroup> key : map.keySet()){	// invert map (keys -> values, values -> keys)
 			invMap.put(map.get(key),key);
 		}
-		
+
 		for(XYNode<Line,LineGroup> n : whole.getGraph().getNodes()){
 			XYNode<Line,LineGroup> mapped = invMap.get(n);
 			if(structGroup.getGraph().getNodes().contains(mapped)){	// cannot do this. need map.
@@ -1174,16 +1174,16 @@ public class GraphTools {
 				secondPart.addNode(n);
 			}
 		}
-		
+
 		connectAllLines(firstPart);
 		connectAllLines(secondPart);
-		
+
 		// try to split firstPart and secondPart
-		
+
 		if(firstPart.getMap().size() == 0 || secondPart.getMap().size() == 0){
-			return null;	// if no disconnection could be made, return 
+			return null;	// if no disconnection could be made, return
 		}
-		
+
 		Set<XYNode<Object,Line>> mutualPoints = getMutualPoints(firstPart,secondPart);
 		for(Line one : firstPart.getMap().keySet()){
 			if(mutualPoints.contains(one.getFrom()) && !canDisconnect(one,one.getFrom())){
@@ -1194,17 +1194,17 @@ public class GraphTools {
 			}
 		}
 		System.out.println(mutualPoints);
-		
+
 		mendLines(firstPart);
 		mendLines(secondPart);
-		
+
 //		Helper.p(firstPart+" + "+secondPart+"\n");
-		
+
 		parts.add(firstPart);
 		parts.add(secondPart);
 		return parts;
 	}
-	
+
 	/**
 	 * Traverses the line in the specified line group and
 	 * creates edges for adjacent lines.
@@ -1321,7 +1321,7 @@ public class GraphTools {
 //			mendLines(lg);
 //		}
 //	}
-	
+
 	/**
 	 * Returns a list of lines adjacent to the specified line.
 	 * @param l	the line for which to find adjacent lines
@@ -1336,9 +1336,9 @@ public class GraphTools {
 		}
 		return n;
 	}
-	
-	
-		
+
+
+
 //		while(endNodes.size() > 0){	// while there are still unchecked head/tail nodes
 //			XYNode<Object,Line> n = endNodes.get(0);
 //			XYNode<Object,Line> closest = g.getNodes().get(0);	// init values
@@ -1372,10 +1372,10 @@ public class GraphTools {
 //	private static int getSimilarity(XYNode<Line, LineGroup> one, XYNode<Line, LineGroup> two){
 //		Map<XYNode<Line, LineGroup>,XYEdge<Line, LineGroup>>
 //		for(XYEdge<Line, LineGroup> e : one.getEdges()){
-//			
+//
 //		}
 //	}
-	
+
 
 //	/**
 //	 * Returns <code>true</code> if the structure of line group one is the same as that of the specified one.
@@ -1400,7 +1400,7 @@ public class GraphTools {
 //			}
 //		}
 //		// END find lowest frequency, lowest line type stored in lowest_lt.
-//		
+//
 //		// Make a list of possible starting nodes in this line group
 //		List<XYNode<Line,LineGroup>> startingPoints = new ArrayList<XYNode<Line,LineGroup>>();
 //		for(Line l : one.getMap().keySet()){
@@ -1408,7 +1408,7 @@ public class GraphTools {
 //				startingPoints.add(one.getMap().get(l));
 //			}
 //		}
-//		
+//
 //		// Make a list of possible starting nodes in the other line group	// TODO I don't need a list here, only one node. Fix later.
 //		List<XYNode<Line,LineGroup>> startingPointsOther = new ArrayList<XYNode<Line,LineGroup>>();
 //		for(Line l : two.getMap().keySet()){
@@ -1416,7 +1416,7 @@ public class GraphTools {
 //				startingPointsOther.add(two.getMap().get(l));
 //			}
 //		}
-//		
+//
 //		// Loop through the lists until line group match is found, if no match is found do nothing.
 //		for(XYNode<Line,LineGroup> start : startingPoints){
 //			for(XYNode<Line,LineGroup> start2 : startingPointsOther){
@@ -1425,10 +1425,10 @@ public class GraphTools {
 //				}
 //			}
 //		}
-//		
+//
 //		return 0;	// there was no match (maybe replace with -1?)
 //	}
-	
+
 //	/**
 //	 * TODO Move this to GraphTools
 //	 * @param first
@@ -1440,15 +1440,15 @@ public class GraphTools {
 //	private static boolean sameStructure(LineGroup first, LineGroup second, XYNode<Line,LineGroup> firstStart, XYNode<Line,LineGroup> secondStart){
 //		Map<XYNode<Line,LineGroup>, XYNode<Line,LineGroup>> nodeMap = new HashMap<XYNode<Line,LineGroup>, XYNode<Line,LineGroup>>();
 //		Map<XYEdge<Line,LineGroup>, XYEdge<Line,LineGroup>> edgeMap = new HashMap<XYEdge<Line,LineGroup>, XYEdge<Line,LineGroup>>();
-//		
+//
 //		nodeMap.put(firstStart, secondStart);
 //		for(XYEdge<Line,LineGroup> e : firstStart.getEdges()){
 //			edgeMap.put(e, null);
 //		}
-//		
+//
 //		return false;
 //	}
-	
+
 //	Map<XYNode<NP,EP>,XYNode<NP,EP>> nodeMap = new HashMap<XYNode<NP,EP>,XYNode<NP,EP>>();	// map for mapping nodes to their clones
 //	for(XYNode<NP,EP> n : getNodes()){	// for each node
 //		XYNode<NP,EP> new_n = (XYNode<NP,EP>) n.clone();	// clone it

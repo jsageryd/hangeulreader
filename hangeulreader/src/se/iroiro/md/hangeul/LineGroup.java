@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -30,11 +30,11 @@ public class LineGroup extends AbstractXYPositioned {
 	//TODO Change 'Object' to ConnectionType or similar.
 	private Graph<Line,LineGroup> graph = null;
 	private Map<Line,XYNode<Line,LineGroup>> map = null;
-	
+
 	private Coordinate position = null;
 	private Coordinate topleft = null;
 	private Coordinate bottomright = null;
-	
+
 	/**
 	 * This method always returns Double.NaN, as the angle for a group is not defined.
 	 * @return	always returns Double.NaN
@@ -86,7 +86,7 @@ public class LineGroup extends AbstractXYPositioned {
 		}
 		reset();
 	}
-	
+
 	/**
 	 * Returns the graph of the line group. This never returns null.
 	 * @return	the graph of the line group
@@ -114,7 +114,7 @@ public class LineGroup extends AbstractXYPositioned {
 		}
 		return false;
 	}
-	
+
 	public boolean addNode(XYNode<Line,LineGroup> n){
 		if(n != null && n.getPiggybackObject() != null &&
 				!getGraph().getNodes().contains(n) && !contains(n.getPiggybackObject())){
@@ -125,7 +125,7 @@ public class LineGroup extends AbstractXYPositioned {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Connects the specified lines by creating an edge between them in the graph.
 	 * Both lines have to exist in the group.
@@ -143,7 +143,7 @@ public class LineGroup extends AbstractXYPositioned {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns the map. Never returns null.
 	 * @return	the map
@@ -169,7 +169,7 @@ public class LineGroup extends AbstractXYPositioned {
 		}
 		reset();
 	}
-	
+
 	public boolean contains(Line l){
 		return getMap().containsKey(l);
 	}
@@ -186,7 +186,7 @@ public class LineGroup extends AbstractXYPositioned {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns the coordinate of the top left point of the rectangle bounding this line group.
 	 * @return	the coordinate of the top left point of the bounding rectangle
@@ -218,7 +218,7 @@ public class LineGroup extends AbstractXYPositioned {
 		}
 		return bottomright;
 	}
-	
+
 	/**
 	 * Resets cached fields.
 	 */
@@ -227,7 +227,7 @@ public class LineGroup extends AbstractXYPositioned {
 		topleft = null;
 		bottomright = null;
 	}
-	
+
 	/**
 	 * Returns the string representations of all the lines contained in the line group,
 	 * enclosed in square brackets.
@@ -255,7 +255,7 @@ public class LineGroup extends AbstractXYPositioned {
 	public double getHeight() {
 		return getTopLeft().getY() - getBottomRight().getY();
 	}
-	
+
 //	/**
 //	 * Clones the line group.
 //	 * Simple returns a new line group with a cloned graph and lines, and all caches reset.
@@ -280,5 +280,5 @@ public class LineGroup extends AbstractXYPositioned {
 //			throw new RuntimeException(e);
 //		}
 //	}
-	
+
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.graph;
 
@@ -9,66 +9,66 @@ package se.iroiro.md.graph;
  *
  */
 public interface Coordinate {
-	
+
 	/**
 	 * Returns the <i>x</i>-coordinate in Cartesian format.
 	 * @return	the <i>x</i>-coordinate
 	 */
 	public double getX();
-	
+
 	/**
 	 * Sets the <i>x</i>-coordinate in Cartesian format.
 	 * @param x	the <i>x</i>-coordinate
 	 */
 	public void setX(double x);
-	
+
 	/**
 	 * Returns the <i>x</i>-coordinate in java format.
 	 * Note that this method exists only for conformity and returns the same value as {@link Coordinate#getX()}.
 	 * @return	the <i>x</i>-coordinate in java format
 	 */
 	public double getJavaX();
-	
+
 	/**
 	 * Sets the <i>x</i>-coordinate in java format.
 	 * Note that this method exists only for conformity and sets the same value as {@link Coordinate#setX(double)}.
 	 * @param x	the <i>x</i>-coordinate in java format
 	 */
 	public void setJavaX(double x);
-	
+
 	/**
 	 * Returns the <i>y</i>-coordinate in Cartesian format.
 	 * @return	the <i>y</i>-coordinate
 	 */
 	public double getY();
-	
+
 	/**
 	 * Sets the <i>y</i>-coordinate in Cartesian format.
 	 * @param y	the <i>y</i>-coordinate
 	 */
 	public void setY(double y);
-	
+
 	/**
 	 * Returns the <i>y</i>-coordinate in java format.
 	 * This method returns <code>-</code>{@link Coordinate#getY()}.
 	 * @return	the <i>y</i>-coordinate in java format
 	 */
 	public double getJavaY();
-	
+
 	/**
 	 * Sets the <i>y</i>-coordinate in java format.
 	 * This methods calls {@link Coordinate#setY(double)} with </code>-y</code> as argument.
 	 * @param y	the <i>y</i>-coordinate in java format
 	 */
 	public void setJavaY(double y);
-	
+
 	/**
 	 * Determines if this <code>Coordinate</code> has the same coordinate as the specified <code>Coordinate</code>
 	 * @param other	other coordinate
 	 * @return	<code>true</code> if this <code>Coordinate</code> has the same coordinate as the other <code>Coordinate</code>
 	 */
 	public boolean isSamePositionAs(Coordinate other);
-	
+
 	/**
 	 * Returns the angle in radians to the specified coordinate. 0 = right, PI / 2 = up.
 	 * If the angle cannot be determined (i.e. coordinates are the same), Double.NaN is returned.
@@ -76,7 +76,7 @@ public interface Coordinate {
 	 * @return	angle in radians
 	 */
 	public double getAngleTo(Coordinate other);
-	
+
 	/**
 	 * Translates this point, at location [<i>x</i>,<i>y</i>],
 	 * by <code>dx</code> along the <i>x</i>-axis and <code>dy</code>
@@ -86,27 +86,27 @@ public interface Coordinate {
 	 * @param dy	the distance to move this coordinate along the <i>y</i>-axis
 	 */
 	public void translate(double dx, double dy);
-	
+
 	/**
 	 * Returns a string representation of the coordinate in the form <code>[x,y]</code> with two decimal places.
 	 * @return	a string representation of the coordinate
 	 */
 	public String toString();
-	
+
 	/**
 	 * Sets the <i>x</i>- and <i>y</i>-coordinates in Cartesian format.
 	 * @param x	the <i>x</i>-coordinate
 	 * @param y	the <i>y</i>-coordinate
 	 */
 	public void setXY(double x, double y);
-	
+
 	/**
 	 * Rotates the coordinate <code>angle</code> radians around pivot point <code>pivot</code>.
 	 * @param angle	angle in radians
 	 * @param pivot	pivot point
 	 */
 	public void rotate(double angle, Coordinate pivot);
-	
+
 	/**
 	 * Returns the Euclidian distance between this coordinate and the specified coordinate.
 	 * @param c	the coordinate to measure the distance to
@@ -134,11 +134,11 @@ public interface Coordinate {
 	 * @see	Coordinate#scale(double, double)
 	 */
 	public Coordinate scale(double m);
-	
+
 	/**
 	 * Returns a copy of this coordinate.
 	 * @return	a copy of this coordinate
 	 */
 	public Object clone();
-	
+
 }

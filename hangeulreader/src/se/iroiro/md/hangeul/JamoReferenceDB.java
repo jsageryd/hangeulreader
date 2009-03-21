@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -25,7 +25,7 @@ public class JamoReferenceDB {
 
 	private List<Jamo> jamoDB = null;
 	private List<Font> fonts = null;
-	
+
 	/**
 	 * A map for quick jamo lookup based on structure.
 	 * A jamo object contains a list of structures,
@@ -33,7 +33,7 @@ public class JamoReferenceDB {
 	 * to each jamo object.
 	 */
 	private Map<List<LineGroup>,Jamo> structureMap = null;
-	
+
 	/**
 	 * A list to accompany the structureMap, to get correct order.
 	 */
@@ -43,7 +43,7 @@ public class JamoReferenceDB {
 	 * A list to accompany the structureMap, ordering all line groups by their line count.
 	 */
 	private List<LineGroup> structureLineGroups = null;
-	
+
 	/**
 	 * Generates a jamo reference database.
 	 */
@@ -58,7 +58,7 @@ public class JamoReferenceDB {
 	public List<List<LineGroup>> getStructureMapOrdering() {
 		return structureMapOrdering;
 	}
-	
+
 	/**
 	 * Returns a sorted list of the line groups contained in the structure map.
 	 * @return	a sorted list of the line groups found in the structure map
@@ -75,7 +75,7 @@ public class JamoReferenceDB {
 		}
 		return structureLineGroups;
 	}
-	
+
 	/**
 	 * Comparator class for sorting a list of line groups by number of lines contained,
 	 * in descending order.
@@ -98,7 +98,7 @@ public class JamoReferenceDB {
 	public Map<List<LineGroup>,Jamo> getStructureMap() {
 		return structureMap;
 	}
-	
+
 	/**
 	 * Generates the jamo database if it is not already created.
 	 */
@@ -118,7 +118,7 @@ public class JamoReferenceDB {
 //			}
 		}
 	}
-	
+
 	/**
 	 * Comparator class for sorting a list of line structures by primarily the line group count,
 	 * secondarily the total number of lines contained, in descending order.
@@ -160,7 +160,7 @@ public class JamoReferenceDB {
 	private List<Jamo> scanAllJamo(){
 		System.out.print("Building jamo database...");
 		List<Jamo> jamoDB = new ArrayList<Jamo>();
-		
+
 		StringBuilder jamos = new StringBuilder();
 
 		/* Initial jamo */
@@ -175,7 +175,7 @@ public class JamoReferenceDB {
 		for(char c = '\u11A8'; c <= '\u11C2'; c++){
 			jamos.append(c);
 		}
-		
+
 		char c;
 		Jamo j;
 		for(int i = 0; i < jamos.length(); i++){
@@ -189,7 +189,7 @@ public class JamoReferenceDB {
 //				j.addStructure(getCharacterLineGroups(c,font,150));
 //				j.addStructure(getCharacterLineGroups(c,font,200));
 ////				j.addStructure(getCharacterLineGroups(c,font,300));
-//				
+//
 //				/* Special cases, auto image generation */
 ////				if(c == 'ᄀ') j.addStructure(getCharacterLineGroups('コ',font,50));	// ᄀ sometimes looks similar to コ
 //				if(c == '\u1100') j.addStructure(getCharacterLineGroups('\u30B3',font,50));	// ᄀ sometimes looks similar to コ
@@ -223,8 +223,8 @@ public class JamoReferenceDB {
 		System.out.println("done.");
 		return jamoDB;
 	}
-	
-	
+
+
 	/**
 	 * Returns a list of all fonts that are available.
 	 * @return	a list of all available fonts
@@ -232,7 +232,7 @@ public class JamoReferenceDB {
 	public List<Font> getFonts() {
 		if(fonts != null) return fonts;
 		fonts = new ArrayList<Font>();
-		
+
 		final String ps = File.separator;
 		String fontDir = System.getProperty("user.dir")+ps+"data"+ps+"fonts"+ps;
 		File file = new File(fontDir);
@@ -262,7 +262,7 @@ public class JamoReferenceDB {
 
 		return fonts;
 	}
-	
+
 	/**
 	 * TODO fix javadoc
 	 * Creates an image of the specified character, scans it and returns the list of line groups found.
@@ -275,5 +275,5 @@ public class JamoReferenceDB {
 		CharacterMeasurement cm = new CharacterMeasurement(img);
 		return cm.getLineGroups();
 	}
-	
+
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -20,7 +20,7 @@ public class CharacterMeasurement {
 
 	private List<LineGroup> lineGroups = null;
 	private ImageReader imageReader = null;
-	
+
 	/**
 	 * Class constructor. Takes an image filename as argument.
 	 * The image may be any raster format supported by the <code>BufferedImage</code> class.
@@ -39,7 +39,7 @@ public class CharacterMeasurement {
 		imageReader = new ImageReader(image);
 		go();
 	}
-	
+
 	/**
 	 * Runs all methods needed for the classification process.
 	 * This method is called by the constructor after the image has been converted to a graph matrix by the image reader.
@@ -79,7 +79,7 @@ public class CharacterMeasurement {
 	public List<LineGroup> getLineGroups() {
 		return lineGroups;
 	}
-	
+
 	/**
 	 * Returns the input image.
 	 * @return	the input image

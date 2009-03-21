@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeulreader;
 
@@ -14,7 +14,7 @@ import java.io.UnsupportedEncodingException;
  *
  */
 public class Helper {
-	
+
 	public static void dump(String s, String fileName){
 		PrintStream ps = null;
 		try{
@@ -27,7 +27,7 @@ public class Helper {
 			ps.close();
 		}
 	}
-	
+
 	public static void p(Object o){
 		if(o != null){
 			p(o.toString());
@@ -35,19 +35,19 @@ public class Helper {
 			p("null");
 		}
 	}
-	
+
 	public static void p(boolean b){
 		p(Boolean.toString(b));
 	}
-	
+
 	public static void p(int i){
 		p(Integer.toString(i));
 	}
-	
+
 	public static void p(char c){
 		p(Character.toString(c));
 	}
-	
+
 	public static void p(String s){
 		try {
 			PrintStream ps = new PrintStream(System.out, true, "UTF-8");
@@ -76,4 +76,5 @@ public class Helper {
 //			System.out.println();
 //		}
 //	}
+
 }
