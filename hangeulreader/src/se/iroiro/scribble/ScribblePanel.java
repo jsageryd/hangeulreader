@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.scribble;
 
@@ -26,32 +26,32 @@ import javax.swing.JPanel;
 public class ScribblePanel extends JPanel {
 
 	private Graphics2D bufferg2d;
-	
+
 	private int width = 0;
 	private int height = 0;
-	
+
 	private int x = 0;
 	private int y = 0;
-	
+
 	private BufferedImage buffer;
-	
+
 	public void paintComponent(Graphics g){
 		super.paintComponents(g);
 		Graphics2D g2d = (Graphics2D) g.create();
 		g2d.drawImage(buffer,0,0,null);
 	}
-	
+
 	/**
-	 *	Empty class constructor. 
+	 *	Empty class constructor.
 	 */
 	public ScribblePanel() {
 		this(null);
 	}
-	
+
 	public ScribblePanel(ScribbleEventNotifier sen){
 		this(sen,300,300,null);
 	}
-	
+
 	/**
 	 * @param width
 	 * @param height
@@ -69,7 +69,7 @@ public class ScribblePanel extends JPanel {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		setPreferredSize(new Dimension(width,height));
-		
+
 		class MA extends MouseAdapter{	// extended in inner class to use custom event notifier
 			ScribbleEventNotifier sen;
 			public MA(ScribbleEventNotifier sen){
@@ -112,9 +112,9 @@ public class ScribblePanel extends JPanel {
 				}
 			}
 		});
-		
+
 	}
-	
+
 	/**
 	 * Clears the image buffer by filling it with white.
 	 */
@@ -129,7 +129,7 @@ public class ScribblePanel extends JPanel {
 		this.x = x;
 		this.y = y;
 		update(getGraphics());
-		
+
 	}
 
 	protected void lineTo(int x, int y) {
@@ -160,7 +160,7 @@ public class ScribblePanel extends JPanel {
 			bufferg2d.setColor(penColour);
 		}
 	}
-	
+
 	/**
 	 * Returns the image buffer.
 	 * @return	the image buffer

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -16,7 +16,7 @@ import se.iroiro.md.graph.simple.SimpleCoordinate;
  *
  */
 public class Jamo {
-	
+
 	private char jamo;
 //	private List<LineGroup> lineGroups = null;
 	private List<List<LineGroup>> structures = null;
@@ -36,7 +36,7 @@ public class Jamo {
 	public Jamo(char jamo){
 		this.jamo = jamo;
 	}
-	
+
 	/**
 	 * Creates a jamo representing the specified character, with the specified list of possible structures.
 	 * @param jamo	the character to represent
@@ -46,7 +46,7 @@ public class Jamo {
 		this(jamo);
 		this.structures = structures;
 	}
-	
+
 	/**
 	 * Creates a jamo, copying the character, structure list and mapping from the specified jamo.
 	 * Structure list and mapping are copied by reference only.
@@ -66,7 +66,7 @@ public class Jamo {
 		if(structures == null) structures = new ArrayList<List<LineGroup>>();
 		return structures;
 	}
-	
+
 	/**
 	 * Adds a possible structure to the list of structures.
 	 * @param structure	the structure to add
@@ -74,7 +74,7 @@ public class Jamo {
 	public void addStructure(List<LineGroup> structure){
 		getStructures().add(structure);
 	}
-	
+
 	/**
 	 * Returns the jamo type of this jamo.
 	 * @return	the jamo type
@@ -89,7 +89,7 @@ public class Jamo {
 		}
 		return jamoType.UNKNOWN;
 	}
-	
+
 	/**
 	 * Returns the name of the jamo.
 	 * @return the name of the character
@@ -114,7 +114,7 @@ public class Jamo {
 			"LB", "LS", "LT", "LP", "LH", "M", "B", "BS",
 			"S", "SS", "NG", "J", "C", "K", "T", "P", "H"
 		};
-		
+
 		switch(getType()) {
 		case INITIAL:
 			return INITIAL[jamo - INITIAL_BASE];
@@ -126,7 +126,7 @@ public class Jamo {
 			throw new IllegalArgumentException("Not a Jamo: " + jamo);
 		}
 	}
-	
+
 	/**
 	 * Returns the jamo character.
 	 * @return	the character
@@ -134,7 +134,7 @@ public class Jamo {
 	public char getChar(){
 		return jamo;
 	}
-	
+
 	/**
 	 * Returns the character as a string.
 	 * @return	the character as a string
@@ -150,7 +150,7 @@ public class Jamo {
 	public void setMapping(Map<LineGroup, LineGroup> map) {
 		this.map = map;
 	}
-	
+
 	/**
 	 * Returns the mapping from structures to real lines for this jamo.
 	 * @return	the mapping from structures to real lines
@@ -158,7 +158,7 @@ public class Jamo {
 	public Map<LineGroup,LineGroup> getMapping(){
 		return map;
 	}
-	
+
 	/**
 	 * Returns the real position of this jamo.
 	 * This is dependent on the mapping object, so this must be set.

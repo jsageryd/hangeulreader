@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.graph.simple;
 
@@ -17,12 +17,12 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 	 * Cartesian X-coordinate
 	 */
 	private double x;
-	
+
 	/**
 	 * Cartesian Y-coordinate
 	 */
 	private double y;
-	
+
 	/**
 	 * Class constructor. <i>x</i> and <i>y</i> are Cartesian coordinates.
 	 * @param x	x-coordinate
@@ -32,7 +32,7 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	/**
 	 * Class constructor.
 	 * The values of the <i>x</i>- and <i>y</i>-coordinate are copied from the specified <code>Coordinate</code>.
@@ -128,7 +128,7 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 		x += dx;
 		y += dy;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -173,11 +173,11 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 	public Coordinate scale(double xm, double ym) {
 		return new SimpleCoordinate(getX()*xm,getY()*ym);
 	}
-	
+
 	public Coordinate scale(double m) {
 		return scale(m,m);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
@@ -188,5 +188,5 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 }

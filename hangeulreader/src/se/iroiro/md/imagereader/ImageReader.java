@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.imagereader;
 
@@ -22,7 +22,7 @@ public class ImageReader {
 	private int scale = 0;	// Explicitly set scale = 2 for faster processing.
 	private static final int DEFAULT_RESOLUTION = 2000;
 //	private static final int DEFAULT_RESOLUTION = 60;
-	
+
 	/**
 	 * Class constructor. Loads the image file specified. Uses a default resolution of 150.
 	 * @param fileName
@@ -31,7 +31,7 @@ public class ImageReader {
 	public ImageReader(String fileName){
 		this(fileName, DEFAULT_RESOLUTION);
 	}
-	
+
 	/**
 	 * Class constructor. Loads the specified image. Uses a default resolution of 150.
 	 * @param image
@@ -40,7 +40,7 @@ public class ImageReader {
 	public ImageReader(BufferedImage image){
 		this(image, DEFAULT_RESOLUTION);
 	}
-	
+
 	/**
 	 * Class constructor. Loads the specified image. Calculates the scale based on the specified resolution.
 	 * @param image	the image to load
@@ -65,7 +65,7 @@ public class ImageReader {
 		matrix = new GraphMatrix(image.getWidth()/getScale()+1, image.getHeight()/getScale()+1);
 		populateNodes();
 	}
-	
+
 	/**
 	 * Class constructor. Loads the image file specified. Calculates the scale based on the specified resolution.
 	 * @param fileName	the image file name
@@ -87,7 +87,7 @@ public class ImageReader {
 		matrix = new GraphMatrix(image.getWidth()/getScale(), image.getHeight()/getScale());
 		populateNodes();
 	}
-	
+
 	/**
 	 * Class constructor. Loads the image file specified. Uses the specified fixed scale rather than calculating it.
 	 * @param scale	the scale to use
@@ -104,7 +104,7 @@ public class ImageReader {
 		matrix = new GraphMatrix(image.getWidth()/getScale(), image.getHeight()/getScale());
 		populateNodes();
 	}
-	
+
 
 	/**
 	 * Returns the calculated scale. The scale is calculated based on the image dimensions and the specified resolution.
@@ -116,7 +116,7 @@ public class ImageReader {
 		int s = (int) Math.rint((image.getWidth() + image.getHeight()) / 2.0 / resolution);
 		return s < 1 ? 1 : s;
 	}
-	
+
 	/**
 	 * Returns the scale used. Scale 1 means every pixel, scale 2 means every other pixel, and so on.
 	 * The higher the scale value, the more pixels skipped.
@@ -125,7 +125,7 @@ public class ImageReader {
 	public int getScale(){
 		return scale;
 	}
-	
+
 	/**
 	 * Returns the input image.
 	 * @return	the input image
@@ -133,7 +133,7 @@ public class ImageReader {
 	public BufferedImage getImage(){
 		return image;
 	}
-	
+
 	/**
 	 * Populates the graph matrix based on the image data.
 	 */
@@ -151,7 +151,7 @@ public class ImageReader {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the specified coordinate is determined to be coloured (i.e. positive).
 	 * @param img	the image to scan
@@ -179,4 +179,5 @@ public class ImageReader {
 	public GraphMatrix getMatrix() {
 		return matrix;
 	}
+
 }

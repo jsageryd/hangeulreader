@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -41,14 +41,14 @@ public class Corner extends AbstractXYPositioned implements XYPositioned {
 		while(two < one) two += Math.PI * 2;
 		return two - one;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYPositioned#getPosition()
 	 */
 	public Coordinate getPosition() {
 		return centre;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYPositioned#rotate(double, se.iroiro.md.graph.Coordinate)
 	 */
@@ -57,7 +57,7 @@ public class Corner extends AbstractXYPositioned implements XYPositioned {
 		centre.rotate(angle, pivot);
 		right.rotate(angle, pivot);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYPositioned#setPosition(double, double)
 	 */
@@ -66,7 +66,7 @@ public class Corner extends AbstractXYPositioned implements XYPositioned {
 		left.translate(x-left.getX(), y-left.getY());
 		right.translate(x-right.getX(), y-right.getY());
 	}
-	
+
 	/**
 	 * Flips the corner so that inside becomes outside and outside becomes inside.
 	 * A 90-degree corner becomes a 270-degree corner.
@@ -92,5 +92,5 @@ public class Corner extends AbstractXYPositioned implements XYPositioned {
 	public Coordinate getRight(){
 		return right;
 	}
-	
+
 }

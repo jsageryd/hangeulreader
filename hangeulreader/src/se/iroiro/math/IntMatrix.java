@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package se.iroiro.math;
 
 /**
  * This class represents matrix of integer values and contains selection of methods to manipulate it.
  * Note that the first cell in the matrix is (0,0) and not (1,1).
- * 
+ *
  * @author j
  *
  */
@@ -16,21 +16,21 @@ public class IntMatrix implements Cloneable {
 	 * Internal storage
 	 */
 	private int[][] A;
-	
+
 	/**
 	 * Row dimension
 	 */
 	private int rows;
-	
+
 	/**
 	 * Column dimension
 	 */
 	private int cols;
-	
+
 	/**
 	 * Creates an matrix of size <code>rows</code>*<code>columns</code>
 	 * and initialises all its values to zero.
-	 * 
+	 *
 	 * @param rows	the row dimension
 	 * @param cols	the column dimension
 	 */
@@ -41,7 +41,7 @@ public class IntMatrix implements Cloneable {
 	/**
 	 * Creates an matrix of size <code>rows</code>*<code>columns</code>
 	 * and initialises all its values to the specified value.
-	 * 
+	 *
 	 * @param rows	the row dimension
 	 * @param cols	the column dimension
 	 * @param value	the value to set all cells to
@@ -52,7 +52,7 @@ public class IntMatrix implements Cloneable {
 		A = new int[rows][cols];
 		setAll(value);
 	}
-	
+
 	/**
 	 * Sets all cells in this matrix to <code>value</code>.
 	 * @param value	the value to set
@@ -64,7 +64,7 @@ public class IntMatrix implements Cloneable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns a deep copy of the object.
 	 */
@@ -78,7 +78,7 @@ public class IntMatrix implements Cloneable {
 		}
 		return X;
 	}
-	
+
 	/**
 	 * Sets the value of the specified cell.
 	 * @param row	the row of the cell
@@ -88,7 +88,7 @@ public class IntMatrix implements Cloneable {
 	public void set(int row, int column, int value){
 		A[row][column] = value;
 	}
-	
+
 	/**
 	 * Returns the value of the specified cell.
 	 * @param row	the row of the cell
@@ -147,7 +147,7 @@ public class IntMatrix implements Cloneable {
 		}
 		return X;
 	}
-	
+
 	/**
 	 * Multiplies this matrix with the the specified scalar and returns a new matrix with the result.
 	 * @param s	the scalar to multiply with
@@ -163,7 +163,7 @@ public class IntMatrix implements Cloneable {
 		}
 		return X;
 	}
-	
+
 	/**
 	 * Multiplies this matrix with the the specified one and returns a new matrix with the result.
 	 * @param B	the matrix to multiply with
@@ -207,7 +207,7 @@ public class IntMatrix implements Cloneable {
 		}
 		return s;
 	}
-	
+
 	/**
 	 * Throws exception if the dimensions of the specified matrix differ from this one's.
 	 * @param B	the matrix to check
@@ -233,5 +233,5 @@ public class IntMatrix implements Cloneable {
 	public int colCount() {
 		return cols;
 	}
-	
+
 }

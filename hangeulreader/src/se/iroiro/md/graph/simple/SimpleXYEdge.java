@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.graph.simple;
 
@@ -22,15 +22,15 @@ public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEd
 	private Coordinate topleft = null;
 	private Coordinate bottomright = null;
 	private LineEquation equation = null;
-	
+
 	private int headPort = -1;
 	private int tailPort = -1;
-	
+
 	/**
 	 * Class constructor. Empty.
 	 */
 	public SimpleXYEdge(){}
-	
+
 	/**
 	 * Class constructor with node arguments
 	 * @param from	from-node
@@ -40,7 +40,7 @@ public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEd
 		setFrom(from);
 		setTo(to);
 	}
-	 
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYEdge#getFrom()
 	 */
@@ -123,7 +123,7 @@ public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEd
 	public void setPosition(Coordinate position) {
 		throw new UnsupportedOperationException("This class has no position field. Use setPosition(double x, double y) instead.");
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYPositioned#setPosition(double, double)
 	 */
@@ -186,7 +186,7 @@ public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEd
 //		return (x >= getTopLeft().getX() && x <= getBottomRight().getX())
 //		&& (y <= getTopLeft().getY() && y >= getBottomRight().getY());
 //	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYEdge#getEquation()
 	 */
@@ -225,12 +225,12 @@ public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEd
 			reset();
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return getFrom().toString() + " -> " + getTo().toString();	
+		return getFrom().toString() + " -> " + getTo().toString();
 	}
 
 	/* (non-Javadoc)
@@ -291,4 +291,5 @@ public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEd
 	public void setTailPort(int tp) {
 		tailPort = tp;
 	}
+
 }

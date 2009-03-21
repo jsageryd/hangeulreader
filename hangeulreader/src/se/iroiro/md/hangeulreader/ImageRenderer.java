@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeulreader;
 
@@ -26,7 +26,7 @@ import se.iroiro.md.imagereader.GraphMatrix;
  *
  */
 public class ImageRenderer {
-	
+
 	private BufferedImage image;
 	private CharacterMeasurement cm;
 	private Graphics2D g2d;
@@ -34,7 +34,7 @@ public class ImageRenderer {
 	private Color nodeColour = DEFAULT_NODE_COLOUR;
 	private int currentColour = -1;
 	private double scale = 1;
-	
+
 	private static final int STROKE_WIDTH = 1;
 	private static final Color DEFAULT_COLOUR = Color.BLACK;
 	private static final Color DEFAULT_EDGE_COLOUR = Color.BLUE;
@@ -49,7 +49,7 @@ public class ImageRenderer {
 		Color.PINK,
 		Color.YELLOW
 	};
-	
+
 	/**
 	 * Class constructor. Data will be read from the specified character measurement.
 	 * @param cm	the character measurement
@@ -61,7 +61,7 @@ public class ImageRenderer {
 		initg2d();
 		draw();
 	}
-	
+
 	/**
 	 * Draws everything.
 	 */
@@ -73,7 +73,7 @@ public class ImageRenderer {
 		drawLines();
 //		drawMatrix();
 	}
-	
+
 	/**
 	 * Creates the <code>Graphics2D</code> object and loads it with default parameters.
 	 */
@@ -84,7 +84,7 @@ public class ImageRenderer {
 		if(STROKE_WIDTH > 2) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	}
-	
+
 	/**
 	 * Sets the stroke width of the <code>Graphics2D</code>.
 	 * @param width	the stroke width
@@ -92,7 +92,7 @@ public class ImageRenderer {
 	private void setStroke(int width){
 		g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	}
-	
+
 	/**
 	 * Returns the rendered image.
 	 * @return	the rendered image
@@ -100,7 +100,7 @@ public class ImageRenderer {
 	public BufferedImage getImage() {
 		return image;
 	}
-	
+
 	/**
 	 * Draws the input image on the canvas.
 	 */
@@ -125,7 +125,7 @@ public class ImageRenderer {
 					(int) (lg.getTopLeft().scale(scale).getY()-lg.getBottomRight().scale(scale).getY()+2*scale));
 		}
 	}
-	
+
 	/**
 	 * Draws all the lines
 	 */
@@ -164,7 +164,7 @@ public class ImageRenderer {
 //			}
 		}
 	}
-	
+
 	/**
 	 * Draws the underlying graph matrix
 	 */
@@ -195,7 +195,7 @@ public class ImageRenderer {
 			}
 		}
 	}
-	
+
 //	private void drawCorner(Corner c){
 //		g2d.setColor(Color.WHITE);
 //		setStroke(2);
@@ -203,7 +203,7 @@ public class ImageRenderer {
 //		drawLine(c.getPosition().scale(scale),c.getRight());
 //		setStroke(STROKE_WIDTH);
 //	}
-	
+
 	private void drawText(String text, int x, int y, Color c){
 		String fontname = "Verdana";
 		int fontsize = 10;
@@ -227,7 +227,7 @@ public class ImageRenderer {
 		drawText(text, x-offset, y+offset, b);
 		drawText(text, x, y, c);
 	}
-	
+
 	/**
 	 * Returns a random colour.
 	 * @return	a random colour
@@ -249,7 +249,7 @@ public class ImageRenderer {
 			drawNode(n);
 		}
 	}
-	
+
 	/**
 	 * Sets the node colour.
 	 * @param c	the colour to set
@@ -273,7 +273,7 @@ public class ImageRenderer {
 	Color getNodeColour() {
 		return nodeColour;
 	}
-	
+
 	/**
 	 * Returns the edge colour to use.
 	 * @return	the edge colour
@@ -290,7 +290,7 @@ public class ImageRenderer {
 		g2d.setColor(getNodeColour());
 		drawDot(n.getPosition(),0);
 	}
-	
+
 	/**
 	 * Draws a dot at the specified coordinate
 	 * @param c	the coordinate
@@ -302,7 +302,7 @@ public class ImageRenderer {
 		g2d.fillOval((int) (c.getJavaX()-r), (int) (c.getJavaY()-r), r*2, r*2);
 		g2d.setRenderingHints(rh);
 	}
-	
+
 	/**
 	 * Draws the specified edge.
 	 * @param e	the edge to draw
@@ -323,8 +323,8 @@ public class ImageRenderer {
 					 (int) (to.getJavaX()),
 					 (int) (to.getJavaY()));
 	}
-	
-	
+
+
 	/* Below are old things, saved for convenience. */
 //	private void drawArrowhead(x_Edge x_Edge){
 //		Color c = g2d.getColor();
@@ -349,5 +349,5 @@ public class ImageRenderer {
 //		g2d.drawLine(x-size, y, x+size, y);
 //		g2d.drawLine(x, y-size, x, y+size);
 //	}
-	
+
 }

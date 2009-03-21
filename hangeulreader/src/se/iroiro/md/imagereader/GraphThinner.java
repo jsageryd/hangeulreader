@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.imagereader;
 
@@ -15,7 +15,7 @@ public class GraphThinner {
 	/**
 	 * Thins the graph to lines based on the connectivity number for each <code>GraphNode</code>.
 	 * Calls deleteExtraEdges().
-	 * 
+	 *
 	 * @see GraphThinner#deleteExtraEdges(GraphMatrix)
 	 */
 	public static void thin(GraphMatrix matrix){
@@ -56,7 +56,7 @@ public class GraphThinner {
 		}
 		deleteExtraEdges(matrix);
 	}
-	
+
 	//TODO Why is this method duplicated in GraphMatrix? Fix and use only either.
 	private static int edgeCount(GraphMatrix matrix, int x, int y){
 		int c = 0;
@@ -65,7 +65,7 @@ public class GraphThinner {
 		}
 		return c;
 	}
-	
+
 	/**
 	 * Deletes diagonal edges which connect two perpendicular edges.
 	 * This is to prevent T-shaped crossings in the input image from becoming Y-shaped in the graph.
@@ -126,9 +126,9 @@ public class GraphThinner {
 	 * Returns the connectivity number for the node.
 	 * This number is based on the locations of the neighbouring nodes.
 	 * This function uses numeric calculation and yields the same result as <code>getConnectivityNumber_binary(GraphMatrix, int, int)</code>.
-	 * 
+	 *
 	 * @see GraphThinner#getConnectivityNumber_binary(GraphMatrix, int, int)
-	 * 
+	 *
 	 * @return	the connectivity number for a node
 	 */
 	public static int getConnectivityNumber_numeric(GraphMatrix matrix, int x, int y){
@@ -164,9 +164,9 @@ public class GraphThinner {
 	 * Returns the connectivity number for the node.
 	 * This number is based on the locations of the neighbouring nodes.
 	 * This function uses binary calculation and yields the same result as <code>getConnectivityNumber_numeric(GraphMatrix, int, int)</code>.
-	 * 
+	 *
 	 * @see GraphThinner#getConnectivityNumber_numeric(GraphMatrix, int, int)
-	 * 
+	 *
 	 * @return	the connectivity number for a node
 	 */
 	public static int getConnectivityNumber_binary(GraphMatrix matrix, int x, int y){
@@ -191,5 +191,5 @@ public class GraphThinner {
 		}
 		return result;
 	}
-	
+
 }

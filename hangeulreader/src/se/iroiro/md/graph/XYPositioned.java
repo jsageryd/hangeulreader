@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.graph;
 
@@ -8,7 +8,7 @@ package se.iroiro.md.graph;
  *
  */
 public interface XYPositioned {
-	
+
 	/**
 	 * Returns the position of this object. This is the centre point of the object.
 	 * The position may be an actual field, but it may also be calculated on-the-fly.
@@ -16,7 +16,7 @@ public interface XYPositioned {
 	 * @return	the position of this object
 	 */
 	public Coordinate getPosition();
-	
+
 	/**
 	 * Sets the position <emphasis>object</emphasis> of this object. This is the centre point of the object.
 	 * This method is used to directly set the position object,
@@ -28,7 +28,7 @@ public interface XYPositioned {
 	 * @see XYPositioned#setPosition(double, double)
 	 */
 	public void setPosition(Coordinate position);
-	
+
 	/**
 	 * Sets the position of this object. This is the centre point of the object.
 	 * This method always creates a <strong>new</strong> <code>SimpleCoordinate</code> from the values specified.
@@ -40,20 +40,20 @@ public interface XYPositioned {
 	 * @param y	<i>y</i>-coordinate
 	 */
 	public void setPosition(double x, double y);
-	
+
 	/**
 	 * Rotates the object <code>angle</code> radians around its own centre (retrieved by {@link XYPositioned#getPosition()}.)
 	 * @param angle	the angle in radians
 	 */
 	public void rotate(double angle);
-	
+
 	/**
 	 * Rotates the object <code>angle</code> radians around the specified pivot point.
 	 * @param angle	the angle in radians
 	 * @param pivot	the pivot point
 	 */
 	public void rotate(double angle, Coordinate pivot);
-	
+
 	/**
 	 * Returns the angle in radians to the specified object. 0 = right, PI / 2 = up.
 	 * If the angle cannot be determined, Double.NaN is returned.
@@ -61,7 +61,7 @@ public interface XYPositioned {
 	 * @return	the angle in radians
 	 */
 	public double getAngleTo(XYPositioned other);
-	
+
 	/**
 	 * Returns the angle in radians of this object. If the object has no angle, Double.NaN is returned.
 	 * @return	the angle in radians

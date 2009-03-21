@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeul;
 
@@ -27,7 +27,7 @@ public class HangeulClassifier {
 	 * The size of the jamo images (side in pixels) used for constructing the jamo database.
 	 */
 //	private static final int JAMO_SIZE = 200;	// generate structures from different sizes
-	
+
 	private Hangeul hangeul = null;
 	private CharacterMeasurement cm;
 	private JamoReferenceDB jamoRefDB;
@@ -36,16 +36,16 @@ public class HangeulClassifier {
 		if(jamoRefDB == null) jamoRefDB = new JamoReferenceDB();
 		this.jamoRefDB = jamoRefDB;
 	}
-	
+
 	public HangeulClassifier(){
 		this(null);
 	}
-	
+
 	public void newClassification(String imageFile){
 		cm = new CharacterMeasurement(imageFile);
 		go();
 	}
-	
+
 	public void newClassification(BufferedImage image){
 		cm = new CharacterMeasurement(image);
 		go();
@@ -58,17 +58,17 @@ public class HangeulClassifier {
 	public Hangeul getHangeul(){
 		return hangeul;
 	}
-	
+
 	/**
 	 * Process start.
 	 */
 	private void go(){
 		if(cm == null || cm.getLineGroups() == null || cm.getLineGroups().size() == 0) return;
-		
+
 //		splitInputGroups();
 		matchHangeul();
 	}
-	
+
 	/**
 	 * Scans the input line groups.
 	 * If there is a group that cannot be mapped to a structure, it is split into two.
@@ -97,7 +97,7 @@ public class HangeulClassifier {
 				}
 			}
 	}
-	
+
 	/**
 	 * Splits the specified line group in the specified line group list into two parts.
 	 * The graph in the specified line group will be left intact,
@@ -112,10 +112,10 @@ public class HangeulClassifier {
 	 */
 	private List<LineGroup> splitGroup(LineGroup sticky,
 			List<LineGroup> lineGroups) {
-		
+
 		List<LineGroup> parts;
 		Map<XYNode<Line, LineGroup>, XYNode<Line, LineGroup>> map;
-		
+
 		lineGroups.remove(sticky);	// remove group to be split
 
 		for(LineGroup structLG : jamoRefDB.getSortedStructureLineGroups()){	// break out the first possible structure
@@ -133,7 +133,7 @@ public class HangeulClassifier {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -143,13 +143,13 @@ public class HangeulClassifier {
 	private void matchHangeul(){
 		List<LineGroup> inputGroups = cm.getLineGroups();	// get line groups
 		Collections.sort(inputGroups, new ReverseLineGroupComparator());	// sort by line count descending
-		
+
 		Map<List<LineGroup>,Map<LineGroup,LineGroup>> structureMapCandidates = null;
-		
+
 		List<Jamo> jamos = new ArrayList<Jamo>();	// list to store matched jamo in
-		
+
 		Map<LineGroup, LineGroup> mapping;
-		
+
 		while(structureMapCandidates == null || structureMapCandidates.size() > 0){
 			int lastStructureSize = -1;
 			structureMapCandidates = new IdentityHashMap<List<LineGroup>,Map<LineGroup,LineGroup>>();
@@ -183,7 +183,7 @@ public class HangeulClassifier {
 			}
 			if(inputGroups.size() == 0) break;
 		}
-		
+
 //		for(LineGroup lg : inputGroups){
 //			for(XYEdge<Line,LineGroup> e : lg.getGraph().getEdges()){
 //				Helper.p("[");
@@ -192,14 +192,14 @@ public class HangeulClassifier {
 //			}
 //		}
 //		Helper.p("\n");
-		
+
 //		for(Jamo j : jamos){
 //			Helper.p(j+""+j.getPosition()+" ");
 //		}
 //		Helper.p("\n");
 //		Helper.p(jamos+" \t");
 		hangeul = makeHangeul(jamos);	// try to combine the jamo to a hangeul
-		
+
 	}
 
 	/**
@@ -211,11 +211,11 @@ public class HangeulClassifier {
 	 */
 	private Hangeul makeHangeul(List<Jamo> jamos) {
 		if(jamos == null || jamos.size() < 2) return null;
-		
+
 //		Helper.p(jamos+"\n");
 		Collections.sort(jamos, new JamoVerticalPositionComparator());
 //		Helper.p(jamos+"\n");
-		
+
 		if(jamos.get(0).getType() == Jamo.jamoType.FINAL){		// fix this, do vowel check.
 			jamos.set(0,swapPosition(jamos.get(0)));
 		}
@@ -225,11 +225,11 @@ public class HangeulClassifier {
 		if(jamos.size() > 2 && jamos.get(2).getType() == Jamo.jamoType.INITIAL){
 			jamos.set(2,swapPosition(jamos.get(2)));
 		}
-		
+
 		char initial_jamo = 0;
 		char medial_jamo = 0;
 		char final_jamo = 0;
-		
+
 		for(Jamo j : jamos){
 			switch(j.getType()){
 			case INITIAL: if(initial_jamo == 0) initial_jamo = j.getChar(); break;
@@ -237,14 +237,14 @@ public class HangeulClassifier {
 			case FINAL: if(final_jamo == 0) final_jamo = j.getChar(); break;
 			}
 		}
-		
+
 		if(initial_jamo > 0 && medial_jamo > 0){
 			return new Hangeul(initial_jamo,medial_jamo,final_jamo);
 		}else{
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Comparator class for sorting a list of jamo by the vertical position of its identified structure.
 	 * Dependent on current classification results.
@@ -265,7 +265,7 @@ public class HangeulClassifier {
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Takes a final or initial jamo, and makes it the other type.
 	 * @param j	the jamo to convert
@@ -291,12 +291,12 @@ public class HangeulClassifier {
 		map.put('\u1110','\u11C0');	// ᄐ
 		map.put('\u1111','\u11C1');	// ᄑ
 		map.put('\u1112','\u11C2');	// ᄒ
-		
+
 		for(char c : map.keySet()){
 			map2.put(map.get(c), c);	// reversed
 		}
 		map.putAll(map2);
-		
+
 		Character jamo = map.get(j.getChar());
 		if(jamo != null){
 			return new Jamo(jamo);
@@ -318,7 +318,7 @@ public class HangeulClassifier {
 //	}
 
 
-	
+
 	/**
 	 * Returns the character measurement object.
 	 * @return	the character measurement object
@@ -326,7 +326,7 @@ public class HangeulClassifier {
 	public CharacterMeasurement getCharacterMeasurement(){
 		return cm;
 	}
-	
+
 	/**
 	 * Comparator class for sorting a list of line groups by number of lines contained,
 	 * in descending order.
@@ -349,5 +349,5 @@ public class HangeulClassifier {
 	public JamoReferenceDB getJamoRefDB() {
 		return jamoRefDB;
 	}
-	
+
 }

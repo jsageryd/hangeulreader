@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.imagereader;
 
@@ -15,12 +15,12 @@ public class GraphMatrix {
 	 * For each xy-cell, there is a level value used to store the edges between the cells.
 	 */
 	private boolean matrix[][][];
-	
+
 	/**
 	 * The number of columns
 	 */
 	private final int x_size;
-	
+
 	/**
 	 * The number of rows
 	 */
@@ -36,7 +36,7 @@ public class GraphMatrix {
 		this.y_size = y_size;
 		matrix = new boolean[5][y_size][x_size];
 	}
-	
+
 	/**
 	 * TODO Remove the y-argument here or make this method obsolete.
 	 * Returns the <i>x</i>-coordinate of the edge:th neighbour to the specified cell.
@@ -113,7 +113,7 @@ public class GraphMatrix {
 			matrix[level][y][x] = value;
 		}catch(ArrayIndexOutOfBoundsException e){}
 	}
-	
+
 	/**
 	 * Returns the boolean value of the cell at column <code>x</code>, row <code>y</code>.
 	 * @param x	the column
@@ -123,7 +123,7 @@ public class GraphMatrix {
 	public boolean getCell(int x, int y){
 		return getBit(x,y,0);
 	}
-	
+
 	/**
 	 * Sets the boolean value of the cell at column <code>x</code>, row <code>y</code>.
 	 * Regardless of <code>value</code>, this method always removes all edges to the cell.
@@ -179,7 +179,7 @@ public class GraphMatrix {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns the number of edges connecting with the specified cell.
 	 * @param x	the column
@@ -217,7 +217,7 @@ public class GraphMatrix {
 	public int getY_size() {
 		return y_size;
 	}
-	
+
 	/**
 	 * Returns a deep copy of the underlying 3-dimensional boolean matrix
 	 * @return	a deep copy of the underlying matrix
@@ -268,4 +268,5 @@ public class GraphMatrix {
 		}
 		return result;
 	}
+
 }

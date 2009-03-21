@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeulreader;
 
@@ -20,7 +20,7 @@ public class GUI {
 	private JFrame jf;
 	private JPanel jp;
 	private ImageRenderer ir;
-	
+
 	/**
 	 * Class constructor. Initialises the GUI, but does not show it.
 	 * @see GUI#show()
@@ -39,7 +39,7 @@ public class GUI {
 			}
 		};
 	}
-	
+
 	/**
 	 * Shows the window and calls {@link GUI#refresh()} to paint the image.
 	 */
@@ -48,7 +48,7 @@ public class GUI {
 		jf.setVisible(true);
 		refresh();
 	}
-	
+
 	/**
 	 * Resizes the window to the size of the image, and redraws the image.
 	 */
@@ -71,7 +71,7 @@ public class GUI {
 	public ImageRenderer getImageRenderer() {
 		return ir;
 	}
-	
+
 	/**
 	 * Sets the image renderer.
 	 * @param ir	the image renderer
@@ -79,5 +79,5 @@ public class GUI {
 	public void setImageRenderer(ImageRenderer ir) {
 		this.ir = ir;
 	}
-	
+
 }

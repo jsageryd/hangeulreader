@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.graph.simple;
 
@@ -14,7 +14,7 @@ import se.iroiro.md.graph.LineEquation;
  *
  */
 public class SimpleLineEquation implements LineEquation {
-	
+
 	private double slope = Double.NaN;
 	private double intercept = Double.NaN;
 	private double horizontalIntercept = Double.NaN;
@@ -40,7 +40,7 @@ public class SimpleLineEquation implements LineEquation {
 			setHorizontalIntercept(getX(0));	// added but hasn't been tested yet (2008-09-20).
 		}
 	}
-	
+
 	/**
 	 * Class constructor with slope and intersect parameters.
 	 * @param slope	the slope
@@ -50,7 +50,7 @@ public class SimpleLineEquation implements LineEquation {
 		setSlope(slope);
 		setIntercept(intercept);
 	}
-	
+
 	/**
 	 * Class constructor with horizontal intercept parameter.
 	 * @param horizontalIntercept	the horizontal intercept
@@ -58,7 +58,7 @@ public class SimpleLineEquation implements LineEquation {
 	public SimpleLineEquation(double horizontalIntercept){
 		setHorizontalIntercept(horizontalIntercept);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -99,14 +99,14 @@ public class SimpleLineEquation implements LineEquation {
 	public double getSlope() {
 		return slope;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.LineEquation#getIntercept()
 	 */
 	public double getIntercept() {
 		return intercept;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.LineEquation#isVertical()
 	 */
@@ -160,7 +160,7 @@ public class SimpleLineEquation implements LineEquation {
 		if(x == 0.0) x = 0.0;	// prevent negative zero
 		return roundDouble(x);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.LineEquation#getY(double)
 	 */
@@ -170,7 +170,7 @@ public class SimpleLineEquation implements LineEquation {
 		if(y == 0.0) y = 0.0;	// prevent negative zero
 		return roundDouble(y);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.LineEquation#getIntersection(se.iroiro.md.graph.LineEquation)
 	 */
@@ -184,14 +184,14 @@ public class SimpleLineEquation implements LineEquation {
 			y = eq.getY(x);
 		}else if(eq.isVertical()){
 			x = eq.getHorizontalIntercept();
-			y = getY(x);			
+			y = getY(x);
 		}else{
 			x = (eq.getIntercept() - getIntercept()) / (getSlope() - eq.getSlope());
 			y = roundDouble(getY(x));
 		}
 		return new SimpleCoordinate(x,y);
 	}
-	
+
 	/**
 	 * Rounds the specified <code>double</code> as an attempt to prevent floating point errors.
 	 * @param d	the <code>double</code> to round
@@ -201,13 +201,13 @@ public class SimpleLineEquation implements LineEquation {
 		double p = 1000000000;
 		return Math.rint(d * p) / p;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.LineEquation#intersects(se.iroiro.md.graph.LineEquation)
 	 */
 	public boolean intersects(LineEquation eq){
 		Coordinate is = getIntersection(eq);
-		return !Double.isNaN(is.getX()) && !Double.isNaN(is.getY()); 
+		return !Double.isNaN(is.getX()) && !Double.isNaN(is.getY());
 	}
 
 	/* (non-Javadoc)
@@ -217,7 +217,7 @@ public class SimpleLineEquation implements LineEquation {
 		return toString().equals(other.toString());
 //		return getIntercept() == other.getIntercept() && getSlope() == other.getSlope() && getHorizontalIntercept() == other.getHorizontalIntercept();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.LineEquation#touches(se.iroiro.md.graph.LineEquation)
 	 */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package se.iroiro.md.hangeulreader;
 
@@ -20,9 +20,9 @@ import se.iroiro.md.hangeul.JamoReferenceDB;
  *
  */
 public class HangeulReaderTest {
-	
+
 	public static final int CHARSIZE = 200;
-	
+
 	private String makeString(char from, char to){
 		StringBuilder s = new StringBuilder();
 		for(char c = from; c <= to; c++){
@@ -30,15 +30,15 @@ public class HangeulReaderTest {
 		}
 		return s.toString();
 	}
-	
+
 	public String testAll(Font font, JamoReferenceDB jrdb){
 		return test(makeString('\uAC00','\uD7A3'), font, jrdb);
 	}
-	
+
 	public String test(char from, char to, Font font, JamoReferenceDB jrdb){
 		return test(makeString(from,to), font, jrdb);
 	}
-	
+
 	public String test(String characters, Font font, JamoReferenceDB jrdb){
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		StringBuilder result = new StringBuilder();
@@ -120,7 +120,7 @@ public class HangeulReaderTest {
 //		System.out.println();
 //		System.out.println();
 	}
-	
+
 //	private void writeImage(BufferedImage img, String fileName){
 //		try{
 //			ImageIO.write(img, "png", new FileOutputStream(fileName));
@@ -130,5 +130,5 @@ public class HangeulReaderTest {
 //			e.printStackTrace();
 //		}
 //	}
-	
+
 }
