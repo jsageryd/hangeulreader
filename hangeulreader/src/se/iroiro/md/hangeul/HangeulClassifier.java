@@ -11,10 +11,8 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import se.iroiro.md.graph.Coordinate;
-import se.iroiro.md.graph.XYNode;
 
 /**
  * Reads an image and tells what character it represents.
@@ -26,7 +24,6 @@ public class HangeulClassifier {
 	/**
 	 * The size of the jamo images (side in pixels) used for constructing the jamo database.
 	 */
-//	private static final int JAMO_SIZE = 200;	// generate structures from different sizes
 
 	private Hangeul hangeul = null;
 	private CharacterMeasurement cm;
@@ -65,84 +62,15 @@ public class HangeulClassifier {
 	private void go(){
 		if(cm == null || cm.getLineGroups() == null || cm.getLineGroups().size() == 0) return;
 
-//		splitInputGroups();
 		matchHangeul();
 	}
 
-	/**
-	 * Scans the input line groups.
-	 * If there is a group that cannot be mapped to a structure, it is split into two.
-	 * Process is repeated until all groups can be matched, or there can be no more splits.
-	 */
-	@SuppressWarnings("unused")
-	private void splitInputGroups(){
-		if(cm.getLineGroups() == null || cm.getLineGroups().size() == 0) return;
-		List<Map<XYNode<Line, LineGroup>, XYNode<Line, LineGroup>>> map;
-		Stack<LineGroup> stack = new Stack<LineGroup>();
-		stack.addAll(cm.getLineGroups());
-		nextLineGroup:
-			while(stack.size() > 0){	// while there are still line groups to check
-				LineGroup inputLG = stack.pop();
-				for(List<LineGroup> structure : jamoRefDB.getStructureMapOrdering()){
-					for(LineGroup structLG : structure){
-						map = GraphTools.getNodeMappings(inputLG,structLG);
-						if(map != null && map.size() > 0){
-							continue nextLineGroup;
-						}
-					}
-				}
-				List<LineGroup> parts = splitGroup(inputLG,cm.getLineGroups());
-				if(parts != null && parts.size() > 1){	// if split is not possible, give up and don't re-add the line group to stack
-					stack.addAll(parts);
-				}
-			}
-	}
-
-	/**
-	 * Splits the specified line group in the specified line group list into two parts.
-	 * The graph in the specified line group will be left intact,
-	 * however the specified line group list will be updated to reflect the changes
-	 * and so will not contain the specified line group upon successful split
-	 * as it will be replaced by the two parts.
-	 * Returns a list of two line groups if split is successful.
-	 * If a split cannot be made, the original line group is returned as the only item in the list.
-	 * @param sticky	the line group to split
-	 * @param lineGroups	the list of line groups that the line belongs to
-	 * @return	a list of two line groups if split is successful, otherwise specified line group as the only item in the list
-	 */
-	private List<LineGroup> splitGroup(LineGroup sticky,
-			List<LineGroup> lineGroups) {
-
-		List<LineGroup> parts;
-		Map<XYNode<Line, LineGroup>, XYNode<Line, LineGroup>> map;
-
-		lineGroups.remove(sticky);	// remove group to be split
-
-		for(LineGroup structLG : jamoRefDB.getSortedStructureLineGroups()){	// break out the first possible structure
-			map = GraphTools.getBestNodeMapping(structLG,sticky);
-			if(map != null){
-
-				// split, if can break out, add the two parts and return them.
-				// if not can split, do nothing, let loop go on.
-				parts = GraphTools.disconnect(structLG,map,sticky);
-				if(parts != null){
-					for(LineGroup part : parts){
-						lineGroups.add(part);
-					}
-					return parts;
-				}
-			}
-		}
-
-		return null;
-	}
 
 	/**
 	 * Tries to match all line groups in input to jamo.
 	 */
 	private void matchHangeul(){
 		List<LineGroup> inputGroups = cm.getLineGroups();	// get line groups
-		Collections.sort(inputGroups, new ReverseLineGroupComparator());	// sort by line count descending
 
 		Map<List<LineGroup>,Map<LineGroup,LineGroup>> structureMapCandidates = null;
 
@@ -305,41 +233,12 @@ public class HangeulClassifier {
 		}
 	}
 
-//	/**
-//	 * TODO deprecate?
-//	 * Creates an image of the specified character, scans it and returns the list of line groups found.
-//	 * @param c	the character to scan
-//	 * @return	the list of line groups found in the specified character
-//	 */
-//	private List<LineGroup> getCharacterLineGroups(char c, String fontName, int size){
-//		BufferedImage img = CharacterRenderer.makeCharacterImage(c, size, size, fontName);
-//		CharacterMeasurement cm = new CharacterMeasurement(img);
-//		return cm.getLineGroups();
-//	}
-
-
-
 	/**
 	 * Returns the character measurement object.
 	 * @return	the character measurement object
 	 */
 	public CharacterMeasurement getCharacterMeasurement(){
 		return cm;
-	}
-
-	/**
-	 * Comparator class for sorting a list of line groups by number of lines contained,
-	 * in descending order.
-	 * @author j
-	 */
-	private class ReverseLineGroupComparator implements Comparator<LineGroup>{
-		public int compare(LineGroup one, LineGroup two){
-			if(one != null && two != null){
-				if(one.getMap().size() < two.getMap().size()) return 1;
-				if(one.getMap().size() > two.getMap().size()) return -1;
-			}
-			return 0;
-		}
 	}
 
 	/**

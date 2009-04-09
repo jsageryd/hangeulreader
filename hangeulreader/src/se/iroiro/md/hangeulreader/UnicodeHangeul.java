@@ -83,12 +83,9 @@ public class UnicodeHangeul {
 		if (0 > SIndex || SIndex >= SCount) {
 			throw new IllegalArgumentException("Not a Hangul Syllable: " + s);
 		}
-//		StringBuffer result = new StringBuffer();
 		int LIndex = SIndex / NCount;
 		int VIndex = (SIndex % NCount) / TCount;
 		int TIndex = SIndex % TCount;
-//		return "HANGUL SYLLABLE " + JAMO_L_TABLE[LIndex]
-//		                                         + JAMO_V_TABLE[VIndex] + JAMO_T_TABLE[TIndex];
 		return JAMO_L_TABLE[LIndex]
 		                                         + JAMO_V_TABLE[VIndex] + JAMO_T_TABLE[TIndex];
 	}

@@ -196,14 +196,6 @@ public class ImageRenderer {
 		}
 	}
 
-//	private void drawCorner(Corner c){
-//		g2d.setColor(Color.WHITE);
-//		setStroke(2);
-//		drawLine(c.getPosition().scale(scale),c.getLeft());
-//		drawLine(c.getPosition().scale(scale),c.getRight());
-//		setStroke(STROKE_WIDTH);
-//	}
-
 	private void drawText(String text, int x, int y, Color c){
 		String fontname = "Verdana";
 		int fontsize = 10;
@@ -323,31 +315,5 @@ public class ImageRenderer {
 					 (int) (to.getJavaX()),
 					 (int) (to.getJavaY()));
 	}
-
-
-	/* Below are old things, saved for convenience. */
-//	private void drawArrowhead(x_Edge x_Edge){
-//		Color c = g2d.getColor();
-//		g2d.setColor(new Color(130,130,130));
-//		double x1 = x_Edge.getCenter().getJavaX();
-//		double y1 = x_Edge.getCenter().getJavaY();
-//
-//		x_Node l = new x_Node(x_Edge.getFrom().getX(),x_Edge.getFrom().getY(),false);
-//		x_Node r = new x_Node(x_Edge.getFrom().getX(),x_Edge.getFrom().getY(),false);
-//		l.rotate(Math.toRadians(45), x_Edge.getCenter());
-//		r.rotate(Math.toRadians(-45), x_Edge.getCenter());
-//
-//		g2d.drawLine(scale(x1), scale(y1), scale(l.getJavaX()), scale(l.getJavaY()));
-//		g2d.drawLine(scale(x1), scale(y1), scale(r.getJavaX()), scale(r.getJavaY()));
-//
-//		g2d.setColor(c);
-//	}
-//
-//	private void drawStar(int x, int y, int size){
-//		g2d.drawLine(x-size+1, y-size+1, x+size-1, y+size-1);
-//		g2d.drawLine(x-size+1, y+size-1, x+size-1, y-size+1);
-//		g2d.drawLine(x-size, y, x+size, y);
-//		g2d.drawLine(x, y-size, x, y+size);
-//	}
 
 }
