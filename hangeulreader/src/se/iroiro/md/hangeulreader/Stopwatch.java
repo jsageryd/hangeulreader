@@ -57,7 +57,6 @@ public final class Stopwatch {
 	 * @return	the elapsed time in milliseconds, as a <code>String</code>.
 	 */
 	public String time_str(){
-//		return formatNumber(time())+" ms";
 		return Long.toString(time())+" ms";
 	}
 
@@ -76,18 +75,7 @@ public final class Stopwatch {
 	 * @return	the total elapsed time since last reset, as a <code>String</code>.
 	 */
 	public String totaltime_str(){
-//		return formatNumber(totaltime())+" ms";
 		return Long.toString(totaltime())+" ms";
 	}
-
-//	/**
-//	 * Formats a number according to Swedish locale.
-//	 *
-//	 * @param number	the number to format
-//	 * @return	the formatted number
-//	 */
-//	static String formatNumber(Long number){
-//		return NumberFormat.getNumberInstance(new Locale("sv", "SE")).format(number);
-//	}
 
 }

@@ -54,10 +54,4 @@ public interface Graphable<T> extends Cloneable {
 	 */
 	public String toString();
 
-//	/**
-//	 * Returns a deep-copy of this entity and all of its child entities. Piggyback object is not cloned.
-//	 * @return	a deep-copy of this entity and all of its child entities.
-//	 */
-//	public Object clone();
-
 }
