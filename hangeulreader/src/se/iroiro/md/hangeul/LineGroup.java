@@ -256,29 +256,4 @@ public class LineGroup extends AbstractXYPositioned {
 		return getTopLeft().getY() - getBottomRight().getY();
 	}
 
-//	/**
-//	 * Clones the line group.
-//	 * Simple returns a new line group with a cloned graph and lines, and all caches reset.
-//	 * If the old graph is null, the new graph will also be null.
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public Object clone() {												// Just make this a semi-shallow copy.
-//		try {															// Probably, we will need a copy of the graph (and map?)
-//			LineGroup lg = (LineGroup) super.clone();					// to be able to connect/disconnect things in the copy when classifying.
-//			if(graph != null){
-//				lg.graph = (Graph<Line,LineGroup>) graph.clone();		// If we want to implement deep cloning for LineGroup,
-//				for(XYEdge<Line,LineGroup> e : lg.graph.getEdges()){	// Need to make a copy of the graph,
-//					e.setPiggybackObject(this);							// set piggyback of all edges to this LineGroup
-//				}														// set piggyback of all nodes to their respective new lines
-//				for(XYEdge<Line,LineGroup> e : lg.graph.getEdges()){	// cannot just clone the lines,
-//					e.setPiggybackObject(this);							// because we don't want the crossing-nodes cloned.
-//				}														// Also need to clone the map contents = lines.
-//			}															// QUESTION: Do we need to be able to clone this? Probably not.
-//			l.reset();
-//			return l;
-//		} catch (CloneNotSupportedException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-
 }
