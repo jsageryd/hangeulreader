@@ -127,17 +127,17 @@ public class JamoReferenceDB {
 	private class StructureComparator implements Comparator<List<LineGroup>>{
 		public int compare(List<LineGroup> one, List<LineGroup> two){
 			if(one == null || two == null) return 0;
-			int c1 = 0;
-			int c2 = 0;
-			for(LineGroup lg : one){
-				c1 += lg.getMap().size();
-			}
-			for(LineGroup lg : two){
-				c2 += lg.getMap().size();
-			}
 			int c = two.size() - one.size();	// primarily compare line group count
-			if(c == 0){
-				c = c2 - c1;	// secondarily compare total line count
+			if(c == 0){	// secondarily compare total line count
+				int c1 = 0;
+				int c2 = 0;
+				for(LineGroup lg : one){
+					c1 += lg.getMap().size();
+				}
+				for(LineGroup lg : two){
+					c2 += lg.getMap().size();
+				}
+				c = c2 - c1;
 			}
 			return c;
 		}
