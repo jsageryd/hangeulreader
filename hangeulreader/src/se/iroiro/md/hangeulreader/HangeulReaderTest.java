@@ -42,6 +42,7 @@ public class HangeulReaderTest {
 	public String test(String characters, Font font, JamoReferenceDB jrdb){
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		StringBuilder result = new StringBuilder();
+		result.append("Version " + Go.VERSION + "\n\n");
 		result.append("Character images rendered using font \""+font.getName()+"\" at "+CHARSIZE+"x"+CHARSIZE+" pixels.\n");
 		result.append("Test started: "+dateFormat.format(new Date())+"\n");
 		System.out.println("Preparing to scan " + (int) (characters.length()) + " characters.");
