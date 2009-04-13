@@ -1,6 +1,8 @@
+Version a71bba6+
+
 Character images rendered using font "Gulim" at 200x200 pixels.
-Test started: 2009-04-09 16:15:56
-Test finished: 2009-04-09 16:37:47
+Test started: 2009-04-13 23:49:17
+Test finished: 2009-04-14 00:11:21
 
 6090 correct out of 11172 characters (54 %).
 
