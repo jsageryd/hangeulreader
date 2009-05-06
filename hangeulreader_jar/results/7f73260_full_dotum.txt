@@ -1,8 +1,8 @@
 Version a71bba6+
 
 Character images rendered using font "Dotum" at 200x200 pixels.
-Test started: 2009-04-13 23:10:35
-Test finished: 2009-04-13 23:33:37
+Test started: 2009-05-07 00:55:00
+Test finished: 2009-05-07 01:18:05
 
 7083 correct out of 11172 characters (63 %).
 
