@@ -35,7 +35,7 @@ public class ImageRenderer {
 	private int currentColour = -1;
 	private double scale = 1;
 
-	private static final int STROKE_WIDTH = 1;
+	private static final int STROKE_WIDTH = 3;
 	private static final Color DEFAULT_COLOUR = Color.BLACK;
 	private static final Color DEFAULT_EDGE_COLOUR = Color.BLUE;
 	private static final Color DEFAULT_NODE_COLOUR = Color.RED;
