@@ -26,6 +26,7 @@ public class HangeulClassifier {
 	 */
 
 	private Hangeul hangeul = null;
+	private List<Jamo> jamos = null;
 	private CharacterMeasurement cm;
 	private JamoReferenceDB jamoRefDB;
 
@@ -57,9 +58,19 @@ public class HangeulClassifier {
 	}
 
 	/**
+	 * Returns the jamo found by the classification process.
+	 * @return	the jamo found by the classification process
+	 */
+	public List<Jamo> getJamo(){
+		return jamos;
+	}
+
+	/**
 	 * Process start.
 	 */
 	private void go(){
+		jamos = null;
+		hangeul = null;
 		if(cm == null || cm.getLineGroups() == null || cm.getLineGroups().size() == 0) return;
 
 		matchHangeul();
@@ -128,7 +139,7 @@ public class HangeulClassifier {
 //		Helper.p("\n");
 //		Helper.p(jamos+" \t");
 		hangeul = makeHangeul(jamos);	// try to combine the jamo to a hangeul
-
+		this.jamos = jamos;
 	}
 
 	/**

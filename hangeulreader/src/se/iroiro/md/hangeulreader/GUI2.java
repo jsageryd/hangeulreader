@@ -3,6 +3,8 @@
  */
 package se.iroiro.md.hangeulreader;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -17,13 +19,17 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -32,6 +38,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
 import se.iroiro.scribble.ScribbleEventNotifierAdapter;
@@ -41,6 +49,7 @@ import se.iroiro.md.hangeul.CharacterMeasurement;
 import se.iroiro.md.hangeul.CharacterRenderer;
 import se.iroiro.md.hangeul.Hangeul;
 import se.iroiro.md.hangeul.HangeulClassifier;
+import se.iroiro.md.hangeul.Jamo;
 import se.iroiro.md.hangeul.JamoReferenceDB;
 
 /**
@@ -54,15 +63,24 @@ public class GUI2 {
 	private JPanel content;
 	private ScribblePanel sp;
 	private ImageRenderer ir;
+	private JPanel resultpane;
+	private JPanel inputpane;
 	private JTextField tf;
 	private JTextField tf2;
+	private JTextField jamotf;
 	private JMenuBar menubar;
 
+	final JamoReferenceDB jamoRef;
 	private final HangeulClassifier hc;
+
+	private BufferedImage tmp = null;
 
 	private int scribblewidth;
 	private int scribbleheight;
-	private final int colsep = 10;
+	private final int gridsep = 5;
+
+	// Settings
+	private boolean drawlinesfound = false;
 
 	/**
 	 * Class constructor. Initialises a GUI of default size with the specified jamo reference DB.
@@ -97,12 +115,9 @@ public class GUI2 {
 	public GUI2(int scribblewidth, int scribbleheight, JamoReferenceDB jrdb, BufferedImage backgroundImage){
 		this.scribblewidth = scribblewidth;
 		this.scribbleheight = scribbleheight;
-		final int swidth = scribblewidth;
-		final int sheight = scribbleheight;
 		frame = new JFrame("Draw a hangeul in the leftmost field. Shift-clicking clears the field. Hold down the alt-key for eraser.");
-		content = new JPanel(new GridLayout(1,3,colsep,0));
+		content = new JPanel(new BorderLayout(gridsep,gridsep));
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		final JamoReferenceDB jamoRef;
 		if(jrdb != null){
 			jamoRef = jrdb;
 		}else{
@@ -110,57 +125,74 @@ public class GUI2 {
 		}
 		hc = new HangeulClassifier(jamoRef);
 		sp = new ScribblePanel(new ScribbleEventNotifierAdapter(){
-			BufferedImage tmp = null;
 			public void mousePressed(MouseEvent e){
 				if(tmp != null){
 					getImage().setData(tmp.getRaster());
-				}else{
-					tmp = new BufferedImage(swidth,sheight,BufferedImage.TYPE_INT_RGB);
 				}
 			}
 
 			public void mouseReleased(MouseEvent e) {
-				hc.newClassification(getImage());
-				Hangeul h = hc.getHangeul();
-				if(h != null){
-					tf.setText(h.toString());
-					tf2.setText("Hangeul syllable "+h.getName());
-				}else{
-					tf.setText("?");
-					tf2.setText("Unknown character");
-				}
-				tmp.setData(getImage().getRaster());
-				getImage().setData((new ImageRenderer(new CharacterMeasurement(getImage())).getImage().getRaster()));
+
+				classify();
 			}
-		},scribblewidth,scribbleheight,backgroundImage);
+		},backgroundImage);
 
 		tf = new JTextField();
 		tf2 = new JTextField();
+		jamotf = new JTextField();
 		tf.setEditable(false);
 		tf2.setEditable(false);
-		tf.setBorder(null);
-		tf2.setBorder(null);
-		List<Font> fl = jamoRef.getFonts();
-		Font f = null;
-		if(fl.size() > 0) f = fl.get(0);
-		if(f == null){
-			f = new Font("default",0,1);
-		}
-		float fs = CharacterRenderer.getFontSize((Graphics2D) new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB).getGraphics(),f,(int) (scribbleheight * 0.75));
-		f = f.deriveFont(fs);
-		tf.setFont(f);
+		jamotf.setEditable(false);
+		jamotf.setFont(getSizedFont(25));
+		tf2.setFont(getSizedFont(13));
+		jamotf.setHorizontalAlignment(JTextField.CENTER);
+		tf.setHorizontalAlignment(JTextField.CENTER);
+		tf2.setHorizontalAlignment(JTextField.CENTER);
+
+		tf.addComponentListener(new ComponentAdapter(){
+			public void componentResized(ComponentEvent e) {
+				Dimension d = tf.getSize();
+				int w = d.width;
+				int h = d.height;
+				int side = w < h ? w : h;
+				tf.setFont(getSizedFont((int) (side*0.6)));
+			}
+		});
+
+		Insets is = new Insets(10,10,10,10);
+
+		Border b = new EmptyBorder(is);
+		jamotf.setBorder(b);
+		tf.setBorder(b);
+		tf2.setBorder(b);
+
+		inputpane = new JPanel();
+		inputpane.setLayout(new GridLayout(1,1,0,0));
+		inputpane.add(sp);
+
+		resultpane = new JPanel();
+		resultpane.setLayout(new BorderLayout(gridsep,gridsep));
+		resultpane.add(jamotf,BorderLayout.NORTH);
+		resultpane.add(tf,BorderLayout.CENTER);
+		resultpane.add(tf2,BorderLayout.SOUTH);
+		resultpane.setPreferredSize(new Dimension(200,0));
 
 		menubar = new JMenuBar();
-		JMenu filemenu = new JMenu("File");
-			JMenuItem newmenu = new JMenuItem("Create new window");
-			JMenuItem loadmenu = new JMenuItem("Load image...");
-			JMenuItem rendercharmenu = new JMenuItem("Render image from character...");
-		JMenu testingmenu = new JMenu("Testing");
-			JMenuItem batchtestmenu = new JMenuItem("Run batch test...");
+		final JMenu filemenu = new JMenu("File");
+			final JMenuItem newmenu = new JMenuItem("Create new window");
+			final JMenuItem loadmenu = new JMenuItem("Load image...");
+			final JMenuItem savemenu = new JMenuItem("Save image...");
+			final JMenuItem rendercharmenu = new JMenuItem("Render image from character...");
+		final JMenu testingmenu = new JMenu("Testing");
+			final JMenuItem batchtestmenu = new JMenuItem("Run batch test...");
+		final JMenu settingsmenu = new JMenu("Settings");
+			final JCheckBoxMenuItem showlinesfound = new JCheckBoxMenuItem("Show lines found");
 		filemenu.add(newmenu);
 		filemenu.add(loadmenu);
+		filemenu.add(savemenu);
 		filemenu.add(rendercharmenu);
 		testingmenu.add(batchtestmenu);
+		settingsmenu.add(showlinesfound);
 		newmenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				new GUI2(jamoRef).show();
@@ -168,7 +200,12 @@ public class GUI2 {
 		});
 		loadmenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				loadImageFile(jamoRef);
+				loadImageFile();
+			}
+		});
+		savemenu.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				saveImageFile();
 			}
 		});
 		rendercharmenu.addActionListener(new ActionListener(){
@@ -189,18 +226,78 @@ public class GUI2 {
 				batchtest(jamoRef);
 			}
 		});
+		showlinesfound.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				drawlinesfound = showlinesfound.isSelected();
+				if(drawlinesfound){
+					if(tmp != null){
+						sp.getImage().setData((new ImageRenderer(new CharacterMeasurement(tmp)).getImage().getRaster()));
+					}
+				}else{
+					sp.getImage().setData(tmp.getRaster());
+				}
+				sp.repaint();
+			}
+		});
 		menubar.add(filemenu);
 		menubar.add(testingmenu);
+		menubar.add(settingsmenu);
 		frame.setJMenuBar(menubar);
 
 		/* Drag-and-drop support */
 		FileDropTargetListener dtl = new FileDropTargetListener(jamoRef);
 		new DropTarget(frame,dtl);
 		new DropTarget(content,dtl);
+		new DropTarget(inputpane,dtl);
+		new DropTarget(resultpane,dtl);
 		new DropTarget(sp,dtl);
 		new DropTarget(tf,dtl);
 		new DropTarget(tf2,dtl);
+		new DropTarget(jamotf,dtl);
 		/* --------------------- */
+	}
+
+	/**
+	 * Classifies the image.
+	 * @param image
+	 */
+	protected void classify() {
+		sp.clipCanvasToPanelSize();
+		if(tmp == null || (tmp.getWidth() != sp.getImage().getWidth() || tmp.getHeight() != sp.getImage().getHeight())){
+			tmp = new BufferedImage(sp.getImage().getWidth(),sp.getImage().getHeight(),BufferedImage.TYPE_INT_RGB);
+		}
+		tmp.setData(sp.getImage().getRaster());
+
+		tf2.setText("Analysing...");
+		frame.update(frame.getGraphics());
+		hc.newClassification(sp.getImage());
+		Hangeul h = hc.getHangeul();
+		List<Jamo> j = hc.getJamo();
+		StringBuilder jstr = new StringBuilder();
+		if(j != null){
+			for(Jamo jamo : j){
+				jstr.append(jamo.getChar()+" ");
+			}
+		}
+		jamotf.setText(jstr.toString().trim());
+		jamotf.setFont(getBoxFitFont(jamotf.getText(), (int) (jamotf.getWidth()*0.85), (int) (jamotf.getHeight()*0.75)));
+		if(h != null){
+			tf.setText(h.toString());
+			tf2.setText("Hangeul syllable "+h.getName());
+		}else{
+			if(j != null && j.size() > 0){
+				Jamo jamo = j.get(0);
+				tf.setText(jamo.toString());
+				tf2.setText("Hangeul jamo "+jamo.getName());
+			}else{
+				tf.setText("");
+				tf2.setText("Unknown character");
+			}
+		}
+
+		if(drawlinesfound){
+			sp.getImage().setData((new ImageRenderer(new CharacterMeasurement(sp.getImage())).getImage().getRaster()));
+		}
 	}
 
 
@@ -259,6 +356,28 @@ public class GUI2 {
 
 		public void dropActionChanged(DropTargetDragEvent dtde) {
 		}
+	}
+
+	private Font getFont(){
+		List<Font> fl = jamoRef.getFonts();
+		Font f = null;
+		if(fl.size() > 0) f = fl.get(0);
+		if(f == null){
+			f = new Font("default",0,1);
+		}
+		return f;
+	}
+
+	private Font getSizedFont(int pixelsize){
+		Font f = getFont();
+		float fs = CharacterRenderer.getFontSize((Graphics2D) new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB).getGraphics(),f,pixelsize);
+		return f.deriveFont(fs);
+	}
+
+	private Font getBoxFitFont(String string, int width, int height){
+		Font f = getFont();
+		float fs = CharacterRenderer.getBoxFitFontSize(string, (Graphics2D) new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB).getGraphics(),f,width,height);
+		return f.deriveFont(fs);
 	}
 
 	private void batchtest(JamoReferenceDB jamoRef){
@@ -357,7 +476,62 @@ public class GUI2 {
 		}
 	}
 
-	private void loadImageFile(JamoReferenceDB jamoRef){
+	/**
+	 * Saves the current buffer to file. This clips the canvas.
+	 */
+	private void saveImageFile(){
+		JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+		fc.setMultiSelectionEnabled(false);
+		fc.setFileFilter(new FileFilter(){
+			public boolean accept(File f) {
+				if(f.getName().endsWith(".png")){
+					return true;
+				}
+				return false;
+			}
+
+			public String getDescription() {
+				return "PNG";
+			}
+		});
+		int saveDialogReturnVal = fc.showSaveDialog(frame);
+		if(saveDialogReturnVal == JFileChooser.APPROVE_OPTION){
+			File saveFile = fc.getSelectedFile();
+			if(saveFile != null){
+				if(!saveFile.getName().toLowerCase().endsWith(".png")){
+					saveFile = new File(saveFile.getAbsolutePath().concat(".png"));
+				}
+				if(saveFile.exists()){
+					int canReplace = JOptionPane.showConfirmDialog(frame, "The file exists. Overwrite?", "File exists", JOptionPane.YES_NO_OPTION);
+					if(canReplace != JOptionPane.YES_OPTION){
+						return;
+					}
+				}
+				sp.clipCanvasToPanelSize();
+				writeImage(sp.getImage(), saveFile);
+			}
+		}
+	}
+
+	/**
+	 * Writes an image to file.
+	 * @param img	image to write
+	 * @param file	file to write to
+	 */
+	private void writeImage(BufferedImage img, File file){
+		try{
+			ImageIO.write(img, "png", file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Loads an image from file.
+	 */
+	private void loadImageFile(){
 		JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
 		fc.setMultiSelectionEnabled(false);
 		fc.setFileFilter(new FileFilter(){
@@ -391,19 +565,20 @@ public class GUI2 {
 	 * Shows the window and calls {@link GUI2#refresh()} to paint the image.
 	 */
 	public void show(){
-		content.add(sp);
-		content.add(tf);
-		content.add(tf2);
+		content.add(inputpane,BorderLayout.CENTER);
+		content.add(resultpane,BorderLayout.EAST);
 		frame.setContentPane(content);
 		frame.setVisible(true);
 		refresh();
+		frame.paintAll(frame.getGraphics());
+		classify();
 	}
 
 	/**
 	 * Resizes the window to the size of the image, and redraws the image.
 	 */
 	public void refresh(){
-		int frameWidth = scribblewidth*3 + colsep*2;
+		int frameWidth = scribblewidth + gridsep + resultpane.getWidth();
 		int frameHeight = scribbleheight + menubar.getHeight();
 		Insets is = frame.getInsets();
 		if(is != null){
