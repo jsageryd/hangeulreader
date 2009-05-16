@@ -82,6 +82,7 @@ public class HangeulClassifier {
 	 */
 	private void matchHangeul(){
 		List<LineGroup> inputGroups = cm.getLineGroups();	// get line groups
+		Collections.sort(inputGroups, new ReverseLineGroupComparator());	// sort by line count descending
 
 		Map<List<LineGroup>,Map<LineGroup,LineGroup>> structureMapCandidates = null;
 
@@ -250,6 +251,21 @@ public class HangeulClassifier {
 	 */
 	public CharacterMeasurement getCharacterMeasurement(){
 		return cm;
+	}
+
+	/**
+	 * Comparator class for sorting a list of line groups by number of lines contained,
+	 * in descending order.
+	 * @author j
+	 */
+	private class ReverseLineGroupComparator implements Comparator<LineGroup>{
+		public int compare(LineGroup one, LineGroup two){
+			if(one != null && two != null){
+				if(one.getMap().size() < two.getMap().size()) return 1;
+				if(one.getMap().size() > two.getMap().size()) return -1;
+			}
+			return 0;
+		}
 	}
 
 	/**
