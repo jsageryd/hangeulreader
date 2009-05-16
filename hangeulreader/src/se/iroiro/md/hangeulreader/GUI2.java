@@ -4,6 +4,7 @@
 package se.iroiro.md.hangeulreader;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -148,6 +149,10 @@ public class GUI2 {
 		jamotf.setHorizontalAlignment(JTextField.CENTER);
 		tf.setHorizontalAlignment(JTextField.CENTER);
 		tf2.setHorizontalAlignment(JTextField.CENTER);
+
+		jamotf.setBackground(Color.WHITE);
+		tf.setBackground(Color.WHITE);
+		tf2.setBackground(Color.WHITE);
 
 		tf.addComponentListener(new ComponentAdapter(){
 			public void componentResized(ComponentEvent e) {
