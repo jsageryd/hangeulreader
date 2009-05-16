@@ -63,7 +63,7 @@ public class GraphTools {
 
 	/**
 	 * Returns a list of lines created from data in the specified graph.
-	 * If there are no §s in the graph, the method returns null.
+	 * If there are no edges in the graph, the method returns null.
 	 * @param g	the graph to read
 	 * @return	a list of lines found in the graph, or null if there are no lines to be found
 	 */

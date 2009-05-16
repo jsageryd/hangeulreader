@@ -454,7 +454,10 @@ public class GUI2 {
 						int genAll = JOptionPane.showConfirmDialog(frame, "Generate and test all 11 172 characters (will take quite some time)?", "Test scope", JOptionPane.YES_NO_CANCEL_OPTION);
 						if(genAll == JOptionPane.YES_OPTION){
 							if(testStartConfirm()){
+								tf2.setText("Testing in progress...");
+								frame.paintAll(frame.getGraphics());
 								Helper.dump(ht.testAll(fontToUse,jamoRef),resultsFile);
+								tf2.setText("Test finished.");
 								JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
 							}else{
 								aborted = true;
@@ -471,7 +474,10 @@ public class GUI2 {
 										char fromChar = fromString.charAt(0);
 										char toChar = toString.charAt(0);
 										if(testStartConfirm()){
+											tf2.setText("Testing in progress...");
+											frame.paintAll(frame.getGraphics());
 											Helper.dump(ht.test(fromChar,toChar,fontToUse,jamoRef),resultsFile);
+											tf2.setText("Test finished.");
 											JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
 										}else{
 											aborted = true;
@@ -487,7 +493,10 @@ public class GUI2 {
 								String charString = (String) JOptionPane.showInputDialog(frame, "Input a string of hangeul characters to use for the testing.", "String", JOptionPane.PLAIN_MESSAGE, null, null, "\uAC00\uAC01\uAC02\uAC03\uAC04\uAC05");
 								if(charString != null && charString.length() > 0){
 									if(testStartConfirm()){
+										tf2.setText("Testing in progress...");
+										frame.paintAll(frame.getGraphics());
 										Helper.dump(ht.test(charString,fontToUse,jamoRef),resultsFile);
+										tf2.setText("Test finished.");
 										JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
 									}else{
 										aborted = true;
