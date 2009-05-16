@@ -4,6 +4,7 @@
 package se.iroiro.md.hangeulreader;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -115,7 +116,7 @@ public class GUI2 {
 	public GUI2(int scribblewidth, int scribbleheight, JamoReferenceDB jrdb, BufferedImage backgroundImage){
 		this.scribblewidth = scribblewidth;
 		this.scribbleheight = scribbleheight;
-		frame = new JFrame("Draw a hangeul in the leftmost field. Shift-clicking clears the field. Hold down the alt-key for eraser.");
+		frame = new JFrame("Hangeul reader");
 		content = new JPanel(new BorderLayout(gridsep,gridsep));
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		if(jrdb != null){
@@ -148,6 +149,10 @@ public class GUI2 {
 		jamotf.setHorizontalAlignment(JTextField.CENTER);
 		tf.setHorizontalAlignment(JTextField.CENTER);
 		tf2.setHorizontalAlignment(JTextField.CENTER);
+
+		jamotf.setBackground(Color.WHITE);
+		tf.setBackground(Color.WHITE);
+		tf2.setBackground(Color.WHITE);
 
 		tf.addComponentListener(new ComponentAdapter(){
 			public void componentResized(ComponentEvent e) {
@@ -187,12 +192,17 @@ public class GUI2 {
 			final JMenuItem batchtestmenu = new JMenuItem("Run batch test...");
 		final JMenu settingsmenu = new JMenu("Settings");
 			final JCheckBoxMenuItem showlinesfound = new JCheckBoxMenuItem("Show lines found");
+		final JMenu helpmenu = new JMenu("Help");
+			final JMenuItem usagemenu = new JMenuItem("Usage");
+			final JMenuItem infomenu = new JMenuItem("Info");
 		filemenu.add(newmenu);
 		filemenu.add(loadmenu);
 		filemenu.add(savemenu);
 		filemenu.add(rendercharmenu);
 		testingmenu.add(batchtestmenu);
 		settingsmenu.add(showlinesfound);
+		helpmenu.add(usagemenu);
+		helpmenu.add(infomenu);
 		newmenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				new GUI2(jamoRef).show();
@@ -239,9 +249,20 @@ public class GUI2 {
 				sp.repaint();
 			}
 		});
+		usagemenu.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(frame, "Draw a hangeul syllable in the left area.\nAn external image may be loaded through drag-and-drop or through the load dialogue box.\nNote that only black areas of the input will be analysed. Dark grey is not black.\nShift-clicking clears the drawing area.\nUse the right mouse button or hold down the alt-key for eraser.");
+			}
+		});
+		infomenu.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(frame, "Master's project in Language Technology\nJohan Sageryd (j@1616.se)\n\nLund University 2009");
+			}
+		});
 		menubar.add(filemenu);
 		menubar.add(testingmenu);
 		menubar.add(settingsmenu);
+		menubar.add(helpmenu);
 		frame.setJMenuBar(menubar);
 
 		/* Drag-and-drop support */
@@ -262,41 +283,46 @@ public class GUI2 {
 	 * @param image
 	 */
 	protected void classify() {
-		sp.clipCanvasToPanelSize();
-		if(tmp == null || (tmp.getWidth() != sp.getImage().getWidth() || tmp.getHeight() != sp.getImage().getHeight())){
-			tmp = new BufferedImage(sp.getImage().getWidth(),sp.getImage().getHeight(),BufferedImage.TYPE_INT_RGB);
-		}
-		tmp.setData(sp.getImage().getRaster());
-
-		tf2.setText("Analysing...");
-		frame.update(frame.getGraphics());
-		hc.newClassification(sp.getImage());
-		Hangeul h = hc.getHangeul();
-		List<Jamo> j = hc.getJamo();
-		StringBuilder jstr = new StringBuilder();
-		if(j != null){
-			for(Jamo jamo : j){
-				jstr.append(jamo.getChar()+" ");
+		try{
+			sp.clipCanvasToPanelSize();
+			if(tmp == null || (tmp.getWidth() != sp.getImage().getWidth() || tmp.getHeight() != sp.getImage().getHeight())){
+				tmp = new BufferedImage(sp.getImage().getWidth(),sp.getImage().getHeight(),BufferedImage.TYPE_INT_RGB);
 			}
-		}
-		jamotf.setText(jstr.toString().trim());
-		jamotf.setFont(getBoxFitFont(jamotf.getText(), (int) (jamotf.getWidth()*0.85), (int) (jamotf.getHeight()*0.75)));
-		if(h != null){
-			tf.setText(h.toString());
-			tf2.setText("Hangeul syllable "+h.getName());
-		}else{
-			if(j != null && j.size() > 0){
-				Jamo jamo = j.get(0);
-				tf.setText(jamo.toString());
-				tf2.setText("Hangeul jamo "+jamo.getName());
+			tmp.setData(sp.getImage().getRaster());
+
+			tf2.setText("Analysing...");
+			frame.paintAll(frame.getGraphics());
+			hc.newClassification(sp.getImage());
+			Hangeul h = hc.getHangeul();
+			List<Jamo> j = hc.getJamo();
+			StringBuilder jstr = new StringBuilder();
+			if(j != null){
+				for(Jamo jamo : j){
+					jstr.append(jamo.getChar()+" ");
+				}
+			}
+			jamotf.setText(jstr.toString().trim());
+			jamotf.setFont(getBoxFitFont(jamotf.getText(), (int) (jamotf.getWidth()*0.85), (int) (jamotf.getHeight()*0.75)));
+			if(h != null){
+				tf.setText(h.toString());
+				tf2.setText("Hangeul syllable "+h.getName());
 			}else{
-				tf.setText("");
-				tf2.setText("Unknown character");
+				if(j != null && j.size() > 0){
+					Jamo jamo = j.get(0);
+					tf.setText(jamo.toString());
+					tf2.setText("Hangeul jamo "+jamo.getName());
+				}else{
+					tf.setText("");
+					tf2.setText("Unknown character");
+				}
 			}
-		}
 
-		if(drawlinesfound){
-			sp.getImage().setData((new ImageRenderer(new CharacterMeasurement(sp.getImage())).getImage().getRaster()));
+			if(drawlinesfound){
+				sp.getImage().setData((new ImageRenderer(new CharacterMeasurement(sp.getImage())).getImage().getRaster()));
+			}
+		} catch (OutOfMemoryError e){
+			tf2.setText("Input is too complex.");
+		} catch (Exception e){
 		}
 	}
 
@@ -380,6 +406,11 @@ public class GUI2 {
 		return f.deriveFont(fs);
 	}
 
+	private boolean testStartConfirm(){
+		int startTest = JOptionPane.showConfirmDialog(frame, "The test will start, please check the console for progress details.\n\nDuring the test the GUI will be frozen.\nA message box will be shown upon completion.", "Test start", JOptionPane.OK_CANCEL_OPTION);
+		return startTest == JOptionPane.OK_OPTION;
+	}
+
 	private void batchtest(JamoReferenceDB jamoRef){
 		if(jamoRef.getFonts().size() < 1) {
 			JOptionPane.showMessageDialog(frame, "No fonts loaded, cannot generate test data.");
@@ -409,11 +440,12 @@ public class GUI2 {
 			if(saveDialogReturnVal == JFileChooser.APPROVE_OPTION){
 				File saveFile = fc.getSelectedFile();
 				if(saveFile != null){
+					if(!saveFile.getName().toLowerCase().endsWith(".txt")){
+						saveFile = new File(saveFile.getAbsolutePath().concat(".txt"));
+					}
 					if(saveFile.exists()){
-						int canReplace = JOptionPane.showConfirmDialog(frame, "The file exists. Overwrite?", "File exists", JOptionPane.YES_NO_OPTION);
-						if(canReplace == JOptionPane.YES_OPTION){
-							saveFile.delete();
-						}else{
+						int canReplace = JOptionPane.showConfirmDialog(frame, "The file exists. Continue anyway?", "File exists", JOptionPane.YES_NO_OPTION);
+						if(canReplace != JOptionPane.YES_OPTION){
 							aborted = true;
 						}
 					}
@@ -421,9 +453,12 @@ public class GUI2 {
 						resultsFile = saveFile.getPath();
 						int genAll = JOptionPane.showConfirmDialog(frame, "Generate and test all 11 172 characters (will take quite some time)?", "Test scope", JOptionPane.YES_NO_CANCEL_OPTION);
 						if(genAll == JOptionPane.YES_OPTION){
-							JOptionPane.showMessageDialog(frame, "Test will start, check console for progress details.\nDuring scanning, the GUI will be frozen. Message box will be shown upon completion.");
-							Helper.dump(ht.testAll(fontToUse,jamoRef),resultsFile);
-							JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
+							if(testStartConfirm()){
+								Helper.dump(ht.testAll(fontToUse,jamoRef),resultsFile);
+								JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
+							}else{
+								aborted = true;
+							}
 						}else if(genAll == JOptionPane.NO_OPTION){
 							String[] scopeOptions = {"Range","String","Cancel"};
 							int useCharRange = JOptionPane.showOptionDialog(frame, "Input character range or string of characters?", "Test scope", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, scopeOptions, scopeOptions[0]);
@@ -435,9 +470,12 @@ public class GUI2 {
 									if(toString != null && toString.length() > 0){
 										char fromChar = fromString.charAt(0);
 										char toChar = toString.charAt(0);
-										JOptionPane.showMessageDialog(frame, "Test will start, check console for progress details.\nDuring scanning, the GUI will be frozen. Message box will be shown upon completion.");
-										Helper.dump(ht.test(fromChar,toChar,fontToUse,jamoRef),resultsFile);
-										JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
+										if(testStartConfirm()){
+											Helper.dump(ht.test(fromChar,toChar,fontToUse,jamoRef),resultsFile);
+											JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
+										}else{
+											aborted = true;
+										}
 									}else{
 										aborted = true;
 									}
@@ -448,9 +486,12 @@ public class GUI2 {
 								// use string
 								String charString = (String) JOptionPane.showInputDialog(frame, "Input a string of hangeul characters to use for the testing.", "String", JOptionPane.PLAIN_MESSAGE, null, null, "\uAC00\uAC01\uAC02\uAC03\uAC04\uAC05");
 								if(charString != null && charString.length() > 0){
-									JOptionPane.showMessageDialog(frame, "Test will start, check console for progress details.\nDuring scanning, the GUI will be frozen. Message box will be shown upon completion.");
-									Helper.dump(ht.test(charString,fontToUse,jamoRef),resultsFile);
-									JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
+									if(testStartConfirm()){
+										Helper.dump(ht.test(charString,fontToUse,jamoRef),resultsFile);
+										JOptionPane.showMessageDialog(frame, "Test finished. Results stored:\n"+resultsFile);
+									}else{
+										aborted = true;
+									}
 								}else{
 									aborted = true;
 								}
