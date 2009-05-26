@@ -56,7 +56,7 @@ public class SubgraphMapper {
 							}
 						}														// end isomorph match
 					if(add){	// if add=true, then we had a match so add it to the list of possible mappings.
-						cand.add((IntMatrix)Mprim.clone());	// TODO rename cand to mappings?
+						cand.add((IntMatrix)Mprim.clone());
 					}
 				}else{
 					cand.addAll(findCandidates(M0, Mprim, depth+1, A, B));	// if it is not the last row, recurse to next row

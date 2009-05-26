@@ -21,16 +21,12 @@ import se.iroiro.md.graph.Coordinate;
  */
 public class HangeulClassifier {
 
-	/**
-	 * The size of the jamo images (side in pixels) used for constructing the jamo database.
-	 */
-
 	private Hangeul hangeul = null;
 	private List<Jamo> jamos = null;
 	private CharacterMeasurement cm;
 	private JamoReferenceDB jamoRefDB;
 
-	public HangeulClassifier(JamoReferenceDB jamoRefDB){	// TODO empty constructor to be able to run below method without first loading one char
+	public HangeulClassifier(JamoReferenceDB jamoRefDB){
 		if(jamoRefDB == null) jamoRefDB = new JamoReferenceDB();
 		this.jamoRefDB = jamoRefDB;
 	}
