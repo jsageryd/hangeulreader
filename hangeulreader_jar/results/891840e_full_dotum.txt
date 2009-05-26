@@ -1,6 +1,6 @@
 Character images rendered using font "Dotum" at 200x200 pixels.
-Test started: 2009-05-17 16:32:06
-Test finished: 2009-05-17 16:56:39
+Test started: 2009-05-26 14:43:49
+Test finished: 2009-05-26 15:08:52
 
 7116 correct out of 11172 characters (63 %).
 
