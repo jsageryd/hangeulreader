@@ -151,29 +151,36 @@ public class HangeulClassifier {
 	private Hangeul makeHangeul(List<Jamo> jamos) {
 		if(jamos == null || jamos.size() < 2) return null;
 
-//		Helper.p(jamos+"\n");
 		Collections.sort(jamos, new JamoVerticalPositionComparator());
-//		Helper.p(jamos+"\n");
-
-		if(jamos.get(0).getType() == Jamo.jamoType.FINAL){		// fix this, do vowel check.
-			jamos.set(0,swapPosition(jamos.get(0)));
-		}
-		if(jamos.get(1).getType() == Jamo.jamoType.FINAL){		// fix this, do vowel check.
-			jamos.set(1,swapPosition(jamos.get(1)));
-		}
-		if(jamos.size() > 2 && jamos.get(2).getType() == Jamo.jamoType.INITIAL){
-			jamos.set(2,swapPosition(jamos.get(2)));
-		}
 
 		char initial_jamo = 0;
 		char medial_jamo = 0;
 		char final_jamo = 0;
 
 		for(Jamo j : jamos){
-			switch(j.getType()){
-			case INITIAL: if(initial_jamo == 0) initial_jamo = j.getChar(); break;
-			case MEDIAL: if(medial_jamo == 0) medial_jamo = j.getChar(); break;
-			case FINAL: if(final_jamo == 0) final_jamo = j.getChar(); break;
+			if(j.getType() == Jamo.jamoType.MEDIAL){	// If medial
+				if(medial_jamo == 0){	// Set if not already set
+					medial_jamo = j.getChar();
+				}
+				continue;	// Continue with next jamo
+			}
+			if(initial_jamo == 0){	// If there is no initial jamo set
+				if(j.getType() == Jamo.jamoType.FINAL){	// Try to swap if class is final
+					swapJamoClass(j);
+				}
+				if(j.getType() == Jamo.jamoType.INITIAL){	// Set if initial class and continue
+					initial_jamo = j.getChar();
+					continue;
+				}
+			}
+			if(final_jamo == 0){
+				if(j.getType() == Jamo.jamoType.INITIAL){	// Try to swap if class is initial
+					swapJamoClass(j);
+				}
+				if(j.getType() == Jamo.jamoType.FINAL){	// Set if final class and continue
+					final_jamo = j.getChar();
+					continue;
+				}
 			}
 		}
 
@@ -210,7 +217,7 @@ public class HangeulClassifier {
 	 * @param j	the jamo to convert
 	 * @return	a converted jamo
 	 */
-	private Jamo swapPosition(Jamo j){
+	private void swapJamoClass(Jamo j){
 		Map<Character,Character> map = new HashMap<Character,Character>();
 		Map<Character,Character> map2 = new HashMap<Character,Character>();
 
@@ -238,9 +245,7 @@ public class HangeulClassifier {
 
 		Character jamo = map.get(j.getChar());
 		if(jamo != null){
-			return new Jamo(jamo);
-		}else{
-			return j;
+			j.setChar(jamo);
 		}
 	}
 

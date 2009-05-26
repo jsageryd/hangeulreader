@@ -136,6 +136,13 @@ public class Jamo {
 	}
 
 	/**
+	 * Sets the jamo character.
+	 */
+	public void setChar(char jamo){
+		this.jamo = jamo;
+	}
+
+	/**
 	 * Returns the character as a string.
 	 * @return	the character as a string
 	 */
