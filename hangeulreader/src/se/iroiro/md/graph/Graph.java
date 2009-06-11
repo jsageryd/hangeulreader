@@ -125,6 +125,15 @@ public interface Graph<NP,EP> {
 	public String toString();
 
 	/**
+	 * Returns the graph as a Graphviz dot subgraph.
+	 * Parameters may be used to avoid conflicts if multiple graphs are to be used in the same dot-file.
+	 * @param startingNodeID	the node ID offset
+	 * @param startingColourID	the colour ID offset
+	 * @return	a string representing the graph in dot-format
+	 */
+	public String toDotSubgraph(int startingNodeID, int startingColourID);
+
+	/**
 	 * Returns a duplicate of this graph, with deep-copied nodes and edges, but with piggyback references intact.
 	 * @return	a duplicate of this graph
 	 */
