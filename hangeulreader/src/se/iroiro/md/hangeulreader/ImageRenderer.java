@@ -34,11 +34,12 @@ public class ImageRenderer {
 	private Color nodeColour = DEFAULT_NODE_COLOUR;
 	private int currentColour = -1;
 	private double scale = 1;
+	private int strokewidth = DEFAULT_STROKE_WIDTH;
 
-	private static final int STROKE_WIDTH = 3;
+	private static final int DEFAULT_STROKE_WIDTH = 3;
 	private static final Color DEFAULT_COLOUR = Color.BLACK;
 	private static final Color DEFAULT_EDGE_COLOUR = Color.BLUE;
-	private static final Color DEFAULT_NODE_COLOUR = Color.RED;
+	private static final Color DEFAULT_NODE_COLOUR = Color.BLUE;
 	private static final Color[] colour = {
 		Color.BLUE,
 		Color.RED,
@@ -50,6 +51,13 @@ public class ImageRenderer {
 		Color.YELLOW
 	};
 
+	public enum overlayType {
+		LINES { public String toString(){ return "Show lines"; }},
+		STRUCTURE { public String toString(){ return "Show relations"; }},
+//		MATRIX { public String toString(){ return "Show graph matrix"; }},
+		LINETYPES { public String toString(){ return "Show line types"; }}
+	}
+
 	/**
 	 * Class constructor. Data will be read from the specified character measurement.
 	 * @param cm	the character measurement
@@ -59,19 +67,22 @@ public class ImageRenderer {
 		image = new BufferedImage(cm.getImage().getWidth(), cm.getImage().getHeight(), BufferedImage.TYPE_INT_RGB);
 		scale = cm.getImageReader().getScale();
 		initg2d();
-		draw();
+		drawImage();
 	}
 
 	/**
-	 * Draws everything.
+	 * Overlays the image with the specified data.
+	 * @param ol	data type(s) to overlay
 	 */
-	private void draw(){
-		drawImage();
-		setNodeColour(Color.DARK_GRAY);
-		setEdgeColour(getNodeColour());
-//		drawLineGroups();
-		drawLines();
-//		drawMatrix();
+	public void overlay(overlayType... ol){
+		for(overlayType type : ol){
+			switch(type){
+			case LINES: drawLines(); break;
+			case STRUCTURE: drawStructures(); break;
+//			case MATRIX: drawMatrix(); break;
+			case LINETYPES: drawLineTypes(); break;
+			}
+		}
 	}
 
 	/**
@@ -80,8 +91,8 @@ public class ImageRenderer {
 	private void initg2d(){
 		g2d = (Graphics2D) getImage().createGraphics();
 		g2d.setColor(DEFAULT_COLOUR);
-		setStroke(STROKE_WIDTH);
-		if(STROKE_WIDTH > 2) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		setStrokeWidth(DEFAULT_STROKE_WIDTH);
+		if(DEFAULT_STROKE_WIDTH > 2) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	}
 
@@ -89,8 +100,17 @@ public class ImageRenderer {
 	 * Sets the stroke width of the <code>Graphics2D</code>.
 	 * @param width	the stroke width
 	 */
-	private void setStroke(int width){
+	private void setStrokeWidth(int width){
+		strokewidth = width;
 		g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+	}
+
+	/**
+	 * Returns the stroke width.
+	 * @return	the stroke width
+	 */
+	private int getStrokeWidth(){
+		return strokewidth;
 	}
 
 	/**
@@ -112,18 +132,102 @@ public class ImageRenderer {
 	/**
 	 * Draws the graphs of all line groups.
 	 */
-	@SuppressWarnings("unused")
-	private void drawLineGroups() {
+	private void drawStructures() {
+		if(cm == null || cm.getLineGroups() == null) return;
+
+		int sw = getStrokeWidth();
+		int d = 2;
+
+		setEdgeColour(Color.BLACK);
+		setNodeColour(getEdgeColour());
+		setStrokeWidth(sw+d);
+		for(LineGroup lg : cm.getLineGroups()){
+			drawGraph(lg.getGraph());
+		}
+		setEdgeColour(Color.WHITE);
+		setNodeColour(getEdgeColour());
+		setStrokeWidth(sw);
+		for(LineGroup lg : cm.getLineGroups()){
+			drawGraph(lg.getGraph());
+		}
+	}
+
+	/**
+	 * Draws the line types of all lines
+	 */
+	private void drawLineTypes(){
 		if(cm == null || cm.getLineGroups() == null) return;
 		for(LineGroup lg : cm.getLineGroups()){
-//			drawGraph(lg.getGraph());
-			g2d.setColor(Color.GRAY);
-//			drawDot(lg.getPosition(), 2);
-			g2d.drawRect((int) (lg.getTopLeft().scale(scale).getJavaX()-scale),
-					(int) (lg.getTopLeft().scale(scale).getJavaY()-scale),
-					(int) (lg.getBottomRight().scale(scale).getX()-lg.getTopLeft().scale(scale).getX()+2*scale),
-					(int) (lg.getTopLeft().scale(scale).getY()-lg.getBottomRight().scale(scale).getY()+2*scale));
+			for(Line l : lg.getMap().keySet()){
+				drawDot(l.getPosition().scale(scale), 12, Color.GRAY);
+				drawDot(l.getPosition().scale(scale), 10, Color.BLACK);
+				drawDot(l.getPosition().scale(scale), 8, Color.WHITE);
+				drawLineType(l.getType(), l.getPosition().scale(scale));
+//				drawText(l.getType().toString(), (int) l.getPosition().scale(scale).getJavaX(), (int) l.getPosition().scale(scale).getJavaY(), Color.WHITE, Color.BLACK);
+			}
 		}
+	}
+
+	/**
+	 * Draws a glyph to represent the specified line type.
+	 * @param lt	the line type
+	 * @param location	the location of the centre of the glyph
+	 */
+	private void drawLineType(Line.LineType lt, Coordinate location){
+		g2d.setColor(Color.BLACK);
+		setStrokeWidth(2);
+		int r = 4;
+		int cx = (int) Math.round(location.getJavaX());
+		int cy = (int) Math.round(location.getJavaY());
+		switch(lt){
+		case HORIZONTAL:
+			g2d.drawLine(cx-r, cy, cx+r, cy);
+			break;
+		case VERTICAL:
+			g2d.drawLine(cx, cy-r, cx, cy+r);
+			break;
+		case DIAGONAL_LEFT:
+			drawLine(new SimpleCoordinate(cx-r,-cy).rotate(Math.PI/4, location), new SimpleCoordinate(cx+r,-cy).rotate(Math.PI/4, location));
+			break;
+		case DIAGONAL_RIGHT:
+			drawLine(new SimpleCoordinate(cx-r,-cy).rotate(-Math.PI/4, location), new SimpleCoordinate(cx+r,-cy).rotate(-Math.PI/4, location));
+			break;
+		case CIRCLE:
+			g2d.drawOval(cx-r, cy-r, r*2-1, r*2-1);
+			break;
+		case OTHER_CLOSED_POLYGON:
+			g2d.drawRect(cx-r, cy-r, r*2-1, r*2-1);
+			break;
+		case LEFT_BOX:
+			g2d.drawPolyline(new int[] {cx+r,cx-r,cx-r,cx+r}, new int[] {cy-r,cy-r,cy+r,cy+r}, 4);
+			break;
+		case RIGHT_BOX:
+			g2d.drawPolyline(new int[] {cx-r,cx+r,cx+r,cx-r}, new int[] {cy-r,cy-r,cy+r,cy+r}, 4);
+			break;
+		case UPPER_BOX:
+			g2d.drawPolyline(new int[] {cx-r,cx-r,cx+r,cx+r}, new int[] {cy+r,cy-r,cy-r,cy+r}, 4);
+			break;
+		case LOWER_BOX:
+			g2d.drawPolyline(new int[] {cx-r,cx-r,cx+r,cx+r}, new int[] {cy-r,cy+r,cy+r,cy-r}, 4);
+			break;
+		case TOPLEFT_CORNER:
+			g2d.drawPolyline(new int[] {cx+r,cx-r,cx-r}, new int[] {cy-r,cy-r,cy+r}, 3);
+			break;
+		case TOPRIGHT_CORNER:
+			g2d.drawPolyline(new int[] {cx-r,cx+r,cx+r}, new int[] {cy-r,cy-r,cy+r}, 3);
+			break;
+		case BOTTOMLEFT_CORNER:
+			g2d.drawPolyline(new int[] {cx-r,cx-r,cx+r}, new int[] {cy-r,cy+r,cy+r}, 3);
+			break;
+		case BOTTOMRIGHT_CORNER:
+			g2d.drawPolyline(new int[] {cx+r,cx+r,cx-r}, new int[] {cy-r,cy+r,cy+r}, 3);
+			break;
+		case Z_SHAPE:
+			g2d.drawPolyline(new int[] {cx-r,cx+r,cx-r,cx+r}, new int[] {cy-r,cy-r,cy+r,cy+r}, 4);
+			break;
+		case UNKNOWN:
+		}
+		setStrokeWidth(DEFAULT_STROKE_WIDTH);
 	}
 
 	/**
@@ -132,36 +236,14 @@ public class ImageRenderer {
 	private void drawLines(){
 		setEdgeColour(Color.WHITE);
 		setNodeColour(getEdgeColour());
-//		DecimalFormat df = new DecimalFormat("0");
 		if(cm == null || cm.getLineGroups() == null) return;
 		for(LineGroup lg : cm.getLineGroups()){
-//			for(Line l : lg.getMap().keySet()){
-//			currentColour = -1;	// enable this line to reset colour counter for each line group, to make it consistent with graph toString output
 			for(XYNode<Line,LineGroup> n : lg.getGraph().getNodes()){	// traversing graph instead of linegroup keyset to match graph toString colours
 				Line l = n.getPiggybackObject();
 				setEdgeColour(getNextColour());
 				setNodeColour(getEdgeColour());
 				drawGraph(l.getGraph());
 			}
-//			for(Line l : lg.getMap().keySet()){
-//				g2d.setColor(Color.YELLOW);
-//				drawDot(l.getFrom().getPosition(),6);
-//			}
-//			for(Line l : lg.getMap().keySet()){
-//				g2d.setColor(Color.BLUE);
-//				drawDot(l.getTo().getPosition(),3);
-//			}
-			for(Line l : lg.getMap().keySet()){
-				drawText(l.getType().toString(), (int) l.getPosition().scale(scale).getJavaX(), (int) l.getPosition().scale(scale).getJavaY(), Color.WHITE, Color.BLACK);
-			}
-//			for(XYEdge<Line,LineGroup> e : lg.getGraph().getEdges()){
-//			if(e.getTailPort() > -1){
-//					drawText(String.valueOf(e.getTailPort()), (int) e.getFrom().getPosition().getJavaX(), (int) e.getFrom().getPosition().getJavaY(), Color.WHITE);
-//				}
-//				if(e.getHeadPort() > -1){
-//					drawText(String.valueOf(e.getHeadPort()), (int) e.getTo().getPosition().getJavaX(), (int) e.getTo().getPosition().getJavaY(), Color.WHITE);
-//				}
-//			}
 		}
 	}
 
@@ -181,7 +263,7 @@ public class ImageRenderer {
 					}
 				}
 				if(gm.getCell(x,y)){
-					drawDot(pos,2);
+					drawDot(pos,2,Color.WHITE);
 				}
 			}
 		}
@@ -207,6 +289,7 @@ public class ImageRenderer {
 		g2d.drawString(text, px, py);
 	}
 
+	@SuppressWarnings("unused")
 	private void drawText(String text, int x, int y, Color c, Color b){
 		int offset = 1;
 		drawText(text, x-offset, y, b);
@@ -279,19 +362,20 @@ public class ImageRenderer {
 	 * @param n	the node to draw
 	 */
 	private void drawNode(XYNode<?,?> n) {
-		g2d.setColor(getNodeColour());
-		drawDot(n.getPosition(),0);
+		drawDot(n.getPosition(),0, getNodeColour());
 	}
 
 	/**
 	 * Draws a dot at the specified coordinate
 	 * @param c	the coordinate
 	 * @param r	the radius of the dot to be drawn
+	 * @param colour	the colour of the dot
 	 */
-	private void drawDot(Coordinate c, int r){
+	private void drawDot(Coordinate c, int r, Color colour){
+		g2d.setColor(colour);
 		RenderingHints rh = g2d.getRenderingHints();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.fillOval((int) (c.getJavaX()-r), (int) (c.getJavaY()-r), r*2, r*2);
+		g2d.fillOval((int) Math.round(c.getJavaX())-r, (int) Math.round(c.getJavaY())-r, r*2, r*2);
 		g2d.setRenderingHints(rh);
 	}
 
@@ -310,10 +394,10 @@ public class ImageRenderer {
 	 * @param to	to-coordinate
 	 */
 	private void drawLine(Coordinate from, Coordinate to){
-		g2d.drawLine((int) (from.getJavaX()),
-					 (int) (from.getJavaY()),
-					 (int) (to.getJavaX()),
-					 (int) (to.getJavaY()));
+		g2d.drawLine((int) Math.round(from.getJavaX()),
+					 (int) Math.round(from.getJavaY()),
+					 (int) Math.round(to.getJavaX()),
+					 (int) Math.round(to.getJavaY()));
 	}
 
 }

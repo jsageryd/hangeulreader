@@ -82,10 +82,12 @@ public interface Coordinate {
 	 * by <code>dx</code> along the <i>x</i>-axis and <code>dy</code>
 	 * along the <i>y</i> axis so that it after translation represents
 	 * the point [<i>x</i>+<code>dx,<i>y</i>+<code>dy].
+	 * Returns a reference to itself for convenience. No copy is made.
 	 * @param dx	the distance to move this coordinate along the <i>x</i>-axis
 	 * @param dy	the distance to move this coordinate along the <i>y</i>-axis
+	 * @return	a reference to this coordinate
 	 */
-	public void translate(double dx, double dy);
+	public Coordinate translate(double dx, double dy);
 
 	/**
 	 * Returns a string representation of the coordinate in the form <code>[x,y]</code> with two decimal places.
@@ -102,10 +104,12 @@ public interface Coordinate {
 
 	/**
 	 * Rotates the coordinate <code>angle</code> radians around pivot point <code>pivot</code>.
+	 * Returns a reference to itself for convenience. No copy is made.
 	 * @param angle	angle in radians
 	 * @param pivot	pivot point
+	 * @return	a reference to this coordinate
 	 */
-	public void rotate(double angle, Coordinate pivot);
+	public Coordinate rotate(double angle, Coordinate pivot);
 
 	/**
 	 * Returns the Euclidian distance between this coordinate and the specified coordinate.
@@ -134,6 +138,13 @@ public interface Coordinate {
 	 * @see	Coordinate#scale(double, double)
 	 */
 	public Coordinate scale(double m);
+
+	/**
+	 * Returns a copy of the current instance.
+	 * This is the same as creating a new instance of the class specifying the current instance as argument.
+	 * @return	a copy of the current instance
+	 */
+	public Coordinate copy();
 
 	/**
 	 * Returns a copy of this coordinate.

@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JCheckBoxMenuItem;
@@ -38,6 +39,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -52,6 +54,8 @@ import se.iroiro.md.hangeul.Hangeul;
 import se.iroiro.md.hangeul.HangeulClassifier;
 import se.iroiro.md.hangeul.Jamo;
 import se.iroiro.md.hangeul.JamoReferenceDB;
+import se.iroiro.md.hangeul.LineGroup;
+import se.iroiro.md.hangeulreader.ImageRenderer.overlayType;
 
 /**
  * GUI to display scribble panel and recognition result
@@ -80,8 +84,8 @@ public class GUI2 {
 	private int scribbleheight;
 	private final int gridsep = 5;
 
-	// Settings
-	private boolean drawlinesfound = false;
+	private CharacterMeasurement cm = null;
+	private TreeMap<overlayType,JCheckBoxMenuItem> settingsmi;
 
 	/**
 	 * Class constructor. Initialises a GUI of default size with the specified jamo reference DB.
@@ -133,7 +137,6 @@ public class GUI2 {
 			}
 
 			public void mouseReleased(MouseEvent e) {
-
 				classify();
 			}
 		},backgroundImage);
@@ -188,10 +191,10 @@ public class GUI2 {
 			final JMenuItem loadmenu = new JMenuItem("Load image...");
 			final JMenuItem savemenu = new JMenuItem("Save image...");
 			final JMenuItem rendercharmenu = new JMenuItem("Render image from character...");
+			final JMenuItem dotexport = new JMenuItem("Export structure(s) to Graphviz dot-file...");
 		final JMenu testingmenu = new JMenu("Testing");
 			final JMenuItem batchtestmenu = new JMenuItem("Run batch test...");
-		final JMenu settingsmenu = new JMenu("Settings");
-			final JCheckBoxMenuItem showlinesfound = new JCheckBoxMenuItem("Show lines found");
+		final JMenu settingsmenu = new JMenu("Overlay");
 		final JMenu helpmenu = new JMenu("Help");
 			final JMenuItem usagemenu = new JMenuItem("Usage");
 			final JMenuItem infomenu = new JMenuItem("Info");
@@ -199,8 +202,15 @@ public class GUI2 {
 		filemenu.add(loadmenu);
 		filemenu.add(savemenu);
 		filemenu.add(rendercharmenu);
+		filemenu.add(new JSeparator());
+		filemenu.add(dotexport);
 		testingmenu.add(batchtestmenu);
-		settingsmenu.add(showlinesfound);
+		settingsmi = new TreeMap<overlayType,JCheckBoxMenuItem>();
+		for(overlayType ol : overlayType.values()){
+			JCheckBoxMenuItem mi = new JCheckBoxMenuItem(ol.toString());
+			settingsmenu.add(mi);
+			settingsmi.put(ol,mi);
+		}
 		helpmenu.add(usagemenu);
 		helpmenu.add(infomenu);
 		newmenu.addActionListener(new ActionListener(){
@@ -231,24 +241,24 @@ public class GUI2 {
 				}
 			}
 		});
+		dotexport.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				exportDotGraph();
+			}
+		});
 		batchtestmenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				batchtest(jamoRef);
 			}
 		});
-		showlinesfound.addActionListener(new ActionListener(){
+		ActionListener settingsal = new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				drawlinesfound = showlinesfound.isSelected();
-				if(drawlinesfound){
-					if(tmp != null){
-						sp.getImage().setData((new ImageRenderer(new CharacterMeasurement(tmp)).getImage().getRaster()));
-					}
-				}else{
-					sp.getImage().setData(tmp.getRaster());
-				}
-				sp.repaint();
+				paintImage();
 			}
-		});
+		};
+		for(JCheckBoxMenuItem mi : settingsmi.values()){
+			mi.addActionListener(settingsal);
+		}
 		usagemenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(frame, "Draw a hangeul syllable in the left area.\nAn external image may be loaded through drag-and-drop or through the load dialogue box.\nNote that only black areas of the input will be analysed. Dark grey is not black.\nShift-clicking clears the drawing area.\nUse the right mouse button or hold down the alt-key for eraser.");
@@ -292,7 +302,7 @@ public class GUI2 {
 
 			tf2.setText("Analysing...");
 			frame.paintAll(frame.getGraphics());
-			hc.newClassification(sp.getImage());
+			hc.newClassification(tmp);
 			Hangeul h = hc.getHangeul();
 			List<Jamo> j = hc.getJamo();
 			StringBuilder jstr = new StringBuilder();
@@ -317,12 +327,40 @@ public class GUI2 {
 				}
 			}
 
-			if(drawlinesfound){
-				sp.getImage().setData((new ImageRenderer(new CharacterMeasurement(sp.getImage())).getImage().getRaster()));
-			}
+			frame.paintAll(frame.getGraphics());
+			cm = null;
+			paintImage();
 		} catch (OutOfMemoryError e){
 			tf2.setText("Input is too complex.");
 		} catch (Exception e){
+			tf2.setText("An error occured.");
+		}
+	}
+
+	/**
+	 * Paints the image back onto the canvas after it has been read by the classifier.
+	 * Overlay is painted if chosen.
+	 */
+	private void paintImage(){
+		if(tmp != null){
+			ir = null;
+			for(overlayType ol : settingsmi.keySet()){
+				if(settingsmi.get(ol).isSelected()){
+					if(cm == null){
+						cm = new CharacterMeasurement(tmp);
+					}
+					if(ir == null){
+						ir = new ImageRenderer(cm);
+					}
+					ir.overlay(ol);
+				}
+			}
+			if(ir != null){
+				sp.getImage().setData((ir.getImage().getRaster()));
+			}else{
+				sp.getImage().setData(tmp.getRaster());
+			}
+			sp.repaint();
 		}
 	}
 
@@ -560,6 +598,55 @@ public class GUI2 {
 				sp.clipCanvasToPanelSize();
 				writeImage(sp.getImage(), saveFile);
 			}
+		}
+	}
+
+	/**
+	 * Exports the structures to a dot graph.
+	 */
+	private void exportDotGraph(){
+		if(cm == null) cm = new CharacterMeasurement(tmp);
+		if(cm != null && cm.getLineGroups() != null && cm.getLineGroups().size() > 0){
+			JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+			fc.setMultiSelectionEnabled(false);
+			fc.setFileFilter(new FileFilter(){
+				public boolean accept(File f) {
+					if(f.getName().endsWith(".dot")){
+						return true;
+					}
+					return false;
+				}
+
+				public String getDescription() {
+					return "Graphviz dot-file";
+				}
+			});
+			int saveDialogReturnVal = fc.showSaveDialog(frame);
+			if(saveDialogReturnVal == JFileChooser.APPROVE_OPTION){
+				File saveFile = fc.getSelectedFile();
+				if(saveFile != null){
+					if(!saveFile.getName().toLowerCase().endsWith(".dot")){
+						saveFile = new File(saveFile.getAbsolutePath().concat(".dot"));
+					}
+					if(saveFile.exists()){
+						int canReplace = JOptionPane.showConfirmDialog(frame, "The file exists. Overwrite?", "File exists", JOptionPane.YES_NO_OPTION);
+						if(canReplace != JOptionPane.YES_OPTION){
+							return;
+						}
+					}
+					StringBuffer sb = new StringBuffer();
+					sb.append("digraph G {\n\n");
+					int lastLGsize = 0;
+					for(LineGroup lg : cm.getLineGroups()){
+						sb.append(lg.getGraph().toDotSubgraph(lastLGsize, lastLGsize)+"\n");
+						lastLGsize += lg.getMap().size();
+					}
+					sb.append("}");
+					Helper.dump(sb.toString(), saveFile.getAbsolutePath());
+				}
+			}
+		}else{
+			JOptionPane.showMessageDialog(frame, "There are no structures to export.");
 		}
 	}
 

@@ -124,9 +124,10 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.Coordinate#translate(double, double)
 	 */
-	public void translate(double dx, double dy) {
+	public Coordinate translate(double dx, double dy) {
 		x += dx;
 		y += dy;
+		return this;
 	}
 
 	/* (non-Javadoc)
@@ -148,7 +149,7 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.Coordinate#rotate(double, se.iroiro.md.graph.Coordinate)
 	 */
-	public void rotate(double angle, Coordinate pivot) {
+	public Coordinate rotate(double angle, Coordinate pivot) {
 		double cos_a = Math.cos(angle);	// precalculate
 		double sin_a = Math.sin(angle);	// "
 		double norm_x = getX() - pivot.getX();	// move so that pivot is origo
@@ -156,6 +157,7 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 		double new_x = norm_x * cos_a - norm_y * sin_a + pivot.getX();	// rotate around origo and move back to pivot offset
 		double new_y = norm_y * cos_a + norm_x * sin_a + pivot.getY();	// "
 		setXY(new_x, new_y);	// set new location
+		return this;
 	}
 
 	/* (non-Javadoc)
@@ -176,6 +178,13 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 
 	public Coordinate scale(double m) {
 		return scale(m,m);
+	}
+
+	/* (non-Javadoc)
+	 * @see se.iroiro.md.graph.Coordinate#copy()
+	 */
+	public Coordinate copy() {
+		return new SimpleCoordinate(this);
 	}
 
 	/* (non-Javadoc)
