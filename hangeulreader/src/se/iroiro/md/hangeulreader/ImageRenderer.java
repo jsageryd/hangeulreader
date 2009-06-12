@@ -52,6 +52,7 @@ public class ImageRenderer {
 	};
 
 	public enum overlayType {
+		SKELETON { public String toString(){ return "Show skeleton"; }},
 		LINES { public String toString(){ return "Show lines"; }},
 		STRUCTURE { public String toString(){ return "Show relations"; }},
 //		MATRIX { public String toString(){ return "Show graph matrix"; }},
@@ -77,12 +78,29 @@ public class ImageRenderer {
 	public void overlay(overlayType... ol){
 		for(overlayType type : ol){
 			switch(type){
+			case SKELETON: drawSkeleton(); break;
 			case LINES: drawLines(); break;
 			case STRUCTURE: drawStructures(); break;
 //			case MATRIX: drawMatrix(); break;
 			case LINETYPES: drawLineTypes(); break;
 			}
 		}
+	}
+
+	/**
+	 * Draws thin, black lines to show the skeleton.
+	 */
+	private void drawSkeleton() {
+		setEdgeColour(Color.WHITE);
+		setNodeColour(getEdgeColour());
+		setStrokeWidth(1);
+		if(cm == null || cm.getLineGroups() == null) return;
+		for(LineGroup lg : cm.getLineGroups()){
+			for(Line l : lg.getMap().keySet()){
+				drawGraph(l.getGraph());
+			}
+		}
+		setStrokeWidth(DEFAULT_STROKE_WIDTH);
 	}
 
 	/**
