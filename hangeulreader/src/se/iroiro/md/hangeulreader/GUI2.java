@@ -192,8 +192,8 @@ public class GUI2 {
 			final JMenuItem loadmenu = new JMenuItem("Load image...");
 			final JMenuItem savemenu = new JMenuItem("Save image...");
 			final JMenuItem rendercharmenu = new JMenuItem("Render image from character...");
-			final JMenuItem dotexport = new JMenuItem("Export structure to Graphviz file...");
-			final JMenuItem pgftikzexport = new JMenuItem("Export structure to PGF/TikZ file...");
+			final JMenuItem dotexport = new JMenuItem("Export relations to Graphviz file...");
+			final JMenuItem pgftikzexport = new JMenuItem("Export relations to PGF/TikZ file...");
 			final JMenuItem pgftikzexportlines = new JMenuItem("Export lines to PGF/TikZ file...");
 		final JMenu testingmenu = new JMenu("Testing");
 			final JMenuItem batchtestmenu = new JMenuItem("Run batch test...");
@@ -700,13 +700,14 @@ public class GUI2 {
 					}
 					StringBuffer tikz = new StringBuffer();
 					tikz.append("\\begin{tikzpicture}\n");
-					tikz.append("[scale=0.05,\n");
+					tikz.append("[scale=0.03,\n");
 					tikz.append("node/.style={thick,circle,draw=black,fill=white}");
 					tikz.append(",\n");
 					tikz.append("edge/.style={line width=1,draw=black}");
 					tikz.append("]\n");
 					for(LineGroup lg : cm.getLineGroups()){
-						tikz.append(lg.getGraph().toPGFTikZ(false, true) + "\n\n");
+						tikz.append("\n");
+						tikz.append(lg.getGraph().toPGFTikZ(false, true, false, true) + "\n");
 					}
 					tikz.append("\\end{tikzpicture}");
 					Helper.dump(tikz.toString(), saveFile.getAbsolutePath());
@@ -752,16 +753,16 @@ public class GUI2 {
 					}
 					StringBuffer tikz = new StringBuffer();
 					tikz.append("\\begin{tikzpicture}\n");
-					tikz.append("[scale=0.05,\n");
+					tikz.append("[scale=0.03,\n");
 					tikz.append("edge/.style={line width=1,draw=black}");
-					tikz.append("]");
+					tikz.append("]\n");
 					for(LineGroup lg : cm.getLineGroups()){
 						tikz.append("\n");
 						for(Line l : lg.getMap().keySet()){
-							tikz.append(l.getGraph().toPGFTikZ(false, false) + "\n");
+							tikz.append(l.getGraph().toPGFTikZ(false, false, true, true));
 						}
 					}
-					tikz.append("\\end{tikzpicture}");
+					tikz.append("\n\\end{tikzpicture}");
 					Helper.dump(tikz.toString(), saveFile.getAbsolutePath());
 				}
 			}

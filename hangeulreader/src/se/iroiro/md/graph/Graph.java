@@ -137,9 +137,11 @@ public interface Graph<NP,EP> {
 	 * Returns the graph in PGF/TikZ code to be used in a LaTeX document.
 	 * @param createEnvironment	if <code>true</code>, code will be surrounded by tikzpicture environment tags.
 	 * @param createNodes	if <code>true</code>, node objects will be created for each node. If <code>false</code>, edges will use direct coordinates.
+	 * @param continuous	if <code>true</code>, edges will be linked together into a continuous line according to the order in the edge list.
+	 * @param integercoordinates	if <code>true</code>, coordinates will be rounded to the nearest integers
 	 * @return	a string representing the graph in PGF/TikZ format
 	 */
-	public String toPGFTikZ(boolean createEnvironment, boolean createNodes);
+	public String toPGFTikZ(boolean createEnvironment, boolean createNodes, boolean continuous, boolean integercoordinates);
 
 	/**
 	 * Returns a duplicate of this graph, with deep-copied nodes and edges, but with piggyback references intact.

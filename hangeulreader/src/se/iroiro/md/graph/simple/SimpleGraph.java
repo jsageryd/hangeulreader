@@ -249,7 +249,7 @@ public class SimpleGraph<NP,EP> implements Graph<NP,EP>, Cloneable {
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.Graph#toPGFTikZ()
 	 */
-	public String toPGFTikZ(boolean createEnvironment, boolean createNodes) {
+	public String toPGFTikZ(boolean createEnvironment, boolean createNodes, boolean continuous, boolean integercoordinates) {
 		StringBuilder tikz = new StringBuilder();
 		if(createEnvironment){
 			tikz.append("\\begin{tikzpicture}\n");
@@ -263,28 +263,65 @@ public class SimpleGraph<NP,EP> implements Graph<NP,EP>, Cloneable {
 			if(getEdges().size() > 0){
 				tikz.append("edge/.style={line width=1,draw=black}");
 			}
-			tikz.append("]\n");
+			tikz.append("]\n\n");
 		}
 		if(createNodes && getNodes().size() > 0){
 			for(XYNode<NP,EP> n : getNodes()){
 				Coordinate c = n.getPosition();
-				tikz.append(String.format(Locale.US, "\\node (%s)	at	(%.6f,%.6f)	[node]	{};\n", c.getID(), c.getX(), c.getY()));
-			}
-		}
-		if(getEdges().size() > 0){
-			tikz.append("\n");
-			for(XYEdge<NP,EP> e : getEdges()){
-				Coordinate from = e.getFrom().getPosition();
-				Coordinate to = e.getTo().getPosition();
-				if(createNodes){
-					tikz.append(String.format(Locale.US, "\\draw [edge]	(%s)	--	(%s);\n", from.getID(), to.getID()));
+				if(integercoordinates){
+					tikz.append(String.format(Locale.US, "\\node (%s)	at	(%d,%d)	[node]	{};\n", c.getID(), (int) Math.round(c.getX()), (int) Math.round(c.getY())));
 				}else{
-					tikz.append(String.format(Locale.US, "\\draw [edge]	(%.6f,%.6f)	--	(%.6f,%.6f);\n", from.getX(), from.getY(), to.getX(), to.getY()));
+					tikz.append(String.format(Locale.US, "\\node (%s)	at	(%.6f,%.6f)	[node]	{};\n", c.getID(), c.getX(), c.getY()));
 				}
 			}
 		}
+		if(getEdges().size() > 0){
+			if(createNodes) tikz.append("\n");
+			Coordinate from;
+			if(continuous){
+				from = getEdges().get(0).getFrom().getPosition();
+				if(createNodes){
+					tikz.append(String.format(Locale.US, "\\draw [edge] (%s)", from.getID()));
+				}else{
+					if(integercoordinates){
+						tikz.append(String.format(Locale.US, "\\draw [edge] (%d,%d)", (int) Math.round(from.getX()), (int) Math.round(from.getY())));
+					}else{
+						tikz.append(String.format(Locale.US, "\\draw [edge] (%.6f,%.6f)", from.getX(), from.getY()));
+					}
+				}
+			}
+			for(XYEdge<NP,EP> e : getEdges()){
+				Coordinate to = e.getTo().getPosition();
+				if(continuous){
+					if(createNodes){
+						tikz.append(String.format(Locale.US, "--(%s)", to.getID()));
+					}else{
+						if(integercoordinates){
+							tikz.append(String.format(Locale.US, "--(%d,%d)", (int) Math.round(to.getX()), (int) Math.round(to.getY())));
+						}else{
+							tikz.append(String.format(Locale.US, "--(%.6f,%.6f)", to.getX(), to.getY()));
+						}
+					}
+				}else{
+					from = e.getFrom().getPosition();
+					if(createNodes){
+						tikz.append(String.format(Locale.US, "\\draw [edge] (%s)	--	(%s);\n", from.getID(), to.getID()));
+					}else{
+						if(integercoordinates){
+							tikz.append(String.format(Locale.US, "\\draw [edge] (%d,%d)	--	(%d,%d);\n", (int) Math.round(from.getX()), (int) Math.round(from.getY()), (int) Math.round(to.getX()), (int) Math.round(to.getY())));
+						}else{
+							tikz.append(String.format(Locale.US, "\\draw [edge] (%.6f,%.6f)	--	(%.6f,%.6f);\n", from.getX(), from.getY(), to.getX(), to.getY()));
+						}
+					}
+				}
+			}
+			if(continuous){
+				tikz.append(";\n");
+			}
+		}
 		if(createEnvironment){
-			tikz.append("\\end{tikzpicture}");
+			if(continuous) tikz.append("\n");
+			tikz.append("\n\\end{tikzpicture}");
 		}
 		return tikz.toString();
 	}
