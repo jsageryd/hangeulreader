@@ -110,6 +110,7 @@ public class ImageRenderer {
 		g2d = (Graphics2D) getImage().createGraphics();
 		g2d.setColor(DEFAULT_COLOUR);
 		setStrokeWidth(DEFAULT_STROKE_WIDTH);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	}
 
@@ -119,11 +120,6 @@ public class ImageRenderer {
 	 */
 	private void setStrokeWidth(int width){
 		strokewidth = width;
-		if(width > 2){
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		}else{
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		}
 		g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	}
 
@@ -395,10 +391,7 @@ public class ImageRenderer {
 	 */
 	private void drawDot(Coordinate c, int r, Color colour){
 		g2d.setColor(colour);
-		RenderingHints rh = g2d.getRenderingHints();
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.fillOval((int) Math.round(c.getJavaX())-r, (int) Math.round(c.getJavaY())-r, r*2, r*2);
-		g2d.setRenderingHints(rh);
 	}
 
 	/**
