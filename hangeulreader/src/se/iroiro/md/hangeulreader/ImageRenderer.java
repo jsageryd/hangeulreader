@@ -52,6 +52,7 @@ public class ImageRenderer {
 	};
 
 	public enum overlayType {
+		SKELETON { public String toString(){ return "Show skeleton"; }},
 		LINES { public String toString(){ return "Show lines"; }},
 		STRUCTURE { public String toString(){ return "Show relations"; }},
 //		MATRIX { public String toString(){ return "Show graph matrix"; }},
@@ -77,6 +78,7 @@ public class ImageRenderer {
 	public void overlay(overlayType... ol){
 		for(overlayType type : ol){
 			switch(type){
+			case SKELETON: drawSkeleton(); break;
 			case LINES: drawLines(); break;
 			case STRUCTURE: drawStructures(); break;
 //			case MATRIX: drawMatrix(); break;
@@ -86,13 +88,29 @@ public class ImageRenderer {
 	}
 
 	/**
+	 * Draws thin, black lines to show the skeleton.
+	 */
+	private void drawSkeleton() {
+		setEdgeColour(Color.WHITE);
+		setNodeColour(getEdgeColour());
+		setStrokeWidth(1);
+		if(cm == null || cm.getLineGroups() == null) return;
+		for(LineGroup lg : cm.getLineGroups()){
+			for(Line l : lg.getMap().keySet()){
+				drawGraph(l.getGraph());
+			}
+		}
+		setStrokeWidth(DEFAULT_STROKE_WIDTH);
+	}
+
+	/**
 	 * Creates the <code>Graphics2D</code> object and loads it with default parameters.
 	 */
 	private void initg2d(){
 		g2d = (Graphics2D) getImage().createGraphics();
 		g2d.setColor(DEFAULT_COLOUR);
 		setStrokeWidth(DEFAULT_STROKE_WIDTH);
-		if(DEFAULT_STROKE_WIDTH > 2) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	}
 
@@ -373,10 +391,7 @@ public class ImageRenderer {
 	 */
 	private void drawDot(Coordinate c, int r, Color colour){
 		g2d.setColor(colour);
-		RenderingHints rh = g2d.getRenderingHints();
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.fillOval((int) Math.round(c.getJavaX())-r, (int) Math.round(c.getJavaY())-r, r*2, r*2);
-		g2d.setRenderingHints(rh);
 	}
 
 	/**

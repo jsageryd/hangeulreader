@@ -6,6 +6,7 @@ package se.iroiro.md.graph.simple;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import se.iroiro.md.graph.Coordinate;
@@ -206,43 +207,123 @@ public class SimpleGraph<NP,EP> implements Graph<NP,EP>, Cloneable {
 
 			int nid=startingNodeID;
 
-			String dot = "";
+			StringBuilder dot = new StringBuilder();
 			String[] ports = {"c","e","ne","n","nw","w","sw","s","se"};
 
-			dot += "subgraph {\n\n";
+			dot.append("subgraph {\n\n");
 
-			dot += "\tnode [shape=circle]\n";
-			dot += "\tedge [arrowhead=none arrowtail=none]\n";	// for unidirected graphs, remark line to show arrowheads
+			dot.append("\tnode [shape=circle]\n");
+			dot.append("\tedge [arrowhead=none arrowtail=none]\n");	// for unidirected graphs, remark line to show arrowheads
 
 			if(getNodes().size() > 0){
-				dot += "\n\t// Nodes\n\n";
+				dot.append("\n\t// Nodes\n\n");
 				String label = "";
 				for(XYNode<NP,EP> n : getNodes()){
 					if(n.getID() == -1) n.setID(nid++);
-					dot += "\t\"" + n.getID() + "\"";
+					dot.append("\t\"" + n.getID() + "\"");
 					if(n.getPiggybackObject() != null){
 						label = n.getPiggybackObject().toString();
 					}
-					dot += "[color="+colour[(currentColour++) % colour.length];
+					dot.append("[color="+colour[(currentColour++) % colour.length]);
 					if(label != ""){
-						dot += " label=\""+label+"\"";
+						dot.append(" label=\""+label+"\"");
 					}
-					dot += "]\n";
+					dot.append("]\n");
 				}
 			}
 
 			if(getEdges().size() > 0){
-				dot += "\n\t// Edges\n\n";
+				dot.append("\n\t// Edges\n\n");
 				for(XYEdge<NP,EP> e : getEdges()){
 					String tp = e.getTailPort() > 0 ? ":"+ports[e.getTailPort()] : "";
 					String hp = e.getHeadPort() > 0 ? ":"+ports[e.getHeadPort()] : "";
-					dot += "\t\"" + e.getFrom().getID() + "\""+tp+"\t->\t\"" + e.getTo().getID() + "\""+hp+"\n";
+					dot.append("\t\"" + e.getFrom().getID() + "\""+tp+"\t->\t\"" + e.getTo().getID() + "\""+hp+"\n");
 				}
 			}
 
-			dot += "\n}\n";
+			dot.append("\n}\n");
 
-			return dot;
+			return dot.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see se.iroiro.md.graph.Graph#toPGFTikZ()
+	 */
+	public String toPGFTikZ(boolean createEnvironment, boolean createNodes, boolean continuous, boolean integercoordinates) {
+		StringBuilder tikz = new StringBuilder();
+		if(createEnvironment){
+			tikz.append("\\begin{tikzpicture}\n");
+			tikz.append("[scale=0.05,\n");
+			if(createNodes && getNodes().size() > 0){
+				tikz.append("node/.style={thick,circle,draw=black,fill=white}");
+				if(getEdges().size() > 0){
+					tikz.append(",\n");
+				}
+			}
+			if(getEdges().size() > 0){
+				tikz.append("edge/.style={line width=1,draw=black}");
+			}
+			tikz.append("]\n\n");
+		}
+		if(createNodes && getNodes().size() > 0){
+			for(XYNode<NP,EP> n : getNodes()){
+				Coordinate c = n.getPosition();
+				if(integercoordinates){
+					tikz.append(String.format(Locale.US, "\\node (%s)	at	(%d,%d)	[node]	{};\n", c.getID(), (int) Math.round(c.getX()), (int) Math.round(c.getY())));
+				}else{
+					tikz.append(String.format(Locale.US, "\\node (%s)	at	(%.6f,%.6f)	[node]	{};\n", c.getID(), c.getX(), c.getY()));
+				}
+			}
+		}
+		if(getEdges().size() > 0){
+			if(createNodes) tikz.append("\n");
+			Coordinate from;
+			if(continuous){
+				from = getEdges().get(0).getFrom().getPosition();
+				if(createNodes){
+					tikz.append(String.format(Locale.US, "\\draw [edge] (%s)", from.getID()));
+				}else{
+					if(integercoordinates){
+						tikz.append(String.format(Locale.US, "\\draw [edge] (%d,%d)", (int) Math.round(from.getX()), (int) Math.round(from.getY())));
+					}else{
+						tikz.append(String.format(Locale.US, "\\draw [edge] (%.6f,%.6f)", from.getX(), from.getY()));
+					}
+				}
+			}
+			for(XYEdge<NP,EP> e : getEdges()){
+				Coordinate to = e.getTo().getPosition();
+				if(continuous){
+					if(createNodes){
+						tikz.append(String.format(Locale.US, "--(%s)", to.getID()));
+					}else{
+						if(integercoordinates){
+							tikz.append(String.format(Locale.US, "--(%d,%d)", (int) Math.round(to.getX()), (int) Math.round(to.getY())));
+						}else{
+							tikz.append(String.format(Locale.US, "--(%.6f,%.6f)", to.getX(), to.getY()));
+						}
+					}
+				}else{
+					from = e.getFrom().getPosition();
+					if(createNodes){
+						tikz.append(String.format(Locale.US, "\\draw [edge] (%s)	--	(%s);\n", from.getID(), to.getID()));
+					}else{
+						if(integercoordinates){
+							tikz.append(String.format(Locale.US, "\\draw [edge] (%d,%d)	--	(%d,%d);\n", (int) Math.round(from.getX()), (int) Math.round(from.getY()), (int) Math.round(to.getX()), (int) Math.round(to.getY())));
+						}else{
+							tikz.append(String.format(Locale.US, "\\draw [edge] (%.6f,%.6f)	--	(%.6f,%.6f);\n", from.getX(), from.getY(), to.getX(), to.getY()));
+						}
+					}
+				}
+			}
+			if(continuous){
+				tikz.append(";\n");
+			}
+		}
+		if(createEnvironment){
+			if(continuous) tikz.append("\n");
+			tikz.append("\n\\end{tikzpicture}");
+		}
+		return tikz.toString();
 	}
 
 	/* (non-Javadoc)

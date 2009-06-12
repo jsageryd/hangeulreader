@@ -54,6 +54,7 @@ import se.iroiro.md.hangeul.Hangeul;
 import se.iroiro.md.hangeul.HangeulClassifier;
 import se.iroiro.md.hangeul.Jamo;
 import se.iroiro.md.hangeul.JamoReferenceDB;
+import se.iroiro.md.hangeul.Line;
 import se.iroiro.md.hangeul.LineGroup;
 import se.iroiro.md.hangeulreader.ImageRenderer.overlayType;
 
@@ -191,7 +192,9 @@ public class GUI2 {
 			final JMenuItem loadmenu = new JMenuItem("Load image...");
 			final JMenuItem savemenu = new JMenuItem("Save image...");
 			final JMenuItem rendercharmenu = new JMenuItem("Render image from character...");
-			final JMenuItem dotexport = new JMenuItem("Export structure(s) to Graphviz dot-file...");
+			final JMenuItem dotexport = new JMenuItem("Export relations to Graphviz file...");
+			final JMenuItem pgftikzexport = new JMenuItem("Export relations to PGF/TikZ file...");
+			final JMenuItem pgftikzexportlines = new JMenuItem("Export lines to PGF/TikZ file...");
 		final JMenu testingmenu = new JMenu("Testing");
 			final JMenuItem batchtestmenu = new JMenuItem("Run batch test...");
 		final JMenu settingsmenu = new JMenu("Overlay");
@@ -204,6 +207,8 @@ public class GUI2 {
 		filemenu.add(rendercharmenu);
 		filemenu.add(new JSeparator());
 		filemenu.add(dotexport);
+		filemenu.add(pgftikzexport);
+		filemenu.add(pgftikzexportlines);
 		testingmenu.add(batchtestmenu);
 		settingsmi = new TreeMap<overlayType,JCheckBoxMenuItem>();
 		for(overlayType ol : overlayType.values()){
@@ -244,6 +249,16 @@ public class GUI2 {
 		dotexport.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				exportDotGraph();
+			}
+		});
+		pgftikzexport.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				exportPGFTikZ();
+			}
+		});
+		pgftikzexportlines.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				exportPGFTikZlines();
 			}
 		});
 		batchtestmenu.addActionListener(new ActionListener(){
@@ -647,6 +662,112 @@ public class GUI2 {
 			}
 		}else{
 			JOptionPane.showMessageDialog(frame, "There are no structures to export.");
+		}
+	}
+
+	/**
+	 * Exports the structures to a PGF/TikZ file.
+	 */
+	private void exportPGFTikZ(){
+		if(cm == null) cm = new CharacterMeasurement(tmp);
+		if(cm != null && cm.getLineGroups() != null && cm.getLineGroups().size() > 0){
+			JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+			fc.setMultiSelectionEnabled(false);
+			fc.setFileFilter(new FileFilter(){
+				public boolean accept(File f) {
+					if(f.getName().endsWith(".tikz")){
+						return true;
+					}
+					return false;
+				}
+
+				public String getDescription() {
+					return "PGF/TikZ file";
+				}
+			});
+			int saveDialogReturnVal = fc.showSaveDialog(frame);
+			if(saveDialogReturnVal == JFileChooser.APPROVE_OPTION){
+				File saveFile = fc.getSelectedFile();
+				if(saveFile != null){
+					if(!saveFile.getName().toLowerCase().endsWith(".tikz")){
+						saveFile = new File(saveFile.getAbsolutePath().concat(".tikz"));
+					}
+					if(saveFile.exists()){
+						int canReplace = JOptionPane.showConfirmDialog(frame, "The file exists. Overwrite?", "File exists", JOptionPane.YES_NO_OPTION);
+						if(canReplace != JOptionPane.YES_OPTION){
+							return;
+						}
+					}
+					StringBuffer tikz = new StringBuffer();
+					tikz.append("\\begin{tikzpicture}\n");
+					tikz.append("[scale=0.03,\n");
+					tikz.append("node/.style={thick,circle,draw=black,fill=white}");
+					tikz.append(",\n");
+					tikz.append("edge/.style={line width=1,draw=black}");
+					tikz.append("]\n");
+					for(LineGroup lg : cm.getLineGroups()){
+						tikz.append("\n");
+						tikz.append(lg.getGraph().toPGFTikZ(false, true, false, true) + "\n");
+					}
+					tikz.append("\\end{tikzpicture}");
+					Helper.dump(tikz.toString(), saveFile.getAbsolutePath());
+				}
+			}
+		}else{
+			JOptionPane.showMessageDialog(frame, "There are no structures to export.");
+		}
+	}
+
+	/**
+	 * Exports the lines to a PGF/TikZ file.
+	 */
+	private void exportPGFTikZlines(){
+		if(cm == null) cm = new CharacterMeasurement(tmp);
+		if(cm != null && cm.getLineGroups() != null && cm.getLineGroups().size() > 0){
+			JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+			fc.setMultiSelectionEnabled(false);
+			fc.setFileFilter(new FileFilter(){
+				public boolean accept(File f) {
+					if(f.getName().endsWith(".tikz")){
+						return true;
+					}
+					return false;
+				}
+
+				public String getDescription() {
+					return "PGF/TikZ file";
+				}
+			});
+			int saveDialogReturnVal = fc.showSaveDialog(frame);
+			if(saveDialogReturnVal == JFileChooser.APPROVE_OPTION){
+				File saveFile = fc.getSelectedFile();
+				if(saveFile != null){
+					if(!saveFile.getName().toLowerCase().endsWith(".tikz")){
+						saveFile = new File(saveFile.getAbsolutePath().concat(".tikz"));
+					}
+					if(saveFile.exists()){
+						int canReplace = JOptionPane.showConfirmDialog(frame, "The file exists. Overwrite?", "File exists", JOptionPane.YES_NO_OPTION);
+						if(canReplace != JOptionPane.YES_OPTION){
+							return;
+						}
+					}
+					StringBuffer tikz = new StringBuffer();
+					tikz.append("\\begin{tikzpicture}\n");
+					tikz.append("[scale=0.03,\n");
+					tikz.append("edge/.style={line width=1,draw=black}");
+					tikz.append("]\n");
+					for(LineGroup lg : cm.getLineGroups()){
+						tikz.append("\n");
+						for(Line l : lg.getMap().keySet()){
+							tikz.append(l.getGraph().toPGFTikZ(false, false, true, true));
+						}
+					}
+					tikz.append("\n\\end{tikzpicture}");
+					Helper.dump(tikz.toString(), saveFile.getAbsolutePath());
+				}
+			}
+		}else{
+			JOptionPane.showMessageDialog(frame, "There are no lines to export.");
 		}
 	}
 

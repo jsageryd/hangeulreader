@@ -147,6 +147,12 @@ public interface Coordinate {
 	public Coordinate copy();
 
 	/**
+	 * Returns an ID based on the x and y values.
+	 * @return	an ID
+	 */
+	public String getID();
+
+	/**
 	 * Returns a copy of this coordinate.
 	 * @return	a copy of this coordinate
 	 */
