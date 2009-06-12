@@ -206,43 +206,43 @@ public class SimpleGraph<NP,EP> implements Graph<NP,EP>, Cloneable {
 
 			int nid=startingNodeID;
 
-			String dot = "";
+			StringBuilder dot = new StringBuilder();
 			String[] ports = {"c","e","ne","n","nw","w","sw","s","se"};
 
-			dot += "subgraph {\n\n";
+			dot.append("subgraph {\n\n");
 
-			dot += "\tnode [shape=circle]\n";
-			dot += "\tedge [arrowhead=none arrowtail=none]\n";	// for unidirected graphs, remark line to show arrowheads
+			dot.append("\tnode [shape=circle]\n");
+			dot.append("\tedge [arrowhead=none arrowtail=none]\n");	// for unidirected graphs, remark line to show arrowheads
 
 			if(getNodes().size() > 0){
-				dot += "\n\t// Nodes\n\n";
+				dot.append("\n\t// Nodes\n\n");
 				String label = "";
 				for(XYNode<NP,EP> n : getNodes()){
 					if(n.getID() == -1) n.setID(nid++);
-					dot += "\t\"" + n.getID() + "\"";
+					dot.append("\t\"" + n.getID() + "\"");
 					if(n.getPiggybackObject() != null){
 						label = n.getPiggybackObject().toString();
 					}
-					dot += "[color="+colour[(currentColour++) % colour.length];
+					dot.append("[color="+colour[(currentColour++) % colour.length]);
 					if(label != ""){
-						dot += " label=\""+label+"\"";
+						dot.append(" label=\""+label+"\"");
 					}
-					dot += "]\n";
+					dot.append("]\n");
 				}
 			}
 
 			if(getEdges().size() > 0){
-				dot += "\n\t// Edges\n\n";
+				dot.append("\n\t// Edges\n\n");
 				for(XYEdge<NP,EP> e : getEdges()){
 					String tp = e.getTailPort() > 0 ? ":"+ports[e.getTailPort()] : "";
 					String hp = e.getHeadPort() > 0 ? ":"+ports[e.getHeadPort()] : "";
-					dot += "\t\"" + e.getFrom().getID() + "\""+tp+"\t->\t\"" + e.getTo().getID() + "\""+hp+"\n";
+					dot.append("\t\"" + e.getFrom().getID() + "\""+tp+"\t->\t\"" + e.getTo().getID() + "\""+hp+"\n");
 				}
 			}
 
-			dot += "\n}\n";
+			dot.append("\n}\n");
 
-			return dot;
+			return dot.toString();
 	}
 
 	/* (non-Javadoc)
