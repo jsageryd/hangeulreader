@@ -110,7 +110,6 @@ public class ImageRenderer {
 		g2d = (Graphics2D) getImage().createGraphics();
 		g2d.setColor(DEFAULT_COLOUR);
 		setStrokeWidth(DEFAULT_STROKE_WIDTH);
-		if(DEFAULT_STROKE_WIDTH > 2) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	}
 
@@ -120,6 +119,11 @@ public class ImageRenderer {
 	 */
 	private void setStrokeWidth(int width){
 		strokewidth = width;
+		if(width > 2){
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		}else{
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
 		g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	}
 
