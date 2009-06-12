@@ -4,6 +4,7 @@
 package se.iroiro.md.graph.simple;
 
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 import se.iroiro.md.graph.Coordinate;
 
@@ -185,6 +186,13 @@ public class SimpleCoordinate implements Coordinate, Cloneable {
 	 */
 	public Coordinate copy() {
 		return new SimpleCoordinate(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see se.iroiro.md.graph.Coordinate#getID()
+	 */
+	public String getID() {
+		return String.format(Locale.US, "%Ax%A", x, y).replace('.', 'd').replace('-', 'n');
 	}
 
 	/* (non-Javadoc)

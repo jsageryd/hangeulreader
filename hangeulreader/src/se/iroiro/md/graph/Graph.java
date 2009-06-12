@@ -134,6 +134,14 @@ public interface Graph<NP,EP> {
 	public String toDotSubgraph(int startingNodeID, int startingColourID);
 
 	/**
+	 * Returns the graph in PGF/TikZ code to be used in a LaTeX document.
+	 * @param createEnvironment	if <code>true</code>, code will be surrounded by tikzpicture environment tags.
+	 * @param createNodes	if <code>true</code>, node objects will be created for each node. If <code>false</code>, edges will use direct coordinates.
+	 * @return	a string representing the graph in PGF/TikZ format
+	 */
+	public String toPGFTikZ(boolean createEnvironment, boolean createNodes);
+
+	/**
 	 * Returns a duplicate of this graph, with deep-copied nodes and edges, but with piggyback references intact.
 	 * @return	a duplicate of this graph
 	 */

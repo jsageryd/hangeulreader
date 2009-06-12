@@ -6,6 +6,7 @@ package se.iroiro.md.graph.simple;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import se.iroiro.md.graph.Coordinate;
@@ -243,6 +244,49 @@ public class SimpleGraph<NP,EP> implements Graph<NP,EP>, Cloneable {
 			dot.append("\n}\n");
 
 			return dot.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see se.iroiro.md.graph.Graph#toPGFTikZ()
+	 */
+	public String toPGFTikZ(boolean createEnvironment, boolean createNodes) {
+		StringBuilder tikz = new StringBuilder();
+		if(createEnvironment){
+			tikz.append("\\begin{tikzpicture}\n");
+			tikz.append("[scale=0.05,\n");
+			if(createNodes && getNodes().size() > 0){
+				tikz.append("node/.style={thick,circle,draw=black,fill=white}");
+				if(getEdges().size() > 0){
+					tikz.append(",\n");
+				}
+			}
+			if(getEdges().size() > 0){
+				tikz.append("edge/.style={line width=1,draw=black}");
+			}
+			tikz.append("]\n");
+		}
+		if(createNodes && getNodes().size() > 0){
+			for(XYNode<NP,EP> n : getNodes()){
+				Coordinate c = n.getPosition();
+				tikz.append(String.format(Locale.US, "\\node (%s)	at	(%.6f,%.6f)	[node]	{};\n", c.getID(), c.getX(), c.getY()));
+			}
+		}
+		if(getEdges().size() > 0){
+			tikz.append("\n");
+			for(XYEdge<NP,EP> e : getEdges()){
+				Coordinate from = e.getFrom().getPosition();
+				Coordinate to = e.getTo().getPosition();
+				if(createNodes){
+					tikz.append(String.format(Locale.US, "\\draw [edge]	(%s)	--	(%s);\n", from.getID(), to.getID()));
+				}else{
+					tikz.append(String.format(Locale.US, "\\draw [edge]	(%.6f,%.6f)	--	(%.6f,%.6f);\n", from.getX(), from.getY(), to.getX(), to.getY()));
+				}
+			}
+		}
+		if(createEnvironment){
+			tikz.append("\\end{tikzpicture}");
+		}
+		return tikz.toString();
 	}
 
 	/* (non-Javadoc)
