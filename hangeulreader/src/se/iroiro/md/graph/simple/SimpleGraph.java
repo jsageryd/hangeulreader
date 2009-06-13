@@ -316,6 +316,9 @@ public class SimpleGraph<NP,EP> implements Graph<NP,EP>, Cloneable {
 				}
 			}
 			if(continuous){
+				if(getNodes().get(0).isNeighbour(getNodes().get(getNodes().size()-1))){
+					tikz.append("--cycle");
+				}
 				tikz.append(";\n");
 			}
 		}
