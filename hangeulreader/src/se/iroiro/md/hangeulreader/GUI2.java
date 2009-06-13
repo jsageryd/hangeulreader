@@ -704,7 +704,9 @@ public class GUI2 {
 					tikz.append("node/.style={thick,circle,draw=black,fill=white}");
 					tikz.append(",\n");
 					tikz.append("edge/.style={line width=1,draw=black}");
-					tikz.append("]\n");
+					tikz.append("]\n\n");
+					tikz.append(String.format("\\node (topleft)	at	(%d,%d)	[transparent]	{};\n", 0, 0));
+					tikz.append(String.format("\\node (bottomright)	at	(%d,%d)	[transparent]	{};\n", tmp.getWidth()-1, -(tmp.getHeight()-1)));
 					for(LineGroup lg : cm.getLineGroups()){
 						tikz.append("\n");
 						tikz.append(lg.getGraph().toPGFTikZ(false, true, false, true) + "\n");
@@ -755,7 +757,9 @@ public class GUI2 {
 					tikz.append("\\begin{tikzpicture}\n");
 					tikz.append("[scale=0.03,\n");
 					tikz.append("edge/.style={line width=1,draw=black}");
-					tikz.append("]\n");
+					tikz.append("]\n\n");
+					tikz.append(String.format("\\node (topleft)	at	(%d,%d)	[transparent]	{};\n", 0, 0));
+					tikz.append(String.format("\\node (bottomright)	at	(%d,%d)	[transparent]	{};\n", tmp.getWidth()-1, -(tmp.getHeight()-1)));
 					for(LineGroup lg : cm.getLineGroups()){
 						tikz.append("\n");
 						for(Line l : lg.getMap().keySet()){
