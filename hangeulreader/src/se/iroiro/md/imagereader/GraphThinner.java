@@ -186,8 +186,13 @@ public class GraphThinner {
 				result--;	// binary
 			}
 		}
-		for(int k = 0; k <= 7; k++){
-			if(e[k] && e[(k+2) % 8] && e[(k+4) % 8] && matrix.edgeCount(x, y) == 3) result = 0;	// prevent deletion of triangles, remove them later.
+		if(matrix.edgeCount(x, y) == 3){
+			for(int k = 0; k <= 7; k++){
+				if(e[k] && e[(k+2) % 8] && e[(k+4) % 8]){
+					result = 0;	// prevent deletion of triangles, remove them later.
+					break;
+				}
+			}
 		}
 		return result;
 	}
