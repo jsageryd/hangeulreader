@@ -3,6 +3,8 @@
  */
 package se.iroiro.md.graph.simple;
 
+import java.io.Serializable;
+
 import se.iroiro.md.graph.XYGraphable;
 
 /**
@@ -10,7 +12,12 @@ import se.iroiro.md.graph.XYGraphable;
  *
  * @param <T>	the type of the piggyback object
  */
-public abstract class AbstractXYGraphable<T> extends AbstractXYPositioned implements XYGraphable<T> {
+public abstract class AbstractXYGraphable<T> extends AbstractXYPositioned implements XYGraphable<T>, Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 631550669561585782L;
 
 	/**
 	 * Identifying ID

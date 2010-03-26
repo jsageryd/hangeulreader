@@ -3,6 +3,7 @@
  */
 package se.iroiro.md.graph.simple;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
@@ -12,7 +13,12 @@ import se.iroiro.md.graph.Coordinate;
  * @author j
  *
  */
-public class SimpleCoordinate implements Coordinate, Cloneable {
+public class SimpleCoordinate implements Coordinate, Cloneable, Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1234432625070787253L;
 
 	/**
 	 * Cartesian X-coordinate

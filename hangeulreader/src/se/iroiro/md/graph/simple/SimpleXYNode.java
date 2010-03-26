@@ -3,6 +3,7 @@
  */
 package se.iroiro.md.graph.simple;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +18,12 @@ import se.iroiro.md.graph.simple.SimpleCoordinate;
  * @param <NP>	the type of the node piggyback object
  * @param <EP>	the type of the edge piggyback object
  */
-public class SimpleXYNode<NP,EP> extends AbstractXYGraphable<NP> implements XYNode<NP,EP>, Cloneable {
+public class SimpleXYNode<NP,EP> extends AbstractXYGraphable<NP> implements XYNode<NP,EP>, Cloneable, Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -834670904965492957L;
 
 	/**
 	 * List of connecting edges

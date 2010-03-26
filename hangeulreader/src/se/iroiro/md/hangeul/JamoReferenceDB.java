@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -103,8 +105,13 @@ public class JamoReferenceDB {
 	 * Generates the jamo database if it is not already created.
 	 */
 	public void generateJamoDB() {
+		final String serialized = System.getProperty("user.dir")+File.separator+"data"+File.separator+"jamoDB";
 		if(jamoDB == null || structureMap == null){
-			jamoDB = scanAllJamo();	// if there are no reference jamo, make them.
+			jamoDB = deserializeJamoDB(serialized);	// try to load from serialized first
+			if(jamoDB == null){
+				jamoDB = scanAllJamo();	// if there are no reference jamo, make them.
+				serializeJamoDB(jamoDB, serialized);	// serialize
+			}
 			structureMap = makeStructureMap(jamoDB);	// make structure map
 			structureMapOrdering = new ArrayList<List<LineGroup>>();	// structureMap is just a map of all structures found in all jamo,
 			structureMapOrdering.addAll(structureMap.keySet());			// with the jamo as value for each structure
@@ -117,6 +124,45 @@ public class JamoReferenceDB {
 //				Helper.p(j.getStructures()+"\n");
 //			}
 		}
+	}
+
+	/**
+	 * Serializes the jamo database
+	 * @param jdb	Jamo database to serialize
+	 * @param filename	File to save to
+	 */
+	private void serializeJamoDB(List<Jamo> jdb, String filename) {
+		Helper.p("Serializing jamo database...");
+		try {
+			SerializationTools.saveObject((Serializable) jdb, filename);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Helper.p("done.\n");
+	}
+
+	/**
+	 * Loads the jamo database from file if present
+	 * @return	Deserialized jamo database or <code>null</code> if non-existent
+	 */
+	@SuppressWarnings("unchecked")
+	private List<Jamo> deserializeJamoDB(String filename) {
+		List<Jamo> jdb = null;
+		if(new File(filename).exists()){
+			Helper.p("Deserializing jamo database...");
+			try {
+				jdb = (List<Jamo>) SerializationTools.loadObject(filename);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Helper.p("done.\n");
+		}
+		return jdb;
 	}
 
 	/**
@@ -158,7 +204,7 @@ public class JamoReferenceDB {
 	 * @return	a list of all possible jamo
 	 */
 	private List<Jamo> scanAllJamo(){
-		System.out.print("Building jamo database...");
+		Helper.p("Building jamo database...");
 		List<Jamo> jamoDB = new ArrayList<Jamo>();
 
 		StringBuilder jamos = new StringBuilder();
@@ -220,10 +266,9 @@ public class JamoReferenceDB {
 			if(j.getStructures().size() > 0) jamoDB.add(j);
 		}
 
-		System.out.println("done.");
+		Helper.p("done.\n");
 		return jamoDB;
 	}
-
 
 	/**
 	 * Returns a list of all fonts that are available.

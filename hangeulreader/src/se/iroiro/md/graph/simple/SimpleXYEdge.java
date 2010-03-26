@@ -3,6 +3,8 @@
  */
 package se.iroiro.md.graph.simple;
 
+import java.io.Serializable;
+
 import se.iroiro.md.graph.Coordinate;
 import se.iroiro.md.graph.LineEquation;
 import se.iroiro.md.graph.XYEdge;
@@ -14,7 +16,12 @@ import se.iroiro.md.graph.XYNode;
  * @param <NP>	the type of the node piggyback object
  * @param <EP>	the type of the edge piggyback object
  */
-public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEdge<NP,EP> {
+public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEdge<NP,EP>, Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -849321791983317729L;
 
 	private XYNode<NP,EP> from = null;
 	private XYNode<NP,EP> to = null;

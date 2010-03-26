@@ -3,6 +3,7 @@
  */
 package se.iroiro.md.hangeul;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +26,12 @@ import se.iroiro.md.graph.simple.SimpleXYNode;
  * @author j
  *
  */
-public class LineGroup extends AbstractXYPositioned {
+public class LineGroup extends AbstractXYPositioned implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 5889115566178158632L;
 
 	//TODO Change 'Object' to ConnectionType or similar.
 	private Graph<Line,LineGroup> graph = null;

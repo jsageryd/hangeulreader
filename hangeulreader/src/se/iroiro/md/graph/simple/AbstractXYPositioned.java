@@ -3,6 +3,8 @@
  */
 package se.iroiro.md.graph.simple;
 
+import java.io.Serializable;
+
 import se.iroiro.md.graph.Coordinate;
 import se.iroiro.md.graph.XYPositioned;
 
@@ -10,7 +12,12 @@ import se.iroiro.md.graph.XYPositioned;
  * @author j
  *
  */
-public abstract class AbstractXYPositioned implements XYPositioned {
+public abstract class AbstractXYPositioned implements XYPositioned, Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -5953494097704963501L;
 
 	/* (non-Javadoc)
 	 * @see se.iroiro.md.graph.XYPositioned#getAngleTo(se.iroiro.md.graph.XYPositioned)

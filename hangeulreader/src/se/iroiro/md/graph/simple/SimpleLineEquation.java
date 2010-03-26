@@ -3,6 +3,7 @@
  */
 package se.iroiro.md.graph.simple;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 
 import se.iroiro.md.graph.Coordinate;
@@ -13,7 +14,12 @@ import se.iroiro.md.graph.LineEquation;
  * @author j
  *
  */
-public class SimpleLineEquation implements LineEquation {
+public class SimpleLineEquation implements LineEquation, Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6909248476150976444L;
 
 	private double slope = Double.NaN;
 	private double intercept = Double.NaN;
