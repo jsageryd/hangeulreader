@@ -3,6 +3,7 @@
  */
 package se.iroiro.md.hangeul;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +23,12 @@ import se.iroiro.md.graph.simple.SimpleXYNode;
  * @author j
  *
  */
-public class Line extends AbstractXYPositioned implements Cloneable {
+public class Line extends AbstractXYPositioned implements Cloneable, Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 5400654584104504047L;
 
 	public enum LineType {
 		HORIZONTAL { public String toString(){ return "ー"; }},

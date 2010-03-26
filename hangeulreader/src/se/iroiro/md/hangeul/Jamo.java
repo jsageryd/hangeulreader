@@ -3,6 +3,7 @@
  */
 package se.iroiro.md.hangeul;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,17 @@ import se.iroiro.md.graph.simple.SimpleCoordinate;
  * @author j
  *
  */
-public class Jamo {
+public class Jamo implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4995017000918509462L;
 
 	private char jamo;
 //	private List<LineGroup> lineGroups = null;
 	private List<List<LineGroup>> structures = null;
-	private Map<LineGroup,LineGroup> map = null;
+	private transient Map<LineGroup,LineGroup> map = null;
 
 	public enum jamoType {
 		INITIAL,

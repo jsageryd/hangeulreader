@@ -3,6 +3,8 @@
  */
 package se.iroiro.md.hangeul;
 
+import java.io.Serializable;
+
 import se.iroiro.md.hangeulreader.UnicodeHangeul;
 
 
@@ -11,7 +13,12 @@ import se.iroiro.md.hangeulreader.UnicodeHangeul;
  * @author j
  *
  */
-public class Hangeul {
+public class Hangeul implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -2555690499817279461L;
 
 	/**
 	 * Constant for Unicode lookup

@@ -3,6 +3,8 @@
  */
 package se.iroiro.math;
 
+import java.io.Serializable;
+
 /**
  * This class represents matrix of integer values and contains selection of methods to manipulate it.
  * Note that the first cell in the matrix is (0,0) and not (1,1).
@@ -10,7 +12,12 @@ package se.iroiro.math;
  * @author j
  *
  */
-public class IntMatrix implements Cloneable {
+public class IntMatrix implements Cloneable, Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -6488242099868093477L;
 
 	/**
 	 * Internal storage
