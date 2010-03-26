@@ -32,8 +32,8 @@ public class SimpleGraph<NP,EP> implements Graph<NP,EP>, Cloneable, Serializable
 	private List<XYNode<NP,EP>> nodes;
 
 	// Caches
-	private Coordinate topLeft = null;
-	private Coordinate bottomRight = null;
+	private transient Coordinate topLeft = null;
+	private transient Coordinate bottomRight = null;
 
 	/**
 	 * Class constructor

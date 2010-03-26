@@ -26,9 +26,10 @@ public class SimpleXYEdge<NP,EP> extends AbstractXYGraphable<EP> implements XYEd
 	private XYNode<NP,EP> from = null;
 	private XYNode<NP,EP> to = null;
 
-	private Coordinate topleft = null;
-	private Coordinate bottomright = null;
-	private LineEquation equation = null;
+	// Caches
+	private transient Coordinate topleft = null;
+	private transient Coordinate bottomright = null;
+	private transient LineEquation equation = null;
 
 	private int headPort = -1;
 	private int tailPort = -1;

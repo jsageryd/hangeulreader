@@ -26,7 +26,7 @@ public class Jamo implements Serializable {
 	private char jamo;
 //	private List<LineGroup> lineGroups = null;
 	private List<List<LineGroup>> structures = null;
-	private Map<LineGroup,LineGroup> map = null;
+	private transient Map<LineGroup,LineGroup> map = null;
 
 	public enum jamoType {
 		INITIAL,
