@@ -31,9 +31,6 @@ public class Hangeul implements Serializable {
 	SCount = LCount * NCount;   // 11172
 
 	private char hangeul;
-//	private char initial_jamo;
-//	private char medial_jamo;
-//	private char final_jamo;
 
 	/**
 	 * Class constructor. Creates an instance representing the character specified.
