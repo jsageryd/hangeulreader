@@ -63,16 +63,13 @@ public class Line extends AbstractXYPositioned implements Cloneable, Serializabl
 //	private static final int CORNER_QUEUE_SIZE = 10;
 //	private static final double CORNER_MAX_ANGLE = Math.toRadians(135);
 
-
-	/**
-	 * The line type
-	 */
-	private LineType lineType = null;
-
 	private Graph<Object,Line> graph = null;
-	private Coordinate position = null;
 	private LineGroup group = null;
 //	private List<Corner> corners = null;
+
+	// Cache
+	private transient LineType lineType = null;
+	private transient Coordinate position = null;
 
 	/**
 	 * Returns the line group this line belongs to.

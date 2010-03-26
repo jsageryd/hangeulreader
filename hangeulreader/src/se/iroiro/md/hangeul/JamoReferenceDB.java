@@ -133,13 +133,14 @@ public class JamoReferenceDB {
 	 */
 	private void serializeJamoDB(List<Jamo> jdb, String filename) {
 		Helper.p("Serializing jamo database...");
+		boolean fail=false;
 		try {
 			SerializationTools.saveObject((Serializable) jdb, filename);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail=true;
+			Helper.p("failed: IOException\n");
 		}
-		Helper.p("done.\n");
+		if(!fail) Helper.p("done.\n");
 	}
 
 	/**
@@ -151,16 +152,17 @@ public class JamoReferenceDB {
 		List<Jamo> jdb = null;
 		if(new File(filename).exists()){
 			Helper.p("Deserializing jamo database...");
+			boolean fail=false;
 			try {
 				jdb = (List<Jamo>) SerializationTools.loadObject(filename);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				fail=true;
+				Helper.p("failed: ClassNotFoundException\n");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				fail=true;
+				Helper.p("failed: IOException\n");
 			}
-			Helper.p("done.\n");
+			if(!fail) Helper.p("done.\n");
 		}
 		return jdb;
 	}

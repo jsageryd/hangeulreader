@@ -37,6 +37,7 @@ public class LineGroup extends AbstractXYPositioned implements Serializable {
 	private Graph<Line,LineGroup> graph = null;
 	private Map<Line,XYNode<Line,LineGroup>> map = null;
 
+	// Cache
 	private Coordinate position = null;
 	private Coordinate topleft = null;
 	private Coordinate bottomright = null;
