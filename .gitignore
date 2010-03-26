@@ -1,0 +1,8 @@
+# OS X garbage
+.DS_Store
+
+# Java builds
+*.class
+
+# VIM swap files
+*.swp
