@@ -2,8 +2,9 @@ Hangeul reader
 ================================
 
 This is a character recognition system for Hangeul implemented in Java.
-The project is part of my [dissertation](http://bit.ly/10QXFVG) in
-Language Technology, Lund University.
+The project is part of my
+[dissertation](https://lup.lub.lu.se/student-papers/search/publication/1492719)
+in Language Technology, Lund University.
 
 Usage
 --------------------------------
